@@ -6,7 +6,7 @@
 
 // Define AMD incompatible libraries
 requirejs.config({
-	baseUrl: window.org_opentravelmate_widget_webview_webviewBaseUrl + 'extension/',
+	baseUrl: window.org_opentravelmate_widget_webview_webviewBaseUrl + 'extensions/',
     paths: {
         'jquery': 'core/lib/jquery.min',
         'underscore': 'core/lib/underscore.min',
