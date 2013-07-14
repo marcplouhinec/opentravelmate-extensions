@@ -69,7 +69,9 @@ define([
             /** @type {{left: Number, top: Number}} */
             var offset = $placeholder.offset();
             /** @type {Object.<String, String>} */
-            var additionalParameters = {};
+            var additionalParameters = {
+				'baseUrl': self.baseUrl
+			};
             var attributes = $placeholder.get(0).attributes;
             for (var i = 0; i < attributes.length; i += 1) {
                 var attr = attributes.item(i);
