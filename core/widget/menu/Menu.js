@@ -5,11 +5,12 @@
  */
 
 define([
+    'underscore',
     'core/widget/Widget',
     'core/widget/LayoutParams',
     'core/widget/menu/MenuItem',
     'nativeMenu'
-], function(Widget, LayoutParams, MenuItem, nativeMenu) {
+], function(_, Widget, LayoutParams, MenuItem, nativeMenu) {
     'use strict';
 
     /**
@@ -49,6 +50,9 @@ define([
      * @param {MenuItem} item
      */
     Menu.prototype.addMenuItem = function(item) {
+        if (_.isString(item.iconUrl) && item.iconUrl.indexOf('://') === -1) {
+            item.iconUrl = this.baseUrl + item.iconUrl;
+        }
         nativeMenu.addMenuItem(this.id, JSON.stringify(item));
     };
 
