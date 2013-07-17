@@ -26,19 +26,22 @@ requirejs.config({
 });
 
 require([
+    'jquery',
 	'core/widget/webview/WebView',
 	window.org_opentravelmate_widget_webview_webviewEntrypoint],
-function(WebView, entrypoint) {
+function($, WebView, entrypoint) {
     'use strict';
-    
-    // Create the current WebView
-    WebView.setCurrent(new WebView({
-        id: window.org_opentravelmate_widget_webview_webviewId,
-        url: window.org_opentravelmate_widget_webview_webviewUrl,
-        entrypoint: window.org_opentravelmate_widget_webview_webviewEntrypoint,
-        baseUrl: org_opentravelmate_widget_webview_webviewBaseUrl
-    }));
-    
-    // Call the entry point
-    entrypoint();
+
+    $(document).ready(function() {
+        // Create the current WebView
+        WebView.setCurrent(new WebView({
+            id: window.org_opentravelmate_widget_webview_webviewId,
+            url: window.org_opentravelmate_widget_webview_webviewUrl,
+            entrypoint: window.org_opentravelmate_widget_webview_webviewEntrypoint,
+            baseUrl: org_opentravelmate_widget_webview_webviewBaseUrl
+        }));
+
+        // Call the entry point
+        entrypoint();
+    });
 });
