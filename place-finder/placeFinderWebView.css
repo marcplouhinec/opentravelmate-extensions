@@ -19,6 +19,7 @@ body {
     position: absolute;
     right: 50px;
     top: 5px;
+    padding: 4px;
 }
 
 #close-button {
