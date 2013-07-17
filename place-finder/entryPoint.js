@@ -36,7 +36,7 @@ define([
         webViewPlaceHolder.style.left = 0;
         webViewPlaceHolder.style.right = 0;
         webViewPlaceHolder.style.top = $('#main-menu').height() + 'px';
-        webViewPlaceHolder.style.height = '100px';
+        webViewPlaceHolder.style.height = '50px';
         webViewPlaceHolder.setAttribute('data-otm-widget', 'WebView');
         webViewPlaceHolder.setAttribute('data-otm-url', 'extensions/place-finder/placeFinderWebView.html');
         webViewPlaceHolder.setAttribute('data-otm-entrypoint', 'place-finder/placeFinderWebView');

@@ -1,0 +1,75 @@
+/**
+ * Common styles in the application.
+ */
+
+@font-face {
+    font-family: 'Roboto';
+    font-style: normal;
+    src: local('Roboto'), local('Roboto-Regular'), url(font/Roboto-Regular-webfont.woff) format('woff');
+}
+
+/**
+ * Default background style.
+ */
+.otm-panel {
+    background-color: #4b4c49;
+    color: white;
+    font-size: 18px;
+    font-family: Roboto, sans-serif;
+}
+
+/**
+ * Default button style.
+ */
+button.otm-button {
+    display: block;
+    background-color: #2e2f2d;
+    border: none;
+    border-radius: 8px;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+    color: white;
+}
+
+button.otm-button img {
+    display: block;
+    margin: 5%;
+    width: 90%;
+    height: 90%;
+}
+
+button.otm-button:hover {
+    background-color: #363735;
+}
+
+button.otm-button:active {
+    background-color: #8e8f8d;
+}
+
+button.otm-button:focus {
+    outline : none;
+}
+button.otm-button::-moz-focus-inner {
+    border: none;
+}
+
+button.otm-button-middle {
+    width: 40px;
+    height: 40px;
+}
+
+/**
+ * Input text
+ */
+input.otm-input-text {
+    height: 22px;
+    font-size: 18px;
+
+    padding: 4px;
+    border: none;
+    border-bottom: 2px solid #0099cc;
+    background: none;
+    color: #0099cc;
+    font-family: Roboto, sans-serif;
+}

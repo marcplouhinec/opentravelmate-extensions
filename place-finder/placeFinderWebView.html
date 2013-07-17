@@ -3,9 +3,20 @@
 <head>
     <meta charset="utf-8"/>
     <title>Open Travel Mate</title>
+    <link rel="stylesheet" href="../core/commons/common.css" type="text/css" media="screen"/>
     <link rel="stylesheet" href="placeFinderWebView.css" type="text/css" media="screen"/>
 </head>
-<body>
-    TODO
+<body class="otm-panel">
+    <div id="place-query-wrapper">
+        <input id="place-query" class="otm-input-text" type="text" placeholder="Place, address, activity, ..."/>
+    </div>
+
+    <button id="find-button" class="otm-button otm-button-middle">
+        <img src="image/ic_btn_find_place.png" alt="Find"/>
+    </button>
+
+    <button id="close-button" class="otm-button otm-button-middle">
+        <img src="../core/commons/image/ic_btn_close.png" alt="Close"/>
+    </button>
 </body>
 </html>
