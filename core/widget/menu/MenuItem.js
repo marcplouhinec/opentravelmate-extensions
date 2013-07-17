@@ -19,12 +19,22 @@ define(['underscore'], function(_) {
         /** @type {String} */
         this.iconUrl = options.iconUrl;
 
+        /** @type {number} */
+        this.id = MenuItem.nextId += 1;
+
         /**
          * @type {Array.<Function>}
          * @private
          */
         this._listeners = [];
     }
+
+    /**
+     * Static attribute used to generate menu item IDs.
+     *
+     * @type {number}
+     */
+    MenuItem.nextId = 0;
 
     /**
      * Register a listener for the click event.

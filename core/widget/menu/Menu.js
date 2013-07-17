@@ -30,6 +30,12 @@ define([
          * @private
          */
         this._menuContainer = undefined;
+
+        /**
+         * @type {Object.<Number, MenuItem>}
+         * @private
+         */
+        this._menuItemById = {};
     }
 
     Menu.prototype = new Widget();
@@ -50,10 +56,26 @@ define([
      * @param {MenuItem} item
      */
     Menu.prototype.addMenuItem = function(item) {
+        this._menuItemById[item.id] = item;
+
         if (_.isString(item.iconUrl) && item.iconUrl.indexOf('://') === -1) {
             item.iconUrl = this.baseUrl + item.iconUrl;
         }
+
         nativeMenu.addMenuItem(this.id, JSON.stringify(item));
+    };
+
+    /**
+     * Fire a click event from a menu item.
+     *
+     * @param {Number} menuItemId
+     */
+    Menu.prototype.fireClickEvent = function(menuItemId) {
+        /** @type {MenuItem} */
+        var menuItem = this._menuItemById[menuItemId];
+        if (menuItem) {
+            menuItem.fireClickEvent();
+        }
     };
 
     return Menu;
