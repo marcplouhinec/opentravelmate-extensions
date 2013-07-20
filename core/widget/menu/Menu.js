@@ -18,6 +18,7 @@ define([
      *
      * @param {{id: String, baseUrl: String}} options
      * @constructor
+     * @extends Widget
      */
     function Menu(options) {
         Widget.call(this, options);

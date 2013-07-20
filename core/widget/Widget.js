@@ -25,17 +25,6 @@ function(I18nError, ErrorCode, LayoutParams) {
         /** @type {String} */
         this.id = options.id;
 
-        /**
-         * Registered listeners.
-         *
-         * @type {{create: Array.<Function>, destroy: Array.<Function>}}
-         * @private
-         */
-        this._listeners = {
-            create: [],
-            destroy: []
-        };
-
         // Register this widget
         Widget._widgetById[this.id] = this;
     }
@@ -59,23 +48,12 @@ function(I18nError, ErrorCode, LayoutParams) {
     };
 
     /**
-     * Register a listener for the 'create' event of the widget.
+     * Remove a widget by its ID.
      *
-     * @param {Function} listener
-     *  Function called just after the widget is created.
+     * @param {String} id
      */
-    Widget.prototype.onCreate = function(listener) {
-        this._listeners.create.push(listener);
-    };
-
-    /**
-     * Register a listener for the 'destroy' event of the widget.
-     *
-     * @param {Function} listener
-     *  Function called just before the widget is destroyed.
-     */
-    Widget.prototype.onDestroy = function(listener) {
-        this._listeners.destroy.push(listener);
+    Widget.removeById = function(id) {
+        delete Widget._widgetById[id];
     };
 
     /**

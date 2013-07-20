@@ -4,13 +4,13 @@
  * @author marc.plouhinec@gmail.com (Marc Plouhinec)
  */
 
-define([], function() {
+define(['./placeFinderWebViewController'], function(placeFinderWebViewController) {
     'use strict';
 
     /**
-     * Extension entry point.
+     * Place finder WebView entry point.
      */
     return function main() {
-        // TODO
+        placeFinderWebViewController.initWebView();
     };
 });

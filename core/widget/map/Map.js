@@ -16,6 +16,7 @@ define([
      *
      * @param {{id: String}} options
      * @constructor
+     * @extends Widget
      */
     function Map(options) {
         Widget.call(this, options);

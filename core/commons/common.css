@@ -67,9 +67,14 @@ input.otm-input-text {
     font-size: 18px;
 
     padding: 4px;
-    border: none;
-    border-bottom: 2px solid #0099cc;
-    background: none;
+    border: 1px solid #0099cc;
+    background: #2e2f2d;
     color: #0099cc;
     font-family: Roboto, sans-serif;
+}
+input.otm-input-text:-moz-placeholder {
+    color: #aaa;
+}
+input.otm-input-text::-moz-placeholder {
+    color: #aaa;
 }
