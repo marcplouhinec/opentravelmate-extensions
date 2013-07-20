@@ -34,5 +34,12 @@ define([
         nativeMap.buildView(JSON.stringify(layoutParams));
     };
 
+    /**
+     * Remove the native view object for the current widget.
+     */
+    Map.prototype.removeView = function() {
+        nativeMap.removeView(this.id);
+    };
+
     return Map;
 });

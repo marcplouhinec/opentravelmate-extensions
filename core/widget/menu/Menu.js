@@ -52,6 +52,13 @@ define([
     };
 
     /**
+     * Remove the native view object for the current widget.
+     */
+    Menu.prototype.removeView = function() {
+        nativeMenu.removeView(this.id);
+    };
+
+    /**
      * Add an item to the menu.
      *
      * @param {MenuItem} item

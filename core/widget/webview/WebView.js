@@ -296,7 +296,7 @@ define([
                 this._childViews.push(childMap);
 				break;
             case 'Menu':
-                var childMenu =  new Menu({ id: layoutParams.id, baseUrl: this.baseUrl });
+                var childMenu = new Menu({ id: layoutParams.id, baseUrl: this.baseUrl });
                 childMenu.buildView(layoutParams);
                 this._childViews.push(childMenu);
                 break;
@@ -321,8 +321,7 @@ define([
      * @private
      */
     WebView.prototype._deleteChildWidget = function(widget) {
-        nativeWebView.removeView(widget.id);
-
+        widget.removeView();
         Widget.removeById(widget.id);
         this._childViews = _.without(this._childViews, widget);
         WebView._fireDestroyEvent(widget.id);
@@ -335,6 +334,13 @@ define([
      */
     WebView.prototype.buildView = function(layoutParams) {
     	nativeWebView.buildView(JSON.stringify(layoutParams));
+    };
+
+    /**
+     * Remove the native view object for the current widget.
+     */
+    WebView.prototype.removeView = function() {
+        nativeWebView.removeView(this.id);
     };
 
     return WebView;

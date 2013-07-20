@@ -65,5 +65,12 @@ function(I18nError, ErrorCode, LayoutParams) {
 		throw new I18nError({ code: ErrorCode.UNIMPLEMENTED_METHOD, i18nArgs: ['Widget.prototype.buildView'] });
 	};
 
+    /**
+     * Remove the native view object for the current widget.
+     */
+    Widget.prototype.removeView = function() {
+        throw new I18nError({ code: ErrorCode.UNIMPLEMENTED_METHOD, i18nArgs: ['Widget.prototype.removeView'] });
+    };
+
     return Widget;
 });
