@@ -35,6 +35,15 @@ define([
     };
 
     /**
+     * Update the native view object for the current widget.
+     *
+     * @param {LayoutParams} layoutParams
+     */
+    Map.prototype.updateView = function(layoutParams) {
+        nativeMap.updateView(JSON.stringify(layoutParams));
+    };
+
+    /**
      * Remove the native view object for the current widget.
      */
     Map.prototype.removeView = function() {

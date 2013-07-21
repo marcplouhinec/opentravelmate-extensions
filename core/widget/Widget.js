@@ -66,6 +66,15 @@ function(I18nError, ErrorCode, LayoutParams) {
 	};
 
     /**
+     * Update the native view object for the current widget.
+     *
+     * @param {LayoutParams} layoutParams
+     */
+    Widget.prototype.updateView = function(layoutParams) {
+        throw new I18nError({ code: ErrorCode.UNIMPLEMENTED_METHOD, i18nArgs: ['Widget.prototype.updateView'] });
+    };
+
+    /**
      * Remove the native view object for the current widget.
      */
     Widget.prototype.removeView = function() {

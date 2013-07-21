@@ -47,6 +47,12 @@ define([
          * @private
          */
         this._eventListeners = {};
+
+        // Update the layout when the page is resized
+        var self = this;
+        $(window).resize(function resizeWindow() {
+            self.layout();
+        });
     }
 
     WebView.prototype = new Widget();
@@ -311,7 +317,7 @@ define([
      * @private
      */
     WebView.prototype._updateChildWidget = function(layoutParams, widget) {
-        // TODO
+        widget.updateView(layoutParams);
     };
 
     /**
@@ -334,6 +340,15 @@ define([
      */
     WebView.prototype.buildView = function(layoutParams) {
     	nativeWebView.buildView(JSON.stringify(layoutParams));
+    };
+
+    /**
+     * Update the native view object for the current widget.
+     *
+     * @param {LayoutParams} layoutParams
+     */
+    WebView.prototype.updateView = function(layoutParams) {
+        nativeWebView.updateView(JSON.stringify(layoutParams));
     };
 
     /**

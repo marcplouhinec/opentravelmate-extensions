@@ -52,6 +52,15 @@ define([
     };
 
     /**
+     * Update the native view object for the current widget.
+     *
+     * @param {LayoutParams} layoutParams
+     */
+    Menu.prototype.updateView = function(layoutParams) {
+        nativeMenu.updateView(JSON.stringify(layoutParams));
+    };
+
+    /**
      * Remove the native view object for the current widget.
      */
     Menu.prototype.removeView = function() {
