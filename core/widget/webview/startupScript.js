@@ -27,8 +27,8 @@ requirejs.config({
 
 require([
     'jquery',
-	'core/widget/webview/WebView',
-	window.org_opentravelmate_widget_webview_webviewEntrypoint],
+    'core/widget/webview/WebView',
+    window.org_opentravelmate_widget_webview_webviewEntrypoint],
 function($, WebView, entrypoint) {
     'use strict';
 

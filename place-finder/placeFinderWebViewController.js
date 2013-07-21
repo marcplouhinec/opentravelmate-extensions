@@ -102,7 +102,10 @@ define([
             // TODO
 
             // Handle the close button
-            $('#close-button').click(function() {
+            $('#close-button').bind('touchstart click', function(event) {
+                event.stopPropagation();
+                event.preventDefault();
+
                 /** @type {WebView} */
                 var webView = Widget.findById(PLACE_FINDER_WEBVIEW_ID);
                 webView.fireExternalEvent(PLACE_FINDER_WEBVIEW_CLOSE_EVENT);
