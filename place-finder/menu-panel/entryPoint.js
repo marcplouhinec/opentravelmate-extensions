@@ -4,13 +4,13 @@
  * @author marc.plouhinec@gmail.com (Marc Plouhinec)
  */
 
-define(['./placeFinderWebViewController'], function(placeFinderWebViewController) {
+define(['./internalController'], function(internalController) {
     'use strict';
 
     /**
      * Place finder WebView entry point.
      */
     return function main() {
-        placeFinderWebViewController.initWebView();
+        internalController.initWebView();
     };
 });

@@ -9,8 +9,8 @@ define([
     'core/widget/menu/Menu',
     'core/widget/menu/MenuItem',
     'core/widget/webview/WebView',
-    './placeFinderWebViewController'
-], function(Widget, Menu, MenuItem, WebView, placeFinderWebViewController) {
+    './menu-panel/externalController'
+], function(Widget, Menu, MenuItem, WebView, externalController) {
     'use strict';
 
     /**
@@ -30,12 +30,12 @@ define([
         // Listen to the menu item click event
         menuItem.onClick(function() {
             // Show the place finder web view.
-            placeFinderWebViewController.showWebView();
+            externalController.showWebView();
         });
 
         // Listen to the web view close button
-        placeFinderWebViewController.onClose(function() {
-            placeFinderWebViewController.removeWebView();
+        externalController.onClose(function() {
+            externalController.removeWebView();
         });
     };
 });
