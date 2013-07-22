@@ -7,11 +7,14 @@
 define([
     'jquery',
     'underscore',
+    'core/commons/FunctionDam',
     'core/widget/Widget',
     'core/widget/webview/WebView',
     './internalController'
-], function($, _, Widget, WebView, internalController) {
+], function($, _, FunctionDam, Widget, WebView, internalController) {
     'use strict';
+
+    var webViewReadyDam = new FunctionDam();
 
     var externalController = {
 
@@ -83,6 +86,11 @@ define([
             webViewPlaceHolder.setAttribute('data-otm-entrypoint', 'core/widget/autocompletiondialog/dialog/entryPoint');
             document.body.appendChild(webViewPlaceHolder);
 
+            // Activate behaviors when the web view is created
+            WebView.onCreate(internalController.AUTOCOMPLETION_DIALOG_WEBVIEW_ID, function() {
+                webViewReadyDam.setOpened(true);
+            });
+
             // Create the web view
             WebView.getCurrent().layout();
         },
@@ -121,10 +129,22 @@ define([
          * @param {Array.<Object>} items
          */
         'setItems': function(items) {
+            var self = this;
             this._items = items;
 
             // Update the web view
-            // TODO
+            if (!webViewReadyDam.isOpened()) {
+                webViewReadyDam.executeWhenOpen(function() {
+                    self.setItems(items);
+                });
+                return;
+            }
+
+            var renderedItems = _.map(items, this._itemRenderer);
+            var webView = Widget.findById(internalController.AUTOCOMPLETION_DIALOG_WEBVIEW_ID);
+            webView.fireInternalEvent(internalController.AUTOCOMPLETION_DIALOG_SETITEMS_EVENT, {
+                items: renderedItems
+            })
         }
     };
 

@@ -59,6 +59,12 @@ define([
     WebView.prototype.constructor = WebView;
 
     /**
+     * @const
+     * @type {string}
+     */
+    WebView.CREATE_EVENT = 'core-widget-webview-create-event';
+
+    /**
      * 'create' event listeners.
      *
      * @type {Object.<String, Array.<Function>>}
@@ -130,11 +136,11 @@ define([
 
     /**
      * Fire the 'create' event for the given web view ID.
-     * Note: this function should be called from the nativeWebView.
      *
      * @param id WebView ID
+     * @private
      */
-    WebView.fireCreateEvent = function(id) {
+    WebView._fireCreateEvent = function(id) {
         var listeners = WebView._createListenersByWebViewId[id];
         if (listeners) {
             _.each(listeners, function(listener) {
@@ -170,13 +176,29 @@ define([
     };
 
     /**
-     * Fire an event inside the current WebView.
-     * Note: this function should be called from the nativeWebView.
+     * Fire an event to a listener that is inside the WebView.
      *
      * @param {String} eventName
      * @param {Object=} payload
      */
     WebView.prototype.fireInternalEvent = function(eventName, payload) {
+        payload = payload || {};
+        nativeWebView.fireInternalEvent(this.id, eventName, JSON.stringify(payload));
+    };
+
+    /**
+     * Fire an event to the current WebView.
+     * Note: this function should be called from the nativeWebView.
+     *
+     * @param {String} eventName
+     * @param {Object=} payload
+     */
+    WebView.prototype.fireEvent = function(eventName, payload) {
+        if (eventName === WebView.CREATE_EVENT) {
+            WebView._fireCreateEvent(payload.id);
+            return;
+        }
+
         /** @type {Array.<function(payload: Object)>} */
         var listeners = this._eventListeners[eventName];
 

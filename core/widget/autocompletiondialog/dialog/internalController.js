@@ -6,9 +6,10 @@
 
 define([
     'jquery',
+    'underscore',
     'core/widget/Widget',
     'core/widget/webview/WebView'
-], function($, Widget, WebView) {
+], function($, _, Widget, WebView) {
     'use strict';
 
     var internalController = {
@@ -20,10 +21,33 @@ define([
         'AUTOCOMPLETION_DIALOG_WEBVIEW_ID': 'autocompletion-dialog-webview',
 
         /**
+         * @const
+         * @type {String}
+         */
+        'AUTOCOMPLETION_DIALOG_SETITEMS_EVENT': 'autocompletion-dialog-setitems-event',
+
+        /**
          * Initialize the dialog WebView.
          */
         'initWebView': function() {
-            // TODO
+            var self = this;
+
+            // Listen to the external controller events
+            WebView.getCurrent().on(this.AUTOCOMPLETION_DIALOG_SETITEMS_EVENT, function handleSetItemsEvent(payload) {
+                self.setItems(payload.items);
+            });
+        },
+
+        /**
+         * Set the rendered items to show.
+         *
+         * @param {Array.<String>} items
+         */
+        'setItems': function(items) {
+            $('#items').empty();
+            _.each(items, function(item) {
+                $('#items').append('<tr><td class="item">' + item + '</td></tr>');
+            });
         }
     };
 

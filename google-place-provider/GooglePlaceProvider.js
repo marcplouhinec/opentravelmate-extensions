@@ -33,7 +33,7 @@ define([
             new Place({
                 latitude: 1,
                 longitude: 2,
-                name: query + 'Dummy place 1',
+                name: query + ' 1',
                 accuracy: 0.5,
                 placeDataProvider: this,
                 additionalParameters: {}
@@ -41,7 +41,7 @@ define([
             new Place({
                 latitude: 2,
                 longitude: 3,
-                name: query + 'Dummy place 2',
+                name: query + ' 2',
                 accuracy: 0.4,
                 placeDataProvider: this,
                 additionalParameters: {}

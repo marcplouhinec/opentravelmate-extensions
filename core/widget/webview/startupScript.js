@@ -43,5 +43,10 @@ function($, WebView, entrypoint) {
 
         // Call the entry point
         entrypoint();
+
+        // Fire the create event
+        WebView.getCurrent().fireExternalEvent(WebView.CREATE_EVENT, {
+            id: WebView.getCurrent().id
+        });
     });
 });
