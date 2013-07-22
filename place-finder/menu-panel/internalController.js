@@ -91,9 +91,6 @@ define([
 
                 self._close();
             });
-
-            // Focus on the place-query input
-            $('#place-query').focus();
         },
 
         /**
