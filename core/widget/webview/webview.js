@@ -9,29 +9,14 @@ define([
     'underscore',
     'core/widget/Widget',
     'core/widget/LayoutParams',
+    'core/widget/webview/SubWebView',
     'core/widget/map/Map',
     'core/widget/menu/Menu',
     'nativeWebView'
-], function($, _, Widget, LayoutParams, Map, Menu, nativeWebView) {
+], function($, _, Widget, LayoutParams, SubWebView, Map, Menu, nativeWebView) {
     'use strict';
 
     var webview = {
-
-        /**
-         * Constant used to send the "create" event to the external JS code.
-         *
-         * @type {String}
-         * @const
-         */
-        'CREATE_EVENT': 'core-widget-webview-create-event',
-
-        /**
-         * Constant used to send the "destroy" event to the external JS code.
-         *
-         * @type {String}
-         * @const
-         */
-        'DESTROY_EVENT': 'core-widget-webview-destroy-event',
 
         /**
          * Current WebView ID.
@@ -39,6 +24,13 @@ define([
          * @type {String|null}
          */
         'id': null,
+
+        /**
+         * Base URL used to create absolute URLs.
+         *
+         * @type {String|null}
+         */
+        'baseUrl': null,
 
         /**
          * Web view children widgets.
@@ -86,11 +78,27 @@ define([
         },
 
         /**
+         * Fire an event from outside of the WebView.
+         * Note: This function should only be called by the core WebView objects.
+         *
+         * @param {String} eventName
+         * @param {Object} payload
+         */
+        'fireEventFromExternal': function(eventName, payload) {
+            var listeners = this._externalEventListeners[eventName];
+            if (listeners) {
+                _.each(listeners, function(listener) {
+                    listener(payload);
+                });
+            }
+        },
+
+        /**
          * Set the widgets size and position based on the position of their
          * place-holders.
          */
         'layout': function() {
-            var self = this,
+             var self = this,
                 $window = $(window),
                 /** @type {Number} */ windowWidth = $window.width(),
                 /** @type {Number} */ windowHeight = $window.height(),
@@ -163,10 +171,11 @@ define([
          * @private
          */
         '_createChildWidget': function(layoutParams) {
-            switch (layoutParams.additionalParameters['widget']) {
-                case 'WebView':
+            var widgetType = /** @type {String} */layoutParams.additionalParameters['widget'];
+            switch (widgetType) {
+                case 'SubWebView':
                     // Create a WebView
-                    var childWebView = new WebView({
+                    var childWebView = new SubWebView({
                         id: layoutParams.id,
                         url: layoutParams.additionalParameters['url'],
                         entrypoint: layoutParams.additionalParameters['entrypoint'],
@@ -184,6 +193,9 @@ define([
                     var childMenu = new Menu({ id: layoutParams.id, baseUrl: this.baseUrl });
                     childMenu.buildView(layoutParams);
                     this._childViews.push(childMenu);
+                    break;
+                default:
+                    console.log('Unknown widget type: ' + widgetType);
                     break;
             }
         },
@@ -209,7 +221,7 @@ define([
             widget.removeView();
             Widget.removeById(widget.id);
             this._childViews = _.without(this._childViews, widget);
-            this.fireExternalEvent(this.DESTROY_EVENT, {widgetId: widget.id});
+            SubWebView.fireDestroyEvent(widget.id);
         }
     };
 

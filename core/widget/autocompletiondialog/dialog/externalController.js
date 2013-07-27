@@ -9,9 +9,10 @@ define([
     'underscore',
     'core/commons/FunctionDam',
     'core/widget/Widget',
-    'core/widget/webview/WebView',
+    'core/widget/webview/SubWebView',
+    'core/widget/webview/webview',
     './internalController'
-], function($, _, FunctionDam, Widget, WebView, internalController) {
+], function($, _, FunctionDam, Widget, SubWebView, webview, internalController) {
     'use strict';
 
     var webViewReadyDam = new FunctionDam();
@@ -67,8 +68,8 @@ define([
             var self = this;
 
             // Do nothing if the web view is already displayed
-            var webView = Widget.findById(internalController.AUTOCOMPLETION_DIALOG_WEBVIEW_ID);
-            if (webView) {
+            var subWebView = /** @type {SubWebView} */ Widget.findById(internalController.AUTOCOMPLETION_DIALOG_WEBVIEW_ID);
+            if (subWebView) {
                 return;
             }
 
@@ -81,18 +82,18 @@ define([
             webViewPlaceHolder.style.top = this._anchor.y + 'px';
             webViewPlaceHolder.style.width = this._width + 'px';
             webViewPlaceHolder.style.bottom = '10px';
-            webViewPlaceHolder.setAttribute('data-otm-widget', 'WebView');
+            webViewPlaceHolder.setAttribute('data-otm-widget', 'SubWebView');
             webViewPlaceHolder.setAttribute('data-otm-url', 'extensions/core/widget/autocompletiondialog/dialog/dialog.html');
             webViewPlaceHolder.setAttribute('data-otm-entrypoint', 'core/widget/autocompletiondialog/dialog/entryPoint');
             document.body.appendChild(webViewPlaceHolder);
 
             // Activate behaviors when the web view is created
-            WebView.onCreate(internalController.AUTOCOMPLETION_DIALOG_WEBVIEW_ID, function() {
+            SubWebView.onCreate(internalController.AUTOCOMPLETION_DIALOG_WEBVIEW_ID, function() {
                 webViewReadyDam.setOpened(true);
             });
 
             // Create the web view
-            WebView.getCurrent().layout();
+            webview.layout();
         },
 
         /**
@@ -100,7 +101,7 @@ define([
          */
         'removeWebView': function() {
             $('#' + internalController.AUTOCOMPLETION_DIALOG_WEBVIEW_ID).remove();
-            WebView.getCurrent().layout();
+            webview.layout();
         },
 
         /**
@@ -141,8 +142,8 @@ define([
             }
 
             var renderedItems = _.map(items, this._itemRenderer);
-            var webView = Widget.findById(internalController.AUTOCOMPLETION_DIALOG_WEBVIEW_ID);
-            webView.fireInternalEvent(internalController.AUTOCOMPLETION_DIALOG_SETITEMS_EVENT, {
+            var subWebView = /** @type {SubWebView} */ Widget.findById(internalController.AUTOCOMPLETION_DIALOG_WEBVIEW_ID);
+            subWebView.fireInternalEvent(internalController.AUTOCOMPLETION_DIALOG_SETITEMS_EVENT, {
                 items: renderedItems
             })
         }

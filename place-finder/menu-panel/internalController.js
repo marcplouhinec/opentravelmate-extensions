@@ -7,8 +7,9 @@
 define([
     'jquery',
     'core/widget/Widget',
-    'core/widget/webview/WebView'
-], function($, Widget, WebView) {
+    'core/widget/webview/SubWebView',
+    'core/widget/webview/webview'
+], function($, Widget, SubWebView, webview) {
     'use strict';
 
     /**
@@ -100,9 +101,7 @@ define([
          * @private
          */
         '_findPlaces': function(query) {
-            /** @type {WebView} */
-            var webView = Widget.findById(this.PLACE_FINDER_MENUPANEL_WEBVIEW_ID);
-            webView.fireExternalEvent(this.PLACE_FINDER_MENUPANEL_FINDPLACES_EVENT, {query: query});
+            webview.fireExternalEvent(this.PLACE_FINDER_MENUPANEL_FINDPLACES_EVENT, {query: query});
         },
 
         /**
@@ -121,9 +120,7 @@ define([
                 'height': $inputPlaceQuery.height()
             };
 
-            /** @type {WebView} */
-            var webView = Widget.findById(this.PLACE_FINDER_MENUPANEL_WEBVIEW_ID);
-            webView.fireExternalEvent(this.PLACE_FINDER_MENUPANEL_SUGGESTPLACES_EVENT, {
+            webview.fireExternalEvent(this.PLACE_FINDER_MENUPANEL_SUGGESTPLACES_EVENT, {
                 query: query,
                 inputQueryLayoutparams: inputQueryLayoutparams
             });
@@ -135,9 +132,7 @@ define([
          * @private
          */
         '_close': function() {
-            /** @type {WebView} */
-            var webView = Widget.findById(this.PLACE_FINDER_MENUPANEL_WEBVIEW_ID);
-            webView.fireExternalEvent(this.PLACE_FINDER_MENUPANEL_CLOSE_EVENT);
+            webview.fireExternalEvent(this.PLACE_FINDER_MENUPANEL_CLOSE_EVENT);
         }
     };
 

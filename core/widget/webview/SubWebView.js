@@ -5,12 +5,11 @@
  */
 
 define([
-    'jquery',
     'underscore',
     'core/widget/Widget',
     'core/widget/LayoutParams',
     'nativeWebView'
-], function($, _, Widget, LayoutParams, nativeWebView) {
+], function(_, Widget, LayoutParams, nativeWebView) {
     'use strict';
 
     /**
@@ -29,10 +28,31 @@ define([
         this.entrypoint = options.entrypoint;
         /** @type {String} */
         this.baseUrl = options.baseUrl;
+
+        /**
+         * Listeners to the internal events.
+         *
+         * @type {Object.<String, Array.<function(payload: Object)>>}
+         * @private
+         */
+        this._internalEventListeners = {};
+
+        // Forward the create event
+        this.onInternalEvent(SubWebView.CREATE_EVENT, function forwardCreateEvent(payload) {
+            SubWebView.fireCreateEvent(payload.id);
+        });
     }
 
     SubWebView.prototype = new Widget();
     SubWebView.prototype.constructor = SubWebView;
+
+    /**
+     * Constant used to send the "create" event to the external JS code.
+     *
+     * @type {String}
+     * @const
+     */
+    SubWebView.CREATE_EVENT = 'core-widget-webview-create-event';
 
     /**
      * Event listeners for the "create" and "destroy" events.
@@ -98,6 +118,88 @@ define([
         }
 
         listeners.push(listener);
+    };
+
+    /**
+     * Fire the "create" event for the given WebView ID.
+     * Note: This function should only be called by the core WebView objects.
+     *
+     * @param {String} id
+     */
+    SubWebView.fireCreateEvent = function(id) {
+        SubWebView._fireEvent('create', id);
+    };
+
+    /**
+     * Fire the "destroy" event for the given WebView ID.
+     * Note: This function should only be called by the core WebView objects.
+     *
+     * @param {String} id
+     */
+    SubWebView.fireDestroyEvent = function(id) {
+        SubWebView._fireEvent('destroy', id);
+    };
+
+    /**
+     * Fire the "create" or "destroy" event for the given WebView ID.
+     *
+     * @param {String} eventName
+     *     'create' or 'destroy'.
+     * @param {String} id
+     * @private
+     */
+    SubWebView._fireEvent = function(eventName, id) {
+        var listeners = SubWebView._eventListeners[eventName][id];
+        if (listeners) {
+            _.each(listeners, function(listener) {
+                listener();
+            });
+        }
+    };
+
+    /**
+     * Fire an event to a listener that is inside the SubWebView.
+     *
+     * @param {String} eventName
+     * @param {Object=} payload
+     */
+    SubWebView.prototype.fireInternalEvent = function(eventName, payload) {
+        payload = payload || {};
+        nativeWebView.fireInternalEvent(this.id, eventName, JSON.stringify(payload));
+    };
+
+    /**
+     * Register a listener for an event that occurs inside of the SubWebView.
+     *
+     * @param {String} eventName
+     * @param {function(payload: Object)} listener
+     */
+    SubWebView.prototype.onInternalEvent = function(eventName, listener) {
+        /** @type {Array.<function(payload: Object)>} */
+        var listeners = this._internalEventListeners[eventName];
+
+        if (!listeners) {
+            listeners = [];
+            this._internalEventListeners[eventName] = listeners;
+        }
+
+        listeners.push(listener);
+    };
+
+    /**
+     * Fire an event from inside of the SubWebView.
+     * Note: This function should only be called by the core WebView objects.
+     *
+     * @param {String} eventName
+     * @param {Object} payload
+     */
+    SubWebView.prototype.fireEventFromInternal = function(eventName, payload) {
+        var listeners = this._internalEventListeners[eventName];
+        if (listeners) {
+            _.each(listeners, function(listener) {
+                listener(payload);
+            });
+        }
     };
 
     /**

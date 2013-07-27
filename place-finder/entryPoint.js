@@ -8,9 +8,8 @@ define([
     'core/widget/Widget',
     'core/widget/menu/Menu',
     'core/widget/menu/MenuItem',
-    'core/widget/webview/WebView',
     './menu-panel/externalController'
-], function(Widget, Menu, MenuItem, WebView, externalController) {
+], function(Widget, Menu, MenuItem, externalController) {
     'use strict';
 
     /**
@@ -23,8 +22,7 @@ define([
             tooltip: 'Find a place',
             iconUrl: 'extensions/place-finder/image/ic_btn_find_place.png'
         });
-        /** @type {Menu} */
-        var menu = Widget.findById('main-menu');
+        var menu = /** @type {Menu} */ Widget.findById('main-menu');
         menu.addMenuItem(menuItem);
 
         // Listen to the menu item click event

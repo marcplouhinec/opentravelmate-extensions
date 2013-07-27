@@ -27,26 +27,28 @@ requirejs.config({
 
 require([
     'jquery',
-    'core/widget/webview/WebView',
+    'core/widget/webview/webview',
+    'core/widget/webview/SubWebView',
     window.org_opentravelmate_widget_webview_webviewEntrypoint],
-function($, WebView, entrypoint) {
+function($, webview, SubWebView, entrypoint) {
     'use strict';
 
     $(document).ready(function() {
         // Create the current WebView
-        WebView.setCurrent(new WebView({
-            id: window.org_opentravelmate_widget_webview_webviewId,
-            url: window.org_opentravelmate_widget_webview_webviewUrl,
-            entrypoint: window.org_opentravelmate_widget_webview_webviewEntrypoint,
-            baseUrl: org_opentravelmate_widget_webview_webviewBaseUrl
-        }));
+        webview.id = window.org_opentravelmate_widget_webview_webviewId;
+        webview.baseUrl = org_opentravelmate_widget_webview_webviewBaseUrl;
 
         // Call the entry point
         entrypoint();
 
         // Fire the create event
-        WebView.getCurrent().fireExternalEvent(WebView.CREATE_EVENT, {
-            id: WebView.getCurrent().id
+        webview.fireExternalEvent(SubWebView.CREATE_EVENT, {
+            id: webview.id
+        });
+
+        // Update the layout when the page is resized
+        $(window).resize(function resizeWindow() {
+            webview.layout();
         });
     });
 });

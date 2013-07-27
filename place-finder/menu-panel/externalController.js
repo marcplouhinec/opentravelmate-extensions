@@ -8,10 +8,11 @@ define([
     'jquery',
     'core/commons/FunctionDam',
     'core/widget/Widget',
-    'core/widget/webview/WebView',
+    'core/widget/webview/SubWebView',
+    'core/widget/webview/webview',
     'core/widget/autocompletiondialog/autoCompletionDialog',
     './internalController'
-], function($, FunctionDam, Widget, WebView, autoCompletionDialog, internalController) {
+], function($, FunctionDam, Widget, SubWebView, webview, autoCompletionDialog, internalController) {
     'use strict';
 
     var webViewReadyDam = new FunctionDam();
@@ -42,8 +43,8 @@ define([
             var self = this;
 
             // Do nothing if the web view is already displayed
-            var webView = Widget.findById(internalController.PLACE_FINDER_MENUPANEL_WEBVIEW_ID);
-            if (webView) {
+            var subWebView = Widget.findById(internalController.PLACE_FINDER_MENUPANEL_WEBVIEW_ID);
+            if (subWebView) {
                 return;
             }
 
@@ -56,35 +57,34 @@ define([
             webViewPlaceHolder.style.right = 0;
             webViewPlaceHolder.style.top = $('#main-menu').height() + 'px';
             webViewPlaceHolder.style.height = '50px';
-            webViewPlaceHolder.setAttribute('data-otm-widget', 'WebView');
+            webViewPlaceHolder.setAttribute('data-otm-widget', 'SubWebView');
             webViewPlaceHolder.setAttribute('data-otm-url', 'extensions/place-finder/menu-panel/menu-panel.html');
             webViewPlaceHolder.setAttribute('data-otm-entrypoint', 'place-finder/menu-panel/entryPoint');
             document.body.appendChild(webViewPlaceHolder);
 
             // Activate behaviors when the web view is created
-            WebView.onCreate(internalController.PLACE_FINDER_MENUPANEL_WEBVIEW_ID, function() {
+            SubWebView.onCreate(internalController.PLACE_FINDER_MENUPANEL_WEBVIEW_ID, function() {
                 webViewReadyDam.setOpened(true);
 
-                /** @type {WebView} */
-                var webView = Widget.findById(internalController.PLACE_FINDER_MENUPANEL_WEBVIEW_ID);
+                var subWebView = /** @type {SubWebView} */ Widget.findById(internalController.PLACE_FINDER_MENUPANEL_WEBVIEW_ID);
 
-                webView.on(internalController.PLACE_FINDER_MENUPANEL_SUGGESTPLACES_EVENT, function forwardSuggestPlacesEvent(payload) {
+                subWebView.onInternalEvent(internalController.PLACE_FINDER_MENUPANEL_SUGGESTPLACES_EVENT, function forwardSuggestPlacesEvent(payload) {
                     self._suggestPlaces(payload.query, payload.inputQueryLayoutparams);
                 });
 
-                webView.on(internalController.PLACE_FINDER_MENUPANEL_FINDPLACES_EVENT, function forwardSuggestPlacesEvent(payload) {
+                subWebView.onInternalEvent(internalController.PLACE_FINDER_MENUPANEL_FINDPLACES_EVENT, function forwardSuggestPlacesEvent(payload) {
                     self._findPlaces(payload.query);
                 });
             });
 
             // Disable some behavior when the web view is closed
-            WebView.onDestroy(internalController.PLACE_FINDER_MENUPANEL_WEBVIEW_ID, function() {
+            SubWebView.onDestroy(internalController.PLACE_FINDER_MENUPANEL_WEBVIEW_ID, function() {
                 // Close the auto-completion dialog if any
                 autoCompletionDialog.setVisible(false);
             });
 
             // Create the web view
-            WebView.getCurrent().layout();
+            webview.layout();
         },
 
         /**
@@ -92,7 +92,7 @@ define([
          */
         'removeWebView': function() {
             $('#' + internalController.PLACE_FINDER_MENUPANEL_WEBVIEW_ID).remove();
-            WebView.getCurrent().layout();
+            webview.layout();
         },
 
         /**
@@ -110,9 +110,8 @@ define([
                 return;
             }
 
-            /** @type {WebView} */
-            var webView = Widget.findById(internalController.PLACE_FINDER_MENUPANEL_WEBVIEW_ID);
-            webView.on(internalController.PLACE_FINDER_MENUPANEL_CLOSE_EVENT, listener);
+            var subWebView = /** @type {SubWebView} */ Widget.findById(internalController.PLACE_FINDER_MENUPANEL_WEBVIEW_ID);
+            subWebView.onInternalEvent(internalController.PLACE_FINDER_MENUPANEL_CLOSE_EVENT, listener);
         },
 
         /**

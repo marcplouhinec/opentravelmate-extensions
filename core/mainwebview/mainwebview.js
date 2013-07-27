@@ -5,9 +5,9 @@
  */
 
 define([
-    'core/widget/webview/WebView',
+    'core/widget/webview/webview',
     'core/extension/extensionManager'
-], function(WebView, extensionManager) {
+], function(webview, extensionManager) {
     'use strict';
 
     /**
@@ -15,7 +15,7 @@ define([
      */
     return function main() {
         // Layout the widgets
-        WebView.getCurrent().layout();
+        webview.layout();
 
         // Start the extensions
         extensionManager.startExtensions();

@@ -8,8 +8,8 @@ define([
     'jquery',
     'underscore',
     'core/widget/Widget',
-    'core/widget/webview/WebView'
-], function($, _, Widget, WebView) {
+    'core/widget/webview/webview'
+], function($, _, Widget, webview) {
     'use strict';
 
     var internalController = {
@@ -33,7 +33,7 @@ define([
             var self = this;
 
             // Listen to the external controller events
-            WebView.getCurrent().on(this.AUTOCOMPLETION_DIALOG_SETITEMS_EVENT, function handleSetItemsEvent(payload) {
+            webview.onExternalEvent(this.AUTOCOMPLETION_DIALOG_SETITEMS_EVENT, function handleSetItemsEvent(payload) {
                 self.setItems(payload.items);
             });
         },
