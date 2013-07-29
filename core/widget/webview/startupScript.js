@@ -45,10 +45,5 @@ function($, webview, SubWebView, entrypoint) {
         webview.fireExternalEvent(SubWebView.CREATE_EVENT, {
             id: webview.id
         });
-
-        // Update the layout when the page is resized
-        $(window).resize(function resizeWindow() {
-            webview.layout();
-        });
     });
 });
