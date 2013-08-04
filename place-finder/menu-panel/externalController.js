@@ -10,9 +10,9 @@ define([
     'core/widget/Widget',
     'core/widget/webview/SubWebView',
     'core/widget/webview/webview',
-    'core/widget/autocompletiondialog/autoCompletionDialog',
-    './internalController'
-], function($, FunctionDam, Widget, SubWebView, webview, autoCompletionDialog, internalController) {
+    'extra-widgets/autocompletion/AutoCompleteTextInput',
+    './subwebview/internalController'
+], function($, FunctionDam, Widget, SubWebView, webview, AutoCompleteTextInput, internalController) {
     'use strict';
 
     var webViewReadyDam = new FunctionDam();
@@ -58,8 +58,8 @@ define([
             webViewPlaceHolder.style.top = $('#main-menu').height() + 'px';
             webViewPlaceHolder.style.height = '50px';
             webViewPlaceHolder.setAttribute('data-otm-widget', 'SubWebView');
-            webViewPlaceHolder.setAttribute('data-otm-url', 'extensions/place-finder/menu-panel/menu-panel.html');
-            webViewPlaceHolder.setAttribute('data-otm-entrypoint', 'place-finder/menu-panel/entryPoint');
+            webViewPlaceHolder.setAttribute('data-otm-url', 'extensions/place-finder/menu-panel/subwebview/menu-panel.html');
+            webViewPlaceHolder.setAttribute('data-otm-entrypoint', 'place-finder/menu-panel/subwebview/entryPoint');
             document.body.appendChild(webViewPlaceHolder);
 
             // Activate behaviors when the web view is created
@@ -68,8 +68,14 @@ define([
 
                 var subWebView = /** @type {SubWebView} */ Widget.findById(internalController.PLACE_FINDER_MENUPANEL_WEBVIEW_ID);
 
-                subWebView.onInternalEvent(internalController.PLACE_FINDER_MENUPANEL_SUGGESTPLACES_EVENT, function forwardSuggestPlacesEvent(payload) {
-                    self._suggestPlaces(payload.query, payload.inputQueryLayoutparams);
+                var autoCompleteTextInput = new AutoCompleteTextInput(
+                    subWebView,
+                    'place-query',
+                    self._buildSuggestedPlacesProvider(),
+                    self._buildSuggestedPlaceRenderer());
+                autoCompleteTextInput.onSelect(function handleAutoCompleteTextInputSelection(item) {
+                    // TODO
+                    console.log('TODO: Selected place: ' + item);
                 });
 
                 subWebView.onInternalEvent(internalController.PLACE_FINDER_MENUPANEL_FINDPLACES_EVENT, function forwardSuggestPlacesEvent(payload) {
@@ -79,7 +85,7 @@ define([
 
             // Disable some behavior when the web view is closed
             SubWebView.onDestroy(internalController.PLACE_FINDER_MENUPANEL_WEBVIEW_ID, function() {
-                // Close the auto-completion dialog if any
+                // Close the auto-completion subwebview if any
                 autoCompletionDialog.setVisible(false);
             });
 
@@ -123,7 +129,7 @@ define([
         '_findPlaces': function(query) {
             var self = this;
 
-            // Close the auto-completion dialog if any
+            // Close the auto-completion subwebview if any
             autoCompletionDialog.setVisible(false);
 
             _.each(this._placeProviders, function(placeProvider) {
@@ -134,20 +140,45 @@ define([
         },
 
         /**
-         * Suggest places for the given query.
+         * Create a function that suggest places for the given query.
          *
-         * @param {string} query
-         * @param {{x: Number, y: Number, width: Number, height: Number}} inputQueryLayoutparams
+         * @return {function(value: String, callback: function(items: Array))} Function that provide places.
          * @private
          */
-        '_suggestPlaces': function(query, inputQueryLayoutparams) {
-            var self = this;
+        '_buildSuggestedPlacesProvider': function() {
+            var placeProviders = this._placeProviders;
+            /** @type {Object.<PlaceProvider, Array.<Place>>} */
+            var placesByProvider = {};
 
-            _.each(this._placeProviders, function(placeProvider) {
-                placeProvider.suggestPlaces(query, function handleSuggestedPlaces(places) {
-                    self._showSuggestedPlaces(places, inputQueryLayoutparams);
+            return function provideSuggestedPlaces(/** @type {String} */ value, /** @type {function(items: Array)} */ callback) {
+                _.each(placeProviders, function(placeProvider) {
+                    placeProvider.suggestPlaces(value, function handleSuggestedPlaces(places) {
+                        // Save the suggested places
+                        placesByProvider[placeProvider] = places;
+
+                        // Sort the suggested places by accuracy and place provider
+                        /** @type {Array<Place>} */
+                        var suggestedPlaces = _.chain(placesByProvider)
+                            .values()
+                            .flatten(true)
+                            .sortBy(function(place) { return 1 - place.accuracy; })
+                            .value();
+                        callback(suggestedPlaces);
+                    });
                 });
-            });
+            };
+        },
+
+        /**
+         * Create a function that convert a place into a string.
+         *
+         * @return {function(item: Object): String} Function that convert a place into a string.
+         * @private
+         */
+        '_buildSuggestedPlaceRenderer': function() {
+            return function renderPlace(/** @type {Place} */ item) {
+                return item.name;
+            }
         },
 
         /**
@@ -158,34 +189,6 @@ define([
          */
         '_showFoundPlaces': function(places) {
             // TODO
-        },
-
-        /**
-         * Show suggested places on the auto completion dialog..
-         *
-         * @param {Array.<Place>} places
-         * @param {{x: Number, y: Number, width: Number, height: Number}} inputQueryLayoutparams
-         * @private
-         */
-        '_showSuggestedPlaces': function(places, inputQueryLayoutparams) {
-            // Initialize the auto-completion dialog if necessary
-            if (!autoCompletionDialog.isVisible()) {
-                var $webViewPlaceHolder = $('#' + internalController.PLACE_FINDER_MENUPANEL_WEBVIEW_ID);
-                var offset = $webViewPlaceHolder.offset();
-
-                autoCompletionDialog.setLayoutParams(
-                    {
-                        x: inputQueryLayoutparams.x,
-                        y: offset.top + inputQueryLayoutparams.y + inputQueryLayoutparams.height + 10
-                    },
-                    inputQueryLayoutparams.width + 10);
-                autoCompletionDialog.setItemRenderer(function renderPlace(place) {
-                    return place.name;
-                });
-                autoCompletionDialog.setVisible(true);
-            }
-
-            autoCompletionDialog.setItems(places);
         }
     };
 

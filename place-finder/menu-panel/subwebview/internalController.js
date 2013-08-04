@@ -8,8 +8,9 @@ define([
     'jquery',
     'core/widget/Widget',
     'core/widget/webview/SubWebView',
-    'core/widget/webview/webview'
-], function($, Widget, SubWebView, webview) {
+    'core/widget/webview/webview',
+    'extra-widgets/autocompletion/AutoCompleteTextInput'
+], function($, Widget, SubWebView, webview, AutoCompleteTextInput) {
     'use strict';
 
     /**
@@ -42,12 +43,6 @@ define([
          * @const
          * @type {String}
          */
-        "PLACE_FINDER_MENUPANEL_SUGGESTPLACES_EVENT": 'place-finder-menupanel-suggest-places-event',
-
-        /**
-         * @const
-         * @type {String}
-         */
         "PLACE_FINDER_MENUPANEL_FINDPLACES_EVENT": 'place-finder-menupanel-find-places-event',
 
         /**
@@ -56,20 +51,15 @@ define([
         'initWebView': function() {
             var self = this;
 
-            // Suggest places to the user when he's typing a query
-            $('#place-query').keyup(function handleKeyUp(event) {
-                var query = $('#place-query').val();
-                if (!query || query.length === 0) {
-                    return;
-                }
+            // Mark the "place-query" input element as auto-completable
+            AutoCompleteTextInput.markAsAutoCompletable(
+                /** @type {HTMLInputElement} */ document.getElementById('place-query'),
+                MIN_NB_OF_CHARACTERS_FOR_SUGGESTION);
 
+            // Find places when the user presses ENTER
+            $('#place-query').keyup(function handleKeyUp(event) {
                 if (event.keyCode === ENTER_KEYCODE) {
                     self._findPlaces(query);
-                } else {
-                    // Fire an even for asking suggestion
-                    if (query.length >= MIN_NB_OF_CHARACTERS_FOR_SUGGESTION) {
-                        self._suggestPlaces(query);
-                    }
                 }
             });
 
@@ -102,28 +92,6 @@ define([
          */
         '_findPlaces': function(query) {
             webview.fireExternalEvent(this.PLACE_FINDER_MENUPANEL_FINDPLACES_EVENT, {query: query});
-        },
-
-        /**
-         * Suggest places for the given query.
-         *
-         * @param {string} query
-         * @private
-         */
-        '_suggestPlaces': function(query) {
-            var $inputPlaceQuery = $('#place-query');
-            var offset = $inputPlaceQuery.offset();
-            var inputQueryLayoutparams = {
-                'x': offset.left,
-                'y': offset.top,
-                'width': $inputPlaceQuery.width(),
-                'height': $inputPlaceQuery.height()
-            };
-
-            webview.fireExternalEvent(this.PLACE_FINDER_MENUPANEL_SUGGESTPLACES_EVENT, {
-                query: query,
-                inputQueryLayoutparams: inputQueryLayoutparams
-            });
         },
 
         /**

@@ -18,16 +18,16 @@ define([
          * @const
          * @type {String}
          */
-        'AUTOCOMPLETION_DIALOG_WEBVIEW_ID': 'autocompletion-dialog-webview',
+        'AUTOCOMPLETION_DIALOG_WEBVIEW_ID': 'autocompletion-subwebview-webview',
 
         /**
          * @const
          * @type {String}
          */
-        'AUTOCOMPLETION_DIALOG_SETITEMS_EVENT': 'autocompletion-dialog-setitems-event',
+        'AUTOCOMPLETION_DIALOG_SETITEMS_EVENT': 'autocompletion-subwebview-setitems-event',
 
         /**
-         * Initialize the dialog WebView.
+         * Initialize the subwebview WebView.
          */
         'initWebView': function() {
             var self = this;

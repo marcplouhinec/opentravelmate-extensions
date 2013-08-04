@@ -15,7 +15,7 @@ define([], function() {
      *     longitude: Number,
      *     name: String,
      *     accuracy: Number,
-     *     placeDataProvider: PlaceProvider,
+     *     placeProvider: PlaceProvider,
      *     additionalParameters: Object.<String, Object>
      * }} options
      * @constructor
@@ -58,7 +58,7 @@ define([], function() {
          *
          * @type {PlaceProvider}
          */
-        this.placeDataProvider = options.placeDataProvider;
+        this.placeProvider = options.placeProvider;
 
         /**
          * Additional information provided by the PlaceProvider.
