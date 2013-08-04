@@ -11,8 +11,9 @@ define([
     'core/widget/webview/SubWebView',
     'core/widget/webview/webview',
     'extra-widgets/autocompletion/AutoCompleteTextInput',
+    'extra-widgets/autocompletion/autocompletiondialog/autoCompletionDialog',
     './subwebview/internalController'
-], function($, FunctionDam, Widget, SubWebView, webview, AutoCompleteTextInput, internalController) {
+], function($, FunctionDam, Widget, SubWebView, webview, AutoCompleteTextInput, autoCompletionDialog, internalController) {
     'use strict';
 
     var webViewReadyDam = new FunctionDam();
@@ -83,12 +84,6 @@ define([
                 });
             });
 
-            // Disable some behavior when the web view is closed
-            SubWebView.onDestroy(internalController.PLACE_FINDER_MENUPANEL_WEBVIEW_ID, function() {
-                // Close the auto-completion subwebview if any
-                autoCompletionDialog.setVisible(false);
-            });
-
             // Create the web view
             webview.layout();
         },
@@ -129,7 +124,7 @@ define([
         '_findPlaces': function(query) {
             var self = this;
 
-            // Close the auto-completion subwebview if any
+            // Close the auto-completion dialog if opened
             autoCompletionDialog.setVisible(false);
 
             _.each(this._placeProviders, function(placeProvider) {

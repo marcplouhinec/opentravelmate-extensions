@@ -59,6 +59,11 @@ define([
 
         // When the user has selected a suggestion, set this value into the input text element and call the listeners
         // TODO
+
+        // Close the auto-completion dialog if the SubWebView is destroyed
+        SubWebView.onDestroy(subWebView.id, function handleInputElementDestroy() {
+            autoCompletionDialog.setVisible(false);
+        });
     }
 
     /**

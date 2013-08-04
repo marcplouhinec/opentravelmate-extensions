@@ -5,15 +5,32 @@
  */
 
 define([
+    'jquery',
     'core/commons/FunctionDam',
     'core/widget/Widget',
     'core/widget/webview/SubWebView',
     'core/widget/webview/webview',
     './subwebview/internalController'
-], function(FunctionDam, Widget, SubWebView, webview, internalController) {
+], function($, FunctionDam, Widget, SubWebView, webview, internalController) {
     'use strict';
 
     var subWebViewReadyDam = new FunctionDam();
+
+    /**
+     * Height of a displayed item.
+     *
+     * @const
+     * @type {Number}
+     */
+    var ITEM_HEIGHT = 45;
+
+    /**
+     * Margin bottom of the Auto-complete dialog.
+     *
+     * @const
+     * @type {number}
+     */
+    var DIALOG_MARGIN_BOTTOM = 10;
 
     var autoCompletionDialog = {
         /**
@@ -99,7 +116,7 @@ define([
             var self = this;
             this._items = items;
 
-            // Update the web view
+            // Wait for the SubWebView to be ready
             if (!subWebViewReadyDam.isOpened()) {
                 subWebViewReadyDam.executeWhenOpen(function() {
                     self.setItems(items);
@@ -107,6 +124,18 @@ define([
                 return;
             }
 
+            // Set the dialog height
+            var webViewPlaceHolder = document.getElementById(internalController.AUTOCOMPLETION_DIALOG_WEBVIEW_ID);
+            var dialogHeight = ITEM_HEIGHT * items.length + 1;
+            var dialogY = $(webViewPlaceHolder).offset().top;
+            var windowHeight = $(window).height();
+            if (dialogY + dialogHeight + DIALOG_MARGIN_BOTTOM > windowHeight) {
+                dialogHeight = windowHeight - dialogY - DIALOG_MARGIN_BOTTOM;
+            }
+            webViewPlaceHolder.style.height = dialogHeight + 'px';
+            webview.layout();
+
+            // Show the items
             var renderedItems = _.map(items, this._renderItem);
             var subWebView = /** @type {SubWebView} */ Widget.findById(internalController.AUTOCOMPLETION_DIALOG_WEBVIEW_ID);
             subWebView.fireInternalEvent(internalController.AUTOCOMPLETION_DIALOG_SETITEMS_EVENT, {
@@ -145,7 +174,7 @@ define([
             webViewPlaceHolder.style.left = this._anchor.x + 'px';
             webViewPlaceHolder.style.top = this._anchor.y + 'px';
             webViewPlaceHolder.style.width = this._width + 'px';
-            webViewPlaceHolder.style.bottom = '10px';
+            webViewPlaceHolder.style.height = ITEM_HEIGHT + 'px';
             webViewPlaceHolder.setAttribute('data-otm-widget', 'SubWebView');
             webViewPlaceHolder.setAttribute('data-otm-url', 'extensions/extra-widgets/autocompletion/autocompletiondialog/subwebview/dialog.html');
             webViewPlaceHolder.setAttribute('data-otm-entrypoint', 'extra-widgets/autocompletion/autocompletiondialog/subwebview/entryPoint');

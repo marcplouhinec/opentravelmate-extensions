@@ -59,7 +59,7 @@ define([
             // Find places when the user presses ENTER
             $('#place-query').keyup(function handleKeyUp(event) {
                 if (event.keyCode === ENTER_KEYCODE) {
-                    self._findPlaces(query);
+                    self._findPlaces();
                 }
             });
 
@@ -68,11 +68,7 @@ define([
                 event.stopPropagation();
                 event.preventDefault();
 
-                var query = $('#place-query').val();
-                if (!query || query.length === 0) {
-                    return;
-                }
-                self._findPlaces(query);
+                self._findPlaces();
             });
 
             // Handle the close button
@@ -85,12 +81,16 @@ define([
         },
 
         /**
-         * Find the places corresponding to the given query.
+         * Find the places corresponding to the query.
          *
-         * @param {string} query
          * @private
          */
-        '_findPlaces': function(query) {
+        '_findPlaces': function() {
+            var query = $('#place-query').val();
+            if (!query || query.length === 0) {
+                return;
+            }
+
             webview.fireExternalEvent(this.PLACE_FINDER_MENUPANEL_FINDPLACES_EVENT, {query: query});
         },
 
