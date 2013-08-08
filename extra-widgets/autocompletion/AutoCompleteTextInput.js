@@ -39,8 +39,9 @@ define([
          * Registered selection listeners.
          *
          * @type {Array.<function(item: Object)>}
+         * @private
          */
-        this.selectionListeners = [];
+        this._selectionListeners = [];
 
         // Show/update the auto completion subwebview when the user has typed enough letters
         subWebView.onInternalEvent(AutoCompleteTextInput._SHOW_SUGGESTIONS_EVENT, function handleShowSuggestionEvent(payload) {
@@ -60,7 +61,19 @@ define([
         });
 
         // When the user has selected a suggestion, set this value into the input text element and call the listeners
-        // TODO
+        autoCompletionDialog.onSelect(function handleSelectedItem(item) {
+            // Set the selected item value into the input text element
+            subWebView.fireInternalEvent(AutoCompleteTextInput._SELECTED_ITEM_EVENT, {
+                htmlInputElementId: htmlInputElementId,
+                htmlInputElementValue: renderItem(item)
+            });
+
+
+            // Call the listeners
+            _.each(self._selectionListeners, function(listener) {
+                listener(item);
+            });
+        });
 
         // Close the auto-completion dialog if the SubWebView is destroyed
         SubWebView.onDestroy(subWebView.id, function handleInputElementDestroy() {
@@ -132,7 +145,7 @@ define([
      * @param {function(item: Object)} listener
      */
     AutoCompleteTextInput.prototype.onSelect = function(listener) {
-        this.selectionListeners.push(listener);
+        this._selectionListeners.push(listener);
     };
 
     /**

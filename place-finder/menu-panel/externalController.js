@@ -76,7 +76,6 @@ define([
                     self._buildSuggestedPlaceRenderer());
                 autoCompleteTextInput.onSelect(function handleAutoCompleteTextInputSelection(item) {
                     // TODO
-                    console.log('TODO: Selected place: ' + item);
                 });
 
                 subWebView.onInternalEvent(subWebViewConstants.PLACE_FINDER_MENUPANEL_FINDPLACES_EVENT, function forwardSuggestPlacesEvent(payload) {

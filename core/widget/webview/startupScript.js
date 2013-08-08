@@ -11,6 +11,8 @@ requirejs.config({
         'jquery': 'core/lib/jquery.min',
         'underscore': 'core/lib/underscore.min',
         'async': 'core/lib/async',
+        'googleFastButton': 'core/lib/google.fastbutton',
+        'jqueryGoogleFastButton': 'core/lib/jquery.google.fastbutton',
         'nativeWebView': window.org_opentravelmate_widget_webview_webviewBaseUrl + 'native/widget/webview/nativeWebView',
         'nativeMenu': window.org_opentravelmate_widget_webview_webviewBaseUrl + 'native/widget/menu/nativeMenu',
         'nativeMap': window.org_opentravelmate_widget_webview_webviewBaseUrl + 'native/widget/map/nativeMap'
@@ -18,6 +20,12 @@ requirejs.config({
     shim: {
         'jquery': {
             exports: '$'
+        },
+        'googleFastButton': {
+            exports: 'FastButton'
+        },
+        'jqueryGoogleFastButton': {
+            deps: ['jquery', 'googleFastButton']
         },
         'underscore': {
             exports: '_'

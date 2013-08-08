@@ -64,6 +64,12 @@ define([
         '_items': [],
 
         /**
+         * @type {Array.<function(item: Object)>}
+         * @private
+         */
+        '_selectionListeners': [],
+
+        /**
          * Set layout information.
          *
          * @param {{x: number, y: number}} anchor
@@ -156,10 +162,10 @@ define([
         /**
          * Register a listener when an item is selected.
          *
-         * @param {function(place: Object)} listener
+         * @param {function(item: Object)} listener
          */
         'onSelect': function(listener) {
-            // TODO
+            this._selectionListeners.push(listener);
         },
 
         /**
@@ -193,6 +199,20 @@ define([
             // Activate behaviors when the web view is created
             SubWebView.onCreate(subWebViewConstants.AUTOCOMPLETION_DIALOG_WEBVIEW_ID, function() {
                 subWebViewReadyDam.setOpened(true);
+
+                // Handle item selection
+                var subWebView = /** @type {SubWebView} */ Widget.findById(subWebViewConstants.AUTOCOMPLETION_DIALOG_WEBVIEW_ID);
+                subWebView.onInternalEvent(subWebViewConstants.AUTOCOMPLETION_DIALOG_SELECTITEM_EVENT, function handleSelectItemEvent(payload) {
+                    var selectedItem = self._items[payload.itemIndex];
+
+                    // Close the dialog
+                    self.setVisible(false);
+
+                    // Fire the selection event to the registered listeners
+                    _.each(self._selectionListeners, function(listener) {
+                        listener(selectedItem);
+                    });
+                });
             });
 
             // Create the web view

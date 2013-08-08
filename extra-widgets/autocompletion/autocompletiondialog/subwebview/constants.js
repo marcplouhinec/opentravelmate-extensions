@@ -23,7 +23,15 @@ define([], function() {
          * @const
          * @type {String}
          */
-        'AUTOCOMPLETION_DIALOG_SETITEMS_EVENT': 'autocompletion-subwebview-setitems-event'
+        'AUTOCOMPLETION_DIALOG_SETITEMS_EVENT': 'autocompletion-subwebview-setitems-event',
+
+        /**
+         * "Select item" event.
+         *
+         * @const
+         * @type {String}
+         */
+        'AUTOCOMPLETION_DIALOG_SELECTITEM_EVENT': 'autocompletion-subwebview-selectitem-event'
     };
 
     return constants;
