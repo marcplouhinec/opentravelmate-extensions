@@ -62,14 +62,14 @@ define([
         /**
          * "create" event listeners by SubWebView ID.
          *
-         * @type {Object.<String, Array.<Function>>}
+         * @type {Object.<String, Array.<{listener: Function, listenOnce: Boolean}>>}
          */
         'create': {},
 
         /**
          * "destroy" event listeners by SubWebView ID.
          *
-         * @type {Object.<String, Array.<Function>>}
+         * @type {Object.<String, Array.<{listener: Function, listenOnce: Boolean}>>}
          */
         'destroy': {}
     };
@@ -81,9 +81,11 @@ define([
      *     SubWebView place holder ID.
      * @param {Function} listener
      *     Function called just after the SubWebView is created.
+     * @param {Boolean} [listenOnce=true]
+     *     If true, the listener is called one time only.
      */
-    SubWebView.onCreate = function(id, listener) {
-        SubWebView._on('create', id, listener);
+    SubWebView.onCreate = function(id, listener, listenOnce) {
+        SubWebView._on('create', id, listener, listenOnce);
     };
 
     /**
@@ -93,9 +95,11 @@ define([
      *     SubWebView place holder ID.
      * @param {Function} listener
      *     Function called just after the SubWebView is destroyed.
+     * @param {Boolean} [listenOnce=true]
+     *     If true, the listener is called one time only.
      */
-    SubWebView.onDestroy = function(id, listener) {
-        SubWebView._on('destroy', id, listener);
+    SubWebView.onDestroy = function(id, listener, listenOnce) {
+        SubWebView._on('destroy', id, listener, listenOnce);
     };
 
     /**
@@ -108,8 +112,10 @@ define([
      *     SubWebView place holder ID.
      * @param {Function} listener
      *     Function called just after the SubWebView is created.
+     * @param {Boolean} [listenOnce=true]
+     *     If true, the listener is called one time only.
      */
-    SubWebView._on = function(eventName, id, listener) {
+    SubWebView._on = function(eventName, id, listener, listenOnce) {
         var listeners = SubWebView._eventListeners[eventName][id];
 
         if (!listeners) {
@@ -117,7 +123,10 @@ define([
             SubWebView._eventListeners[eventName][id] = listeners;
         }
 
-        listeners.push(listener);
+        listeners.push({
+            listener: listener,
+            listenOnce: _.isBoolean(listenOnce) ? listenOnce : true
+        });
     };
 
     /**
@@ -151,9 +160,11 @@ define([
     SubWebView._fireEvent = function(eventName, id) {
         var listeners = SubWebView._eventListeners[eventName][id];
         if (listeners) {
-            _.each(listeners, function(listener) {
-                listener();
+            listeners = _.filter(listeners, function(/** @type {{listener: Function, listenOnce: Boolean}} */listenerInfo) {
+                listenerInfo.listener();
+                return !listenerInfo.listenOnce;
             });
+            SubWebView._eventListeners[eventName][id] = listeners;
         }
     };
 
