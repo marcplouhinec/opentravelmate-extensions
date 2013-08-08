@@ -4,7 +4,7 @@
  * @author marc.plouhinec@gmail.com (Marc Plouhinec)
  */
 
-define(['core/commons/ErrorCode'], function(ErrorCode) {
+define(['./ErrorCode'], function(ErrorCode) {
     'use strict';
 
     /**

@@ -5,8 +5,8 @@
  */
 
 define([
-    'core/commons/I18nError',
-    'core/commons/ErrorCode',
+    'core/utils/I18nError',
+    'core/utils/ErrorCode',
     'core/widget/LayoutParams'],
 function(I18nError, ErrorCode, LayoutParams) {
     'use strict';

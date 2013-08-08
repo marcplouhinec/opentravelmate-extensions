@@ -5,8 +5,8 @@
  */
 
 define([
-    'core/commons/I18nError',
-    'core/commons/ErrorCode',
+    'core/utils/I18nError',
+    'core/utils/ErrorCode',
     './Place'
 ], function(I18nError, ErrorCode, Place) {
     'use strict';

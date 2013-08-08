@@ -6,7 +6,7 @@
 
 define([
     'jquery',
-    'core/commons/FunctionDam',
+    'core/utils/FunctionDam',
     'core/widget/Widget',
     'core/widget/webview/SubWebView',
     'core/widget/webview/webview',
