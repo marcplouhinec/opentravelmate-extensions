@@ -194,6 +194,7 @@ define([
          * @private
          */
         '_removeSubWebView': function() {
+        	subWebViewReadyDam.setOpened(false);
             $('#' + internalController.AUTOCOMPLETION_DIALOG_WEBVIEW_ID).remove();
             webview.layout();
         }
