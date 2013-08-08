@@ -12,8 +12,8 @@ define([
     'core/widget/webview/webview',
     'extra-widgets/autocompletion/AutoCompleteTextInput',
     'extra-widgets/autocompletion/autocompletiondialog/autoCompletionDialog',
-    './subwebview/internalController'
-], function($, FunctionDam, Widget, SubWebView, webview, AutoCompleteTextInput, autoCompletionDialog, internalController) {
+    './subwebview/constants'
+], function($, FunctionDam, Widget, SubWebView, webview, AutoCompleteTextInput, autoCompletionDialog, subWebViewConstants) {
     'use strict';
 
     var webViewReadyDam = new FunctionDam();
@@ -44,7 +44,7 @@ define([
             var self = this;
 
             // Do nothing if the web view is already displayed
-            var subWebView = Widget.findById(internalController.PLACE_FINDER_MENUPANEL_WEBVIEW_ID);
+            var subWebView = Widget.findById(subWebViewConstants.PLACE_FINDER_MENUPANEL_WEBVIEW_ID);
             if (subWebView) {
                 return;
             }
@@ -52,7 +52,7 @@ define([
             // Create the web view
             /** @type {HTMLElement} */
             var webViewPlaceHolder = document.createElement('div');
-            webViewPlaceHolder.id = internalController.PLACE_FINDER_MENUPANEL_WEBVIEW_ID;
+            webViewPlaceHolder.id = subWebViewConstants.PLACE_FINDER_MENUPANEL_WEBVIEW_ID;
             webViewPlaceHolder.style.position = 'absolute';
             webViewPlaceHolder.style.left = 0;
             webViewPlaceHolder.style.right = 0;
@@ -64,10 +64,10 @@ define([
             document.body.appendChild(webViewPlaceHolder);
 
             // Activate behaviors when the web view is created
-            SubWebView.onCreate(internalController.PLACE_FINDER_MENUPANEL_WEBVIEW_ID, function() {
+            SubWebView.onCreate(subWebViewConstants.PLACE_FINDER_MENUPANEL_WEBVIEW_ID, function() {
                 webViewReadyDam.setOpened(true);
 
-                var subWebView = /** @type {SubWebView} */ Widget.findById(internalController.PLACE_FINDER_MENUPANEL_WEBVIEW_ID);
+                var subWebView = /** @type {SubWebView} */ Widget.findById(subWebViewConstants.PLACE_FINDER_MENUPANEL_WEBVIEW_ID);
 
                 var autoCompleteTextInput = new AutoCompleteTextInput(
                     subWebView,
@@ -79,7 +79,7 @@ define([
                     console.log('TODO: Selected place: ' + item);
                 });
 
-                subWebView.onInternalEvent(internalController.PLACE_FINDER_MENUPANEL_FINDPLACES_EVENT, function forwardSuggestPlacesEvent(payload) {
+                subWebView.onInternalEvent(subWebViewConstants.PLACE_FINDER_MENUPANEL_FINDPLACES_EVENT, function forwardSuggestPlacesEvent(payload) {
                     self._findPlaces(payload.query);
                 });
             });
@@ -92,7 +92,7 @@ define([
          * Remove the place finder web view.
          */
         'removeWebView': function() {
-            $('#' + internalController.PLACE_FINDER_MENUPANEL_WEBVIEW_ID).remove();
+            $('#' + subWebViewConstants.PLACE_FINDER_MENUPANEL_WEBVIEW_ID).remove();
             webview.layout();
         },
 
@@ -111,8 +111,8 @@ define([
                 return;
             }
 
-            var subWebView = /** @type {SubWebView} */ Widget.findById(internalController.PLACE_FINDER_MENUPANEL_WEBVIEW_ID);
-            subWebView.onInternalEvent(internalController.PLACE_FINDER_MENUPANEL_CLOSE_EVENT, listener);
+            var subWebView = /** @type {SubWebView} */ Widget.findById(subWebViewConstants.PLACE_FINDER_MENUPANEL_WEBVIEW_ID);
+            subWebView.onInternalEvent(subWebViewConstants.PLACE_FINDER_MENUPANEL_CLOSE_EVENT, listener);
         },
 
         /**

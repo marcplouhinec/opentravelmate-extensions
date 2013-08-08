@@ -9,8 +9,9 @@ define([
     'core/widget/Widget',
     'core/widget/webview/SubWebView',
     'core/widget/webview/webview',
-    'extra-widgets/autocompletion/AutoCompleteTextInput'
-], function($, Widget, SubWebView, webview, AutoCompleteTextInput) {
+    'extra-widgets/autocompletion/AutoCompleteTextInput',
+    './constants'
+], function($, Widget, SubWebView, webview, AutoCompleteTextInput, constants) {
     'use strict';
 
     /**
@@ -26,25 +27,6 @@ define([
     var MIN_NB_OF_CHARACTERS_FOR_SUGGESTION = 3;
 
     var internalController = {
-
-        /**
-         * @const
-         * @type {String}
-         */
-        "PLACE_FINDER_MENUPANEL_WEBVIEW_ID": 'place-finder-menupanel-webview',
-
-        /**
-         * @const
-         * @type {String}
-         */
-        "PLACE_FINDER_MENUPANEL_CLOSE_EVENT": 'place-finder-menupanel-close-event',
-
-        /**
-         * @const
-         * @type {String}
-         */
-        "PLACE_FINDER_MENUPANEL_FINDPLACES_EVENT": 'place-finder-menupanel-find-places-event',
-
         /**
          * Initialize the place finder WebView.
          */
@@ -91,7 +73,7 @@ define([
                 return;
             }
 
-            webview.fireExternalEvent(this.PLACE_FINDER_MENUPANEL_FINDPLACES_EVENT, {query: query});
+            webview.fireExternalEvent(constants.PLACE_FINDER_MENUPANEL_FINDPLACES_EVENT, {query: query});
         },
 
         /**
@@ -100,7 +82,7 @@ define([
          * @private
          */
         '_close': function() {
-            webview.fireExternalEvent(this.PLACE_FINDER_MENUPANEL_CLOSE_EVENT);
+            webview.fireExternalEvent(constants.PLACE_FINDER_MENUPANEL_CLOSE_EVENT);
         }
     };
 

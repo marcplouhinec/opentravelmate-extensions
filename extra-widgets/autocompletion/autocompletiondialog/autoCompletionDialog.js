@@ -10,8 +10,8 @@ define([
     'core/widget/Widget',
     'core/widget/webview/SubWebView',
     'core/widget/webview/webview',
-    './subwebview/internalController'
-], function($, FunctionDam, Widget, SubWebView, webview, internalController) {
+    './subwebview/constants'
+], function($, FunctionDam, Widget, SubWebView, webview, subWebViewConstants) {
     'use strict';
 
     var subWebViewReadyDam = new FunctionDam();
@@ -75,7 +75,7 @@ define([
 
             // Update the SubWebView if necessary
             if (this.isVisible()) {
-                var webViewPlaceHolder = document.getElementById(internalController.AUTOCOMPLETION_DIALOG_WEBVIEW_ID);
+                var webViewPlaceHolder = document.getElementById(subWebViewConstants.AUTOCOMPLETION_DIALOG_WEBVIEW_ID);
                 webViewPlaceHolder.style.left = this._anchor.x + 'px';
                 webViewPlaceHolder.style.top = this._anchor.y + 'px';
                 webViewPlaceHolder.style.width = this._width + 'px';
@@ -101,7 +101,7 @@ define([
          * @return {boolean} true if the subwebview is visible, false if not.
          */
         'isVisible': function() {
-            if (document.getElementById(internalController.AUTOCOMPLETION_DIALOG_WEBVIEW_ID)) {
+            if (document.getElementById(subWebViewConstants.AUTOCOMPLETION_DIALOG_WEBVIEW_ID)) {
                 return true;
             } else {
                 return false;
@@ -135,7 +135,7 @@ define([
             }
 
             // Set the dialog height
-            var webViewPlaceHolder = document.getElementById(internalController.AUTOCOMPLETION_DIALOG_WEBVIEW_ID);
+            var webViewPlaceHolder = document.getElementById(subWebViewConstants.AUTOCOMPLETION_DIALOG_WEBVIEW_ID);
             var dialogHeight = ITEM_HEIGHT * items.length + 1;
             var dialogY = $(webViewPlaceHolder).offset().top;
             var windowHeight = $(window).height();
@@ -147,8 +147,8 @@ define([
 
             // Show the items
             var renderedItems = _.map(items, this._renderItem);
-            var subWebView = /** @type {SubWebView} */ Widget.findById(internalController.AUTOCOMPLETION_DIALOG_WEBVIEW_ID);
-            subWebView.fireInternalEvent(internalController.AUTOCOMPLETION_DIALOG_SETITEMS_EVENT, {
+            var subWebView = /** @type {SubWebView} */ Widget.findById(subWebViewConstants.AUTOCOMPLETION_DIALOG_WEBVIEW_ID);
+            subWebView.fireInternalEvent(subWebViewConstants.AUTOCOMPLETION_DIALOG_SETITEMS_EVENT, {
                 items: renderedItems
             })
         },
@@ -171,7 +171,7 @@ define([
             var self = this;
 
             // Do nothing if the web view is already displayed
-            var subWebView = /** @type {SubWebView} */ Widget.findById(internalController.AUTOCOMPLETION_DIALOG_WEBVIEW_ID);
+            var subWebView = /** @type {SubWebView} */ Widget.findById(subWebViewConstants.AUTOCOMPLETION_DIALOG_WEBVIEW_ID);
             if (subWebView) {
                 return;
             }
@@ -179,7 +179,7 @@ define([
             // Create the web view
             /** @type {HTMLElement} */
             var webViewPlaceHolder = document.createElement('div');
-            webViewPlaceHolder.id = internalController.AUTOCOMPLETION_DIALOG_WEBVIEW_ID;
+            webViewPlaceHolder.id = subWebViewConstants.AUTOCOMPLETION_DIALOG_WEBVIEW_ID;
             webViewPlaceHolder.style.position = 'absolute';
             webViewPlaceHolder.style.left = this._anchor.x + 'px';
             webViewPlaceHolder.style.top = this._anchor.y + 'px';
@@ -191,7 +191,7 @@ define([
             document.body.appendChild(webViewPlaceHolder);
 
             // Activate behaviors when the web view is created
-            SubWebView.onCreate(internalController.AUTOCOMPLETION_DIALOG_WEBVIEW_ID, function() {
+            SubWebView.onCreate(subWebViewConstants.AUTOCOMPLETION_DIALOG_WEBVIEW_ID, function() {
                 subWebViewReadyDam.setOpened(true);
             });
 
@@ -205,7 +205,7 @@ define([
          */
         '_removeSubWebView': function() {
         	subWebViewReadyDam.setOpened(false);
-            $('#' + internalController.AUTOCOMPLETION_DIALOG_WEBVIEW_ID).remove();
+            $('#' + subWebViewConstants.AUTOCOMPLETION_DIALOG_WEBVIEW_ID).remove();
             webview.layout();
         }
     };

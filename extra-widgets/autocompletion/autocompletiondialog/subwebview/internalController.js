@@ -8,24 +8,12 @@ define([
     'jquery',
     'underscore',
     'core/widget/Widget',
-    'core/widget/webview/webview'
-], function($, _, Widget, webview) {
+    'core/widget/webview/webview',
+    './constants'
+], function($, _, Widget, webview, constants) {
     'use strict';
 
     var internalController = {
-
-        /**
-         * @const
-         * @type {String}
-         */
-        'AUTOCOMPLETION_DIALOG_WEBVIEW_ID': 'autocompletion-subwebview-webview',
-
-        /**
-         * @const
-         * @type {String}
-         */
-        'AUTOCOMPLETION_DIALOG_SETITEMS_EVENT': 'autocompletion-subwebview-setitems-event',
-
         /**
          * Initialize the subwebview WebView.
          */
@@ -35,7 +23,7 @@ define([
             document.body.style.overflow = 'auto';
 
             // Listen to the external controller events
-            webview.onExternalEvent(this.AUTOCOMPLETION_DIALOG_SETITEMS_EVENT, function handleSetItemsEvent(payload) {
+            webview.onExternalEvent(constants.AUTOCOMPLETION_DIALOG_SETITEMS_EVENT, function handleSetItemsEvent(payload) {
                 self.setItems(payload.items);
             });
         },
