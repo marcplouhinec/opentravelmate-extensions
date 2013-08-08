@@ -38,6 +38,8 @@ function($, webview, SubWebView, entrypoint) {
         webview.id = window.org_opentravelmate_widget_webview_webviewId;
         webview.baseUrl = org_opentravelmate_widget_webview_webviewBaseUrl;
 
+        document.body.style.overflow = 'hidden';
+
         // Call the entry point
         entrypoint();
 
@@ -50,6 +52,5 @@ function($, webview, SubWebView, entrypoint) {
         $(window).resize(function resizeWindow() {
             webview.layout();
         });
-        document.body.style.overflow = 'hidden';
     });
 });

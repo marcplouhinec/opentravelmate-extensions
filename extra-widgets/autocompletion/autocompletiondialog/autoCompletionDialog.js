@@ -72,6 +72,16 @@ define([
         'setLayoutParams': function(anchor, width) {
             this._anchor = anchor;
             this._width = width;
+
+            // Update the SubWebView if necessary
+            if (this.isVisible()) {
+                var webViewPlaceHolder = document.getElementById(internalController.AUTOCOMPLETION_DIALOG_WEBVIEW_ID);
+                webViewPlaceHolder.style.left = this._anchor.x + 'px';
+                webViewPlaceHolder.style.top = this._anchor.y + 'px';
+                webViewPlaceHolder.style.width = this._width + 'px';
+                webViewPlaceHolder.style.height = ITEM_HEIGHT + 'px';
+                webview.layout();
+            }
         },
 
         /**

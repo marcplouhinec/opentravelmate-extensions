@@ -32,6 +32,8 @@ define([
         'initWebView': function() {
             var self = this;
 
+            document.body.style.overflow = 'auto';
+
             // Listen to the external controller events
             webview.onExternalEvent(this.AUTOCOMPLETION_DIALOG_SETITEMS_EVENT, function handleSetItemsEvent(payload) {
                 self.setItems(payload.items);

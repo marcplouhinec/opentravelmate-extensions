@@ -49,6 +49,8 @@ define([
 
                 if (!autoCompletionDialog.isVisible()) {
                     self._initializeDialog(subWebView, payload.htmlInputElementRect, renderItem);
+                } else {
+                    self._setDialogLayoutParams(subWebView, payload.htmlInputElementRect);
                 }
 
                 provideItems(payload.htmlInputElementValue, function (/** @type {Array} */ items) {
@@ -77,12 +79,14 @@ define([
     AutoCompleteTextInput.markAsAutoCompletable = function(htmlInputElement, threshold) {
         var $htmlInputElement = $(htmlInputElement);
 
-        // When the input text has been updated, fire an event to update the suggestions
-        $htmlInputElement.keyup(function handleKeyUp(event) {
+        /**
+         * Fire the SHOW_SUGGESTIONS_EVENT if possible.
+         */
+        function fireShowSuggestionEvent() {
             var value = $htmlInputElement.val();
 
-            // Check the value is long enough and the pressed key is not "ENTER"
-            if (!value || value.length < threshold || event.keyCode === ENTER_KEYCODE) {
+            // Check the value is long enough
+            if (!value || value.length < threshold) {
                 return;
             }
 
@@ -98,7 +102,20 @@ define([
                     height: $htmlInputElement.height()
                 }
             });
+        }
+
+        // When the input text has been updated, fire an event to update the suggestions
+        $htmlInputElement.keyup(function handleKeyUp(event) {
+            // Check the pressed key is not "ENTER"
+            if (event.keyCode === ENTER_KEYCODE) {
+                return;
+            }
+
+            fireShowSuggestionEvent();
         });
+
+        // When the window is re-sized, update the auto-complete dialog size
+        $(window).resize(fireShowSuggestionEvent);
 
         // When the user has selected a suggestion, set this value into the input text
         webview.onExternalEvent(AutoCompleteTextInput._SELECTED_ITEM_EVENT, function handleSelectedItemEvent(payload) {
@@ -146,6 +163,20 @@ define([
      * @private
      */
     AutoCompleteTextInput.prototype._initializeDialog = function(subWebView, htmlInputElementRect, renderItem) {
+        this._setDialogLayoutParams(subWebView, htmlInputElementRect);
+        autoCompletionDialog.setRenderItemFunction(renderItem);
+        autoCompletionDialog.setVisible(true);
+    };
+
+    /**
+     * Set the auto-complete dialog layout params.
+     *
+     * @param {SubWebView} subWebView
+     *     SubWebView that contains the input text element.
+     * @param {{x: Number, y: Number, width: Number, height: Number}} htmlInputElementRect
+     * @private
+     */
+    AutoCompleteTextInput.prototype._setDialogLayoutParams = function(subWebView, htmlInputElementRect) {
         var $subWebViewElement = $('#' + subWebView.id);
         var offset = $subWebViewElement.offset();
         autoCompletionDialog.setLayoutParams(
@@ -154,8 +185,6 @@ define([
                 y: offset.top + htmlInputElementRect.y + htmlInputElementRect.height + 10
             },
             htmlInputElementRect.width + 10);
-        autoCompletionDialog.setRenderItemFunction(renderItem);
-        autoCompletionDialog.setVisible(true);
     };
 
     return AutoCompleteTextInput;
