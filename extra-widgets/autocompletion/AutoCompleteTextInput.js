@@ -133,6 +133,7 @@ define([
         // When the user has selected a suggestion, set this value into the input text
         webview.onExternalEvent(AutoCompleteTextInput._SELECTED_ITEM_EVENT, function handleSelectedItemEvent(payload) {
             if (payload.htmlInputElementId === htmlInputElement.id) {
+                $htmlInputElement.val(payload.htmlInputElementValue + ' '); // Workaround for the strange Android text selection cursor
                 $htmlInputElement.val(payload.htmlInputElementValue);
             }
         });
