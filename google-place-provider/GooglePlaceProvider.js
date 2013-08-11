@@ -31,16 +31,16 @@ define([
     GooglePlaceProvider.prototype.suggestPlaces = function(query, callback) {
         callback([
             new Place({
-                latitude: 1,
-                longitude: 2,
+                latitude: 49.61,
+                longitude: 6.1305,
                 name: query + ' 1',
                 accuracy: 0.5,
                 placeDataProvider: this,
                 additionalParameters: {}
             }),
             new Place({
-                latitude: 2,
-                longitude: 3,
+                latitude: 49.61,
+                longitude: 6.1315,
                 name: query + ' 2',
                 accuracy: 0.4,
                 placeDataProvider: this,
@@ -58,16 +58,16 @@ define([
     GooglePlaceProvider.prototype.findPlaces = function(query, callback) {
         callback([
             new Place({
-                latitude: 1,
-                longitude: 2,
+                latitude: 49.605,
+                longitude: 6.131,
                 name: query + 'Dummy place 3',
                 accuracy: 0.5,
                 placeDataProvider: this,
                 additionalParameters: {}
             }),
             new Place({
-                latitude: 2,
-                longitude: 3,
+                latitude: 49.615,
+                longitude: 6.131,
                 name: query + 'Dummy place 4',
                 accuracy: 0.4,
                 placeDataProvider: this,

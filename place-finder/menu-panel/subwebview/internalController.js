@@ -26,6 +26,12 @@ define([
      */
     var MIN_NB_OF_CHARACTERS_FOR_SUGGESTION = 3;
 
+    /**
+     * @const
+     * @type {number}
+     */
+    var MIN_NB_OF_CHARACTERS_FOR_SEARCH = 3;
+
     var internalController = {
         /**
          * Initialize the place finder WebView.
@@ -69,7 +75,7 @@ define([
          */
         '_findPlaces': function() {
             var query = $('#place-query').val();
-            if (!query || query.length === 0) {
+            if (!query || query.length < MIN_NB_OF_CHARACTERS_FOR_SEARCH) {
                 return;
             }
 

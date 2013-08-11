@@ -10,13 +10,22 @@ define([
     'core/widget/Widget',
     'core/widget/webview/SubWebView',
     'core/widget/webview/webview',
+    'core/widget/map/Map',
+    'core/widget/map/LatLng',
+    'core/widget/map/Point',
+    'core/widget/map/Marker',
     'extra-widgets/autocompletion/AutoCompleteTextInput',
     'extra-widgets/autocompletion/autocompletiondialog/autoCompletionDialog',
     './subwebview/constants'
-], function($, FunctionDam, Widget, SubWebView, webview, AutoCompleteTextInput, autoCompletionDialog, subWebViewConstants) {
+], function($, FunctionDam, Widget, SubWebView, webview, Map, LatLng, Point, Marker, AutoCompleteTextInput, autoCompletionDialog, subWebViewConstants) {
     'use strict';
 
     var webViewReadyDam = new FunctionDam();
+
+    /** @type {Object.<Number, Marker>} */
+    var markerById = {};
+    /** @type {Object.<Number, Place>} */
+    var placeByMarkerId = {};
 
     var externalController = {
         /**
@@ -75,7 +84,8 @@ define([
                     self._buildSuggestedPlacesProvider(),
                     self._buildSuggestedPlaceRenderer());
                 autoCompleteTextInput.onSelect(function handleAutoCompleteTextInputSelection(item) {
-                    // TODO
+                    var places = [item];
+                    self._showFoundPlaces(places);
                 });
 
                 subWebView.onInternalEvent(subWebViewConstants.PLACE_FINDER_MENUPANEL_FINDPLACES_EVENT, function forwardSuggestPlacesEvent(payload) {
@@ -93,6 +103,9 @@ define([
         'removeWebView': function() {
             $('#' + subWebViewConstants.PLACE_FINDER_MENUPANEL_WEBVIEW_ID).remove();
             webview.layout();
+
+            // Clear the last search
+            this._clearFoundPlaces();
         },
 
         /**
@@ -182,7 +195,43 @@ define([
          * @private
          */
         '_showFoundPlaces': function(places) {
-            // TODO
+            if (!_.isArray(places) || places.length < 1) {
+                return;
+            }
+
+            // Clear the previous search
+            this._clearFoundPlaces();
+
+            // Create a marker per place
+            var map  = /** @Type {Map} */ Widget.findById('map');
+            _.each(places, function(place) {
+                var marker = new Marker({
+                    position: new LatLng(place.latitude, place.longitude),
+                    title: place.name
+                });
+                markerById[marker.id] = marker;
+                placeByMarkerId[marker.id] = place;
+                map.addMarker(marker);
+            });
+
+            // Move the map to the first place
+            map.panTo(new LatLng(places[0].latitude, places[0].longitude));
+        },
+
+        /**
+         * Remove the marker and places from the previous place search.
+         *
+         * @private
+         */
+        '_clearFoundPlaces': function() {
+            var map  = /** @Type {Map} */ Widget.findById('map');
+
+            _.each(_.values(markerById), function(marker) {
+                map.removeMarker(marker);
+            });
+
+            markerById = {};
+            placeByMarkerId = {};
         }
     };
 

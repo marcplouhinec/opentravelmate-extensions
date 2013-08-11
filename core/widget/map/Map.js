@@ -7,8 +7,10 @@
 define([
     'core/widget/Widget',
     'core/widget/LayoutParams',
+    './LatLng',
+    './Marker',
     'nativeMap'
-], function(Widget, LayoutParams, nativeMap) {
+], function(Widget, LayoutParams, LatLng, Marker, nativeMap) {
     'use strict';
 
     /**
@@ -24,6 +26,33 @@ define([
 
     Map.prototype = new Widget();
     Map.prototype.constructor = Map;
+
+    /**
+     * Move the map center to the given location.
+     *
+     * @param {LatLng} center
+     */
+    Map.prototype.panTo = function(center) {
+        nativeMap.panTo(this.id, JSON.stringify(center));
+    };
+
+    /**
+     * Add a marker on the map.
+     *
+     * @param {Marker} marker
+     */
+    Map.prototype.addMarker = function(marker) {
+        nativeMap.addMarker(this.id, JSON.stringify(marker));
+    };
+
+    /**
+     * Remove a marker from the map.
+     *
+     * @param {Marker} marker
+     */
+    Map.prototype.removeMarker = function(marker) {
+        nativeMap.removeMarker(this.id, JSON.stringify(marker));
+    };
 
     /**
      * Build the native view object for the current widget.
