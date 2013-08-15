@@ -20,7 +20,7 @@ define(function() {
      * @param {{
      *     zIndex: Number=,
      *     isVisible: Boolean=,
-     *     tileProvider: function(x: Number, y: Number, zoom: Number): String
+     *     tileUrlPattern: String
      * }} options
      * @constructor
      */
@@ -32,8 +32,8 @@ define(function() {
         this.zIndex = options.zIndex || 0;
         /** @type {Boolean=} */
         this.isVisible = options.isVisible || true;
-        /** @type {function(x: Number, y: Number, zoom: Number): String} */
-        this.tileProvider = options.tileProvider;
+        /** @type {String} */
+        this.tileUrlPattern = options.tileUrlPattern;
     }
 
     return TileOverlay;

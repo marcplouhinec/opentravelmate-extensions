@@ -17,22 +17,10 @@ define([
     return function main() {
         var map = /** @type {Map} */ Widget.findById('map');
 
-        /**
-         * Public transport tile provider.
-         *
-         * @param {Number} x
-         * @param {Number} y
-         * @param {Number} zoom
-         * @return {String} URL
-         */
-        function providePublicTransportTile(x, y, zoom) {
-            return 'http://ns55.evxonline.net/mapoverlay/publictransport/' + zoom + '_' + x + '_' + y + '.png';
-        }
-
         var tileOverlay = new TileOverlay({
             'zIndex': 0,
             'isVisible': true,
-            'tileProvider': providePublicTransportTile
+            'tileUrlPattern': 'http://ns55.evxonline.net/mapoverlay/publictransport/${zoom}_${x}_${y}.png'
         });
         map.addTileOverlay(tileOverlay);
     };
