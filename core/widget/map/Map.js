@@ -9,8 +9,9 @@ define([
     'core/widget/LayoutParams',
     './LatLng',
     './Marker',
+    './TileOverlay',
     'nativeMap'
-], function(Widget, LayoutParams, LatLng, Marker, nativeMap) {
+], function(Widget, LayoutParams, LatLng, Marker, TileOverlay, nativeMap) {
     'use strict';
 
     /**
@@ -22,10 +23,38 @@ define([
      */
     function Map(options) {
         Widget.call(this, options);
+
+        /**
+         * Registered tile overlays.
+         *
+         * @type {Object.<Number, TileOverlay>}
+         * @private
+         */
+        this._tileOverlayById = {};
     }
 
     Map.prototype = new Widget();
     Map.prototype.constructor = Map;
+
+    /**
+     * Add an overlay to the map.
+     *
+     * @param {TileOverlay} tileOverlay
+     */
+    Map.prototype.addTileOverlay = function(tileOverlay) {
+        this._tileOverlayById[tileOverlay.id] = tileOverlay;
+        nativeMap.addTileOverlay(this.id, JSON.stringify(tileOverlay));
+    };
+
+    /**
+     * Get an overlay by its ID.
+     *
+     * @param {Number} id
+     * @return {TileOverlay}
+     */
+    Map.prototype.getTileOverlayById = function(id) {
+        return this._tileOverlayById[id];
+    };
 
     /**
      * Move the map center to the given location.

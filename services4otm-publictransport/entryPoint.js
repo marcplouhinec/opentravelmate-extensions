@@ -1,0 +1,39 @@
+/**
+ * Services For Open Travel Mate - Public transport information provider - entry point.
+ *
+ * @author marc.plouhinec@gmail.com (Marc Plouhinec)
+ */
+
+define([
+    'core/widget/Widget',
+    'core/widget/map/Map',
+    'core/widget/map/TileOverlay'
+], function(Widget, Map, TileOverlay) {
+    'use strict';
+
+    /**
+     * Extension entry point.
+     */
+    return function main() {
+        var map = /** @type {Map} */ Widget.findById('map');
+
+        /**
+         * Public transport tile provider.
+         *
+         * @param {Number} x
+         * @param {Number} y
+         * @param {Number} zoom
+         * @return {String} URL
+         */
+        function providePublicTransportTile(x, y, zoom) {
+            return 'http://ns55.evxonline.net/mapoverlay/publictransport/' + zoom + '_' + x + '_' + y + '.png';
+        }
+
+        var tileOverlay = new TileOverlay({
+            'zIndex': 0,
+            'isVisible': true,
+            'tileProvider': providePublicTransportTile
+        });
+        map.addTileOverlay(tileOverlay);
+    };
+});
