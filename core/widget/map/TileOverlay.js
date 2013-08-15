@@ -19,7 +19,6 @@ define(function() {
      *
      * @param {{
      *     zIndex: Number=,
-     *     isVisible: Boolean=,
      *     tileUrlPattern: String
      * }} options
      * @constructor
@@ -30,8 +29,6 @@ define(function() {
 
         /** @type {Number=} */
         this.zIndex = options.zIndex || 0;
-        /** @type {Boolean=} */
-        this.isVisible = options.isVisible || true;
         /** @type {String} */
         this.tileUrlPattern = options.tileUrlPattern;
     }

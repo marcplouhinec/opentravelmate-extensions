@@ -19,7 +19,6 @@ define([
 
         var tileOverlay = new TileOverlay({
             'zIndex': 0,
-            'isVisible': true,
             'tileUrlPattern': 'http://ns55.evxonline.net/mapoverlay/publictransport/${zoom}_${x}_${y}.png'
         });
         map.addTileOverlay(tileOverlay);
