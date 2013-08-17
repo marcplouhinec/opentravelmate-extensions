@@ -7,11 +7,11 @@
 define([
     'jquery',
     'underscore',
-    'core/widget/Widget',
-    'core/widget/LayoutParams',
-    'core/widget/webview/SubWebView',
-    'core/widget/map/Map',
-    'core/widget/menu/Menu',
+    '../../widget/Widget',
+    '../../widget/LayoutParams',
+    '../../widget/webview/SubWebView',
+    '../../widget/map/Map',
+    '../../widget/menu/Menu',
     'nativeWebView'
 ], function($, _, Widget, LayoutParams, SubWebView, Map, Menu, nativeWebView) {
     'use strict';

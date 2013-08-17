@@ -5,9 +5,9 @@
  */
 
 define([
-    'core/widget/Widget',
-    'core/widget/map/Map',
-    'core/widget/map/TileOverlay'
+    '../core/widget/Widget',
+    '../core/widget/map/Map',
+    '../core/widget/map/TileOverlay'
 ], function(Widget, Map, TileOverlay) {
     'use strict';
 

@@ -6,8 +6,8 @@
 
 define([
     'underscore',
-    'core/widget/Widget',
-    'core/widget/LayoutParams',
+    '../../widget/Widget',
+    '../../widget/LayoutParams',
     'nativeWebView'
 ], function(_, Widget, LayoutParams, nativeWebView) {
     'use strict';

@@ -6,10 +6,10 @@
 
 define([
     'jquery',
-    'core/utils/FunctionDam',
-    'core/widget/Widget',
-    'core/widget/webview/SubWebView',
-    'core/widget/webview/webview',
+    '../../../core/utils/FunctionDam',
+    '../../../core/widget/Widget',
+    '../../../core/widget/webview/SubWebView',
+    '../../../core/widget/webview/webview',
     './subwebview/constants'
 ], function($, FunctionDam, Widget, SubWebView, webview, subWebViewConstants) {
     'use strict';
@@ -193,7 +193,7 @@ define([
             webViewPlaceHolder.style.height = ITEM_HEIGHT + 'px';
             webViewPlaceHolder.setAttribute('data-otm-widget', 'SubWebView');
             webViewPlaceHolder.setAttribute('data-otm-url', 'extensions/extra-widgets/autocompletion/autocompletiondialog/subwebview/dialog.html');
-            webViewPlaceHolder.setAttribute('data-otm-entrypoint', 'extra-widgets/autocompletion/autocompletiondialog/subwebview/entryPoint');
+            webViewPlaceHolder.setAttribute('data-otm-entrypoint', 'extensions/extra-widgets/autocompletion/autocompletiondialog/subwebview/entryPoint');
             document.body.appendChild(webViewPlaceHolder);
 
             // Activate behaviors when the web view is created

@@ -4,7 +4,7 @@
  * @author marc.plouhinec@gmail.com (Marc Plouhinec)
  */
 
-define([], function() {
+define(function() {
     'use strict';
 
     /**

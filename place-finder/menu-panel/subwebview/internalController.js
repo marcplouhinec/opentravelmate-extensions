@@ -6,10 +6,10 @@
 
 define([
     'jquery',
-    'core/widget/Widget',
-    'core/widget/webview/SubWebView',
-    'core/widget/webview/webview',
-    'extra-widgets/autocompletion/AutoCompleteTextInput',
+    '../../../core/widget/Widget',
+    '../../../core/widget/webview/SubWebView',
+    '../../../core/widget/webview/webview',
+    '../../../extra-widgets/autocompletion/AutoCompleteTextInput',
     './constants'
 ], function($, Widget, SubWebView, webview, AutoCompleteTextInput, constants) {
     'use strict';

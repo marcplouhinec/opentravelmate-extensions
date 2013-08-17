@@ -5,7 +5,7 @@
  */
 
 define([
-    'place-finder/placeFinder',
+    '../place-finder/placeFinder',
     './GooglePlaceProvider'
 ], function(placeFinder, GooglePlaceProvider) {
     'use strict';

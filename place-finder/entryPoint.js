@@ -5,9 +5,9 @@
  */
 
 define([
-    'core/widget/Widget',
-    'core/widget/menu/Menu',
-    'core/widget/menu/MenuItem',
+    '../core/widget/Widget',
+    '../core/widget/menu/Menu',
+    '../core/widget/menu/MenuItem',
     './menu-panel/externalController'
 ], function(Widget, Menu, MenuItem, externalController) {
     'use strict';

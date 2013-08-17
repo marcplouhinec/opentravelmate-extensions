@@ -5,8 +5,8 @@
  */
 
 define([
-    'core/widget/Widget',
-    'core/widget/LayoutParams',
+    '../../widget/Widget',
+    '../../widget/LayoutParams',
     './LatLng',
     './Marker',
     './TileOverlay',

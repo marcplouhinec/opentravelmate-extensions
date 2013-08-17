@@ -5,8 +5,8 @@
  */
 
 define([
-    'core/widget/webview/webview',
-    'core/extension/extensionManager'
+    '../widget/webview/webview',
+    '../extension/extensionManager'
 ], function(webview, extensionManager) {
     'use strict';
 

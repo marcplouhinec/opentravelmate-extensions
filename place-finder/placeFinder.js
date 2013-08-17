@@ -5,7 +5,7 @@
  */
 
 define([
-    'place-commons/PlaceProvider',
+    '../place-commons/PlaceProvider',
     './menu-panel/externalController'
 ], function(PlaceProvider, externalController) {
     'use strict';

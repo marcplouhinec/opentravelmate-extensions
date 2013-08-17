@@ -5,8 +5,8 @@
  */
 
 define([
-    'place-commons/PlaceProvider',
-    'place-commons/Place'
+    '../place-commons/PlaceProvider',
+    '../place-commons/Place'
 ], function(PlaceProvider, Place) {
     'use strict';
 

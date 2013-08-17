@@ -7,8 +7,8 @@
 define([
     'jquery',
     'underscore',
-    'core/widget/Widget',
-    'core/widget/webview/webview',
+    '../../../../core/widget/Widget',
+    '../../../../core/widget/webview/webview',
     './constants',
     'jqueryGoogleFastButton'
 ], function($, _, Widget, webview, constants) {

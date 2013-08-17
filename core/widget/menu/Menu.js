@@ -6,9 +6,9 @@
 
 define([
     'underscore',
-    'core/widget/Widget',
-    'core/widget/LayoutParams',
-    'core/widget/menu/MenuItem',
+    '../../widget/Widget',
+    '../../widget/LayoutParams',
+    '../../widget/menu/MenuItem',
     'nativeMenu'
 ], function(_, Widget, LayoutParams, MenuItem, nativeMenu) {
     'use strict';

@@ -6,16 +6,16 @@
 
 // Define AMD incompatible libraries
 requirejs.config({
-	baseUrl: window.org_opentravelmate_widget_webview_webviewBaseUrl + 'extensions/',
+	baseUrl: window.org_opentravelmate_widget_webview_webviewBaseUrl,
     paths: {
-        'jquery': 'core/lib/jquery.min',
-        'underscore': 'core/lib/underscore.min',
-        'async': 'core/lib/async',
-        'googleFastButton': 'core/lib/google.fastbutton',
-        'jqueryGoogleFastButton': 'core/lib/jquery.google.fastbutton',
-        'nativeWebView': window.org_opentravelmate_widget_webview_webviewBaseUrl + 'native/widget/webview/nativeWebView',
-        'nativeMenu': window.org_opentravelmate_widget_webview_webviewBaseUrl + 'native/widget/menu/nativeMenu',
-        'nativeMap': window.org_opentravelmate_widget_webview_webviewBaseUrl + 'native/widget/map/nativeMap'
+        'jquery': 'extensions/core/lib/jquery.min',
+        'underscore': 'extensions/core/lib/underscore.min',
+        'async': 'extensions/core/lib/async',
+        'googleFastButton': 'extensions/core/lib/google.fastbutton',
+        'jqueryGoogleFastButton': 'extensions/core/lib/jquery.google.fastbutton',
+        'nativeWebView': 'native/widget/webview/nativeWebView',
+        'nativeMenu': 'native/widget/menu/nativeMenu',
+        'nativeMap': 'native/widget/map/nativeMap'
     },
     shim: {
         'jquery': {
@@ -35,8 +35,8 @@ requirejs.config({
 
 require([
     'jquery',
-    'core/widget/webview/webview',
-    'core/widget/webview/SubWebView',
+    'extensions/core/widget/webview/webview',
+    'extensions/core/widget/webview/SubWebView',
     window.org_opentravelmate_widget_webview_webviewEntrypoint],
 function($, webview, SubWebView, entrypoint) {
     'use strict';

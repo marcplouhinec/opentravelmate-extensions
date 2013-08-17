@@ -6,16 +6,16 @@
 
 define([
     'jquery',
-    'core/utils/FunctionDam',
-    'core/widget/Widget',
-    'core/widget/webview/SubWebView',
-    'core/widget/webview/webview',
-    'core/widget/map/Map',
-    'core/widget/map/LatLng',
-    'core/widget/map/Point',
-    'core/widget/map/Marker',
-    'extra-widgets/autocompletion/AutoCompleteTextInput',
-    'extra-widgets/autocompletion/autocompletiondialog/autoCompletionDialog',
+    '../../core/utils/FunctionDam',
+    '../../core/widget/Widget',
+    '../../core/widget/webview/SubWebView',
+    '../../core/widget/webview/webview',
+    '../../core/widget/map/Map',
+    '../../core/widget/map/LatLng',
+    '../../core/widget/map/Point',
+    '../../core/widget/map/Marker',
+    '../../extra-widgets/autocompletion/AutoCompleteTextInput',
+    '../../extra-widgets/autocompletion/autocompletiondialog/autoCompletionDialog',
     './subwebview/constants'
 ], function($, FunctionDam, Widget, SubWebView, webview, Map, LatLng, Point, Marker, AutoCompleteTextInput, autoCompletionDialog, subWebViewConstants) {
     'use strict';
@@ -69,7 +69,7 @@ define([
             webViewPlaceHolder.style.height = '50px';
             webViewPlaceHolder.setAttribute('data-otm-widget', 'SubWebView');
             webViewPlaceHolder.setAttribute('data-otm-url', 'extensions/place-finder/menu-panel/subwebview/menu-panel.html');
-            webViewPlaceHolder.setAttribute('data-otm-entrypoint', 'place-finder/menu-panel/subwebview/entryPoint');
+            webViewPlaceHolder.setAttribute('data-otm-entrypoint', 'extensions/place-finder/menu-panel/subwebview/entryPoint');
             document.body.appendChild(webViewPlaceHolder);
 
             // Activate behaviors when the web view is created

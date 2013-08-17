@@ -6,8 +6,8 @@
 
 define([
     'jquery',
-    'core/widget/webview/SubWebView',
-    'core/widget/webview/webview',
+    '../../core/widget/webview/SubWebView',
+    '../../core/widget/webview/webview',
     './autocompletiondialog/autoCompletionDialog'
 ], function($, SubWebView, webview, autoCompletionDialog) {
     'use strict';
