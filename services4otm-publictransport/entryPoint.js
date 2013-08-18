@@ -24,11 +24,11 @@ define([
         map.addTileOverlay(tileOverlay);
 
         // TEST
-        map.onTileDisplayed(function handleTileDisplayed(zoom, x, y) {
-            console.log('handleTileDisplayed(' + zoom + ', ' + x + ', ' + y + ')');
+        /*map.onTilesDisplayed(function handleTilesDisplayed(tileCoordinates) {
+            console.log('handleTilesDisplayed(' + JSON.stringify(tileCoordinates) + ')');
         });
-        map.onTileReleased(function handleTileReleased(zoom, x, y) {
-            console.log('handleTileReleased(' + zoom + ', ' + x + ', ' + y + ')');
-        });
+        map.onTilesReleased(function handleTilesReleased(tileCoordinates) {
+            console.log('handleTilesReleased(' + JSON.stringify(tileCoordinates) + ')');
+        });*/
     };
 });
