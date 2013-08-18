@@ -65,6 +65,24 @@ define([
     };
 
     /**
+     * Register a listener for the TILE DISPLAYED event.
+     *
+     * @param {function(zoo: Number, x: Number, y: Number)} listener
+     */
+    Map.prototype.onTileDisplayed = function(listener) {
+        // TODO
+    };
+
+    /**
+     * Register a listener for the TILE RELEASED event.
+     *
+     * @param {function(zoo: Number, x: Number, y: Number)} listener
+     */
+    Map.prototype.onTileReleased = function(listener) {
+        // TODO
+    };
+
+    /**
      * Build the native view object for the current widget.
      * 
      * @param {LayoutParams} layoutParams

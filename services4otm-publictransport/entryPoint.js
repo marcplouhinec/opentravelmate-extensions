@@ -19,8 +19,16 @@ define([
 
         var tileOverlay = new TileOverlay({
             'zIndex': 0,
-            'tileUrlPattern': 'http://www.services4otm.com/mapoverlay/publictransport/${zoom}_${x}_${y}.png'
+            'tileUrlPattern': 'http://www.services4otm.com/mapoverlay/publictransport/tile/${zoom}_${x}_${y}.png'
         });
         map.addTileOverlay(tileOverlay);
+
+        // TEST
+        map.onTileDisplayed(function handleTileDisplayed(zoom, x, y) {
+            console.log('handleTileDisplayed(' + zoom + ', ' + x + ', ' + y + ')');
+        });
+        map.onTileReleased(function handleTileReleased(zoom, x, y) {
+            console.log('handleTileReleased(' + zoom + ', ' + x + ', ' + y + ')');
+        });
     };
 });
