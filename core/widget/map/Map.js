@@ -85,8 +85,8 @@ define([
         nativeMap.observeTiles(this.id);
 
         // Call the listener with all the visible tile coordinates
-        var tileCoordinates = nativeMap.getDisplayedTileCoordinates(this.id);
-        listener(tileCoordinates);
+        var jsonTileCoordinates = nativeMap.getDisplayedTileCoordinates(this.id);
+        listener(JSON.parse(jsonTileCoordinates));
     };
 
     /**
