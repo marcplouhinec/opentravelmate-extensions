@@ -6,12 +6,16 @@
 
 define([
     '../core/widget/Widget',
+    '../core/widget/webview/webview',
     '../core/widget/map/Map',
     '../core/widget/map/TileOverlay',
     '../core/widget/map/LatLng',
+    '../core/widget/map/Point',
+    '../core/widget/map/Dimension',
     '../core/widget/map/Marker',
+    '../core/widget/map/UrlMarkerIcon',
     './datastore/datastoreService'
-], function(Widget, Map, TileOverlay, LatLng, Marker, datastoreService) {
+], function(Widget, webview, Map, TileOverlay, LatLng, Point, Dimension, Marker, UrlMarkerIcon, datastoreService) {
     'use strict';
 
     var mapOverlayController = {
@@ -62,7 +66,12 @@ define([
                     var waypoint = stopWithDrawingData.waypoint;
                     var marker = new Marker({
                         position: new LatLng(waypoint.latitude, waypoint.longitude),
-                        title: waypoint.stopName
+                        title: waypoint.stopName,
+                        icon: new UrlMarkerIcon({
+                            anchor: new Point(8,8),
+                            size: new Dimension(16, 16),
+                            url: webview.baseUrl + '/extensions/services4otm-publictransport/image/black_marker_icon.png'
+                        })
                     });
                     self._map.addMarker(marker);
                 });*/

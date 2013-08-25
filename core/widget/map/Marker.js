@@ -4,7 +4,7 @@
  * @author marc.plouhinec@gmail.com (Marc Plouhinec)
  */
 
-define(['./LatLng', './Point'], function(LatLng, Point) {
+define(['./LatLng', './Point', './MarkerIcon'], function(LatLng, Point, MarkerIcon) {
     'use strict';
 
     /**
@@ -20,6 +20,7 @@ define(['./LatLng', './Point'], function(LatLng, Point) {
      * @param {{
      *   position: LatLng,
      *   title: String,
+     *   icon: MarkerIcon=,
      *   anchorPoint: Point=,
      * }} options
      * @constructor
@@ -32,8 +33,8 @@ define(['./LatLng', './Point'], function(LatLng, Point) {
         this.position = options.position;
         /** @type {String} */
         this.title = options.title;
-        /** @type {?Point} */
-        this.anchorPoint = options.anchorPoint || null;
+        /** @type {?MarkerIcon} */
+        this.icon = options.icon || null;
     }
 
     return Marker;
