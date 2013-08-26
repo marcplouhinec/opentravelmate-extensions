@@ -20,8 +20,7 @@ define(['./LatLng', './Point', './MarkerIcon'], function(LatLng, Point, MarkerIc
      * @param {{
      *   position: LatLng,
      *   title: String,
-     *   icon: MarkerIcon=,
-     *   anchorPoint: Point=,
+     *   icon: MarkerIcon=
      * }} options
      * @constructor
      */
