@@ -47,6 +47,18 @@ define([
             this._map.onTilesReleased(function handleTilesReleased(tileCoordinates) {
                 self.releaseWaypoints(tileCoordinates);
             });
+
+            // Handle marker click
+            // TODO
+            /*this._map.onMarkerClick(function(marker) {
+                console.log('clicked marker: ' + marker.title);
+            });
+            this._map.onMarkerMouseEnter(function(marker) {
+                console.log('mouse enter: ' + marker.title);
+            });
+            this._map.onMarkerMouseLeave(function(marker) {
+                console.log('mouse leave: ' + marker.title);
+            });*/
         },
 
         /**

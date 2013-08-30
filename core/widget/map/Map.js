@@ -34,6 +34,21 @@ define([
              */
             'TILES_RELEASED': []
         };
+
+        this._markerListeners = {
+            /**
+             * @type {Array.<function(marker: Marker)>}
+             */
+            'CLICK': [],
+            /**
+             * @type {Array.<function(marker: Marker)>}
+             */
+            'MOUSE_ENTER': [],
+            /**
+             * @type {Array.<function(marker: Marker)>}
+             */
+            'MOUSE_LEAVE': []
+        };
     }
 
     Map.prototype = new Widget();
@@ -111,6 +126,51 @@ define([
     Map.prototype.fireTileEvent = function(eventType, tileCoordinates) {
         _.each(this._tileListeners[eventType], function(listener) {
             listener(tileCoordinates);
+        });
+    };
+
+    /**
+     * Register a listener for the CLICK event on the markers.
+     *
+     * @param {function(marker: Marker)} listener
+     */
+    Map.prototype.onMarkerClick = function(listener) {
+        this._markerListeners.CLICK.push(listener);
+        nativeMap.observeMarkers(this.id);
+    };
+
+    /**
+     * Register a listener for the MOUSE_ENTER event on the markers.
+     *
+     * @param {function(marker: Marker)} listener
+     */
+    Map.prototype.onMarkerMouseEnter = function(listener) {
+        this._markerListeners.MOUSE_ENTER.push(listener);
+        nativeMap.observeMarkers(this.id);
+    };
+
+    /**
+     * Register a listener for the MOUSE_LEAVE event on the markers.
+     *
+     * @param {function(marker: Marker)} listener
+     */
+    Map.prototype.onMarkerMouseLeave = function(listener) {
+        this._markerListeners.MOUSE_LEAVE.push(listener);
+        nativeMap.observeMarkers(this.id);
+    };
+
+    /**
+     * Fire a marker event to the listeners.
+     * Note: this function should be called by the nativeMap.
+     *
+     * @param {String} eventType
+     *     CLICK, MOUSE_ENTER or MOUSE_LEAVE.
+     * @param {Marker} marker
+     *     Related marker.
+     */
+    Map.prototype.fireMarkerEvent = function(eventType, marker) {
+        _.each(this._markerListeners[eventType], function(listener) {
+            listener(marker);
         });
     };
 
