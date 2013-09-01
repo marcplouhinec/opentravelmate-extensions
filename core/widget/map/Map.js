@@ -175,6 +175,27 @@ define([
     };
 
     /**
+     * Show an Info Window on top of the given marker with the given text.
+     *
+     * @param {Marker} marker
+     *     Info Window anchor.
+     * @param {String} content
+     *     Text displayed in the Info Window.
+     */
+    Map.prototype.showInfoWindow = function(marker, content) {
+        nativeMap.showInfoWindow(this.id, marker.id, content);
+    };
+
+    /**
+     * Register a listener for the CLICK event on the info window.
+     *
+     * @param {function(marker: Marker)} listener
+     */
+    Map.prototype.onInfoWindowClicked = function(listener) {
+        // TODO
+    };
+
+    /**
      * Build the native view object for the current widget.
      * 
      * @param {LayoutParams} layoutParams

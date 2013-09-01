@@ -52,6 +52,7 @@ define([
             // TODO
             /*this._map.onMarkerClick(function(marker) {
                 console.log('clicked marker: ' + marker.title);
+                self._map.showInfoWindow(marker, marker.title);
             });
             this._map.onMarkerMouseEnter(function(marker) {
                 console.log('mouse enter: ' + marker.title);
