@@ -49,6 +49,12 @@ define([
              */
             'MOUSE_LEAVE': []
         };
+
+        /**
+         * @type {Array.<function(marker: Marker)>}
+         * @private
+         */
+        this._infoWindowClickListeners = [];
     }
 
     Map.prototype = new Widget();
@@ -183,7 +189,7 @@ define([
      *     Text displayed in the Info Window.
      */
     Map.prototype.showInfoWindow = function(marker, content) {
-        nativeMap.showInfoWindow(this.id, marker.id, content);
+        nativeMap.showInfoWindow(this.id, JSON.stringify(marker), content);
     };
 
     /**
@@ -191,8 +197,21 @@ define([
      *
      * @param {function(marker: Marker)} listener
      */
-    Map.prototype.onInfoWindowClicked = function(listener) {
-        // TODO
+    Map.prototype.onInfoWindowClick = function(listener) {
+        this._infoWindowClickListeners.push(listener);
+    };
+
+    /**
+     * Fire a InfoWindow CLICK event to the listeners.
+     * Note: this function should be called by the nativeMap.
+     *
+     * @param {Marker} marker
+     *     Related marker.
+     */
+    Map.prototype.fireInfoWindowClickEvent = function(marker) {
+        _.each(this._infoWindowClickListeners, function(listener) {
+            listener(marker);
+        });
     };
 
     /**
