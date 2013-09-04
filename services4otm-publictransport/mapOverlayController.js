@@ -44,7 +44,7 @@ define([
             this._transparentMarkerIcon = new UrlMarkerIcon({
                 anchor: new Point(8,8),
                 size: new Dimension(16, 16),
-                url: webview.baseUrl + '/extensions/services4otm-publictransport/image/transparent_marker_icon.png'
+                url: webview.baseUrl + 'extensions/services4otm-publictransport/image/transparent_marker_icon.png'
             });
 
             // Create an overlay that displays public transport
