@@ -97,19 +97,23 @@ define([
                 return tileCoordinate.zoom + '_' + tileCoordinate.x + '_' + tileCoordinate.y;
             });
             datastoreService.findStopsWithDrawingDataByTileIds(tileIds, function(error, stopsWithDrawingData) {
-                _.each(stopsWithDrawingData, function(stopWithDrawingData) {
-                    // Create one transparent marker
+                // Create one transparent marker
+                var markers = /** @type {Array.<Marker>} */ _.map(stopsWithDrawingData, function(stopWithDrawingData) {
                     var waypoint = stopWithDrawingData.waypoint;
                     var marker = new Marker({
                         position: new LatLng(waypoint.latitude, waypoint.longitude),
                         title: waypoint.stopName,
                         icon: self._transparentMarkerIcon
                     });
-                    self._map.addMarker(marker);
+                    return marker;
+                });
 
-                    // Save the marker locally
+                // Save the marker locally
+                _.each(markers, function(marker) {
                     self._addToMarkersByTileId(marker, zoom);
                 });
+
+                self._map.addMarkers(markers);
             });
         },
 
@@ -126,9 +130,7 @@ define([
                 var tileId = tileCoordinate.zoom + '_' + tileCoordinate.x + '_' + tileCoordinate.y;
                 var storedMarkers = self._markersByTileId[tileId];
                 if (storedMarkers) {
-                    _.each(storedMarkers, function(storedMarker) {
-                        self._map.removeMarker(storedMarker);
-                    });
+                    self._map.removeMarkers(storedMarkers);
                 }
             });
         },

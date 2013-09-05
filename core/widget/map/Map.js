@@ -79,21 +79,21 @@ define([
     };
 
     /**
-     * Add a marker on the map.
+     * Add markers on the map.
      *
-     * @param {Marker} marker
+     * @param {Arrays.<Marker>} markers
      */
-    Map.prototype.addMarker = function(marker) {
-        nativeMap.addMarker(this.id, JSON.stringify(marker));
+    Map.prototype.addMarkers = function(markers) {
+        nativeMap.addMarkers(this.id, JSON.stringify(markers));
     };
 
     /**
-     * Remove a marker from the map.
+     * Remove markers from the map.
      *
-     * @param {Marker} marker
+     * @param {Arrays.<Marker>} markers
      */
-    Map.prototype.removeMarker = function(marker) {
-        nativeMap.removeMarker(this.id, JSON.stringify(marker));
+    Map.prototype.removeMarkers = function(markers) {
+        nativeMap.removeMarkers(this.id, JSON.stringify(markers));
     };
 
     /**
