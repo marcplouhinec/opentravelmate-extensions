@@ -204,15 +204,17 @@ define([
 
             // Create a marker per place
             var map  = /** @Type {Map} */ Widget.findById('map');
+            var markers = /** @Type {Array.<Marker>} */ [];
             _.each(places, function(place) {
                 var marker = new Marker({
                     position: new LatLng(place.latitude, place.longitude),
                     title: place.name
                 });
+                markers.push(marker);
                 markerById[marker.id] = marker;
                 placeByMarkerId[marker.id] = place;
-                map.addMarker(marker);
             });
+            map.addMarkers(markers);
 
             // Move the map to the first place
             map.panTo(new LatLng(places[0].latitude, places[0].longitude));
@@ -226,10 +228,7 @@ define([
         '_clearFoundPlaces': function() {
             var map  = /** @Type {Map} */ Widget.findById('map');
 
-            _.each(_.values(markerById), function(marker) {
-                map.removeMarker(marker);
-            });
-
+            map.removeMarkers(_.values(markerById));
             markerById = {};
             placeByMarkerId = {};
         }
