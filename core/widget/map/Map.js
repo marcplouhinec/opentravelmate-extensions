@@ -187,9 +187,15 @@ define([
      *     Info Window anchor.
      * @param {String} content
      *     Text displayed in the Info Window.
+     * @param {{x: Number, y: Number}} anchor=
+     *     Position of the the InfoWindow-base compared to the marker position.
+     *     Examples:
+     *       - (0,0) is the marker position.
+     *       - (0,1) is on the under of the marker position.
+     *       - (-1,0) is on the left of the marker position.
      */
-    Map.prototype.showInfoWindow = function(marker, content) {
-        nativeMap.showInfoWindow(this.id, JSON.stringify(marker), content);
+    Map.prototype.showInfoWindow = function(marker, content, anchor) {
+        nativeMap.showInfoWindow(this.id, JSON.stringify(marker), content, JSON.stringify(anchor ? anchor : null));
     };
 
     /**

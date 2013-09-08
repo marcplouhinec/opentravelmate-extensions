@@ -37,6 +37,21 @@ define([
         '_placeProviders': [],
 
         /**
+         * Initialize the external controller.
+         */
+        'init': function() {
+            var self = this;
+
+            var map  = /** @Type {Map} */ Widget.findById('map');
+            map.onMarkerClick(function handlePlaceMarkerClick(marker) {
+                var place = placeByMarkerId[marker.id];
+                if (place) {
+                    self._onPlaceMarkerClicked(marker, place);
+                }
+            });
+        },
+
+        /**
          * Register a PlaceProvider.
          *
          * @param {PlaceProvider} placeProvider
@@ -231,6 +246,17 @@ define([
             map.removeMarkers(_.values(markerById));
             markerById = {};
             placeByMarkerId = {};
+        },
+
+        /**
+         * Function called when a place marker has been clicked.
+         *
+         * @param {Marker} marker
+         * @param {Place} place
+         */
+        '_onPlaceMarkerClicked': function(marker, place) {
+            var map  = /** @Type {Map} */ Widget.findById('map');
+            map.showInfoWindow(marker, place.name);
         }
     };
 

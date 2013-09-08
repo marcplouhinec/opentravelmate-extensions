@@ -15,8 +15,9 @@ define([
     '../core/widget/map/Marker',
     '../core/widget/map/UrlMarkerIcon',
     '../core/widget/map/projectionUtils',
-    './datastore/datastoreService'
-], function(Widget, webview, Map, TileOverlay, LatLng, Point, Dimension, Marker, UrlMarkerIcon, projectionUtils, datastoreService) {
+    './datastore/datastoreService',
+    './datastore/Waypoint'
+], function(Widget, webview, Map, TileOverlay, LatLng, Point, Dimension, Marker, UrlMarkerIcon, projectionUtils, datastoreService, Waypoint) {
     'use strict';
 
     var mapOverlayController = {
@@ -34,6 +35,12 @@ define([
         '_markersByTileId': {},
 
         /**
+         * @type {Object.<String, Waypoint>}
+         * @private
+         */
+        '_waypointByMarkerId': {},
+
+        /**
          * Initialize the controller.
          */
         init: function() {
@@ -44,7 +51,7 @@ define([
             this._transparentMarkerIcon = new UrlMarkerIcon({
                 anchor: new Point(8,8),
                 size: new Dimension(16, 16),
-                url: webview.baseUrl + 'extensions/services4otm-publictransport/image/transparent_marker_icon.png'
+                url: webview.baseUrl + 'extensions/services4otm-publictransport/image/black_marker_icon.png'
             });
 
             // Create an overlay that displays public transport
@@ -63,8 +70,11 @@ define([
             });
 
             // Handle marker click
-            this._map.onMarkerClick(function(marker) {
-                self._map.showInfoWindow(marker, marker.title);
+            this._map.onMarkerClick(function handleWaypointMarkerClick(marker) {
+                var waypoint = self._waypointByMarkerId[marker.id];
+                if (waypoint) {
+                    self._map.showInfoWindow(marker, waypoint.stopName, {x: 0, y: 0});
+                }
             });
 
             // TODO
@@ -105,6 +115,7 @@ define([
                         title: waypoint.stopName,
                         icon: self._transparentMarkerIcon
                     });
+                    self._waypointByMarkerId[marker.id] = waypoint;
                     return marker;
                 });
 

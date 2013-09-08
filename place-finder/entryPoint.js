@@ -25,6 +25,9 @@ define([
         var menu = /** @type {Menu} */ Widget.findById('main-menu');
         menu.addMenuItem(menuItem);
 
+        // Initialize the externalController
+        externalController.init();
+
         // Listen to the menu item click event
         menuItem.onClick(function() {
             // Show the place finder web view.
