@@ -44,7 +44,8 @@ function($, webview, SubWebView, entrypoint) {
     $(document).ready(function() {
         // Create the current WebView
         webview.id = window.org_opentravelmate_widget_webview_webviewId;
-        webview.baseUrl = org_opentravelmate_widget_webview_webviewBaseUrl;
+        webview.baseUrl = window.org_opentravelmate_widget_webview_webviewBaseUrl;
+        webview.additionalParameters = window.org_opentravelmate_widget_webview_additionalParameters;
 
         document.body.style.overflow = 'hidden';
 

@@ -15,9 +15,10 @@ define([
     '../core/widget/map/Marker',
     '../core/widget/map/UrlMarkerIcon',
     '../core/widget/map/projectionUtils',
+    '../extra-widgets/dialogbox/DialogBox',
     './datastore/datastoreService',
     './datastore/Waypoint'
-], function(Widget, webview, Map, TileOverlay, LatLng, Point, Dimension, Marker, UrlMarkerIcon, projectionUtils, datastoreService, Waypoint) {
+], function(Widget, webview, Map, TileOverlay, LatLng, Point, Dimension, Marker, UrlMarkerIcon, projectionUtils, DialogBox, datastoreService, Waypoint) {
     'use strict';
 
     var mapOverlayController = {
@@ -84,9 +85,18 @@ define([
             //this._map.onMarkerMouseLeave(function(marker) {
             //    console.log('mouse leave: ' + marker.title);
             //});
-            //this._map.onInfoWindowClick(function(marker) {
-            //    console.log('onInfoWindowClick: ' + marker.title);
-            //});
+            this._map.onInfoWindowClick(function(marker) {
+                var waypoint = self._waypointByMarkerId[marker.id];
+                if (waypoint) {
+                    var waypointSelectionDialog = new DialogBox({
+                        title: marker.title,
+                        iconUrl: 'extensions/services4otm-publictransport/waypoint-selection-dialog/ic_more_info_light.png',
+                        contentUrl: 'extensions/services4otm-publictransport/waypoint-selection-dialog/content.html',
+                        height: 200
+                    });
+                    waypointSelectionDialog.open();
+                }
+            });
         },
 
         /**

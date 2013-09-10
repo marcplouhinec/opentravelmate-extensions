@@ -49,6 +49,13 @@ define([
         '_externalEventListeners': [],
 
         /**
+         * SubWebView placeholder "data-otm-*" attributes.
+         *
+         * @type {Object.<String, String>}
+         */
+        'additionalParameters': {},
+
+        /**
          * Fire an event to a listener that is outside of the WebView.
          *
          * @param {String} eventName
