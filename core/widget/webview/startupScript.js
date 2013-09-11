@@ -34,32 +34,30 @@ requirejs.config({
 });
 
 require([
-    'jquery',
+    'extensions/core/utils/browserUtils',
     'extensions/core/widget/webview/webview',
     'extensions/core/widget/webview/SubWebView',
     window.org_opentravelmate_widget_webview_webviewEntrypoint],
-function($, webview, SubWebView, entrypoint) {
+function(browserUtils, webview, SubWebView, entrypoint) {
     'use strict';
 
-    $(document).ready(function() {
-        // Create the current WebView
-        webview.id = window.org_opentravelmate_widget_webview_webviewId;
-        webview.baseUrl = window.org_opentravelmate_widget_webview_webviewBaseUrl;
-        webview.additionalParameters = window.org_opentravelmate_widget_webview_additionalParameters;
+    // Create the current WebView
+    webview.id = window.org_opentravelmate_widget_webview_webviewId;
+    webview.baseUrl = window.org_opentravelmate_widget_webview_webviewBaseUrl;
+    webview.additionalParameters = window.org_opentravelmate_widget_webview_additionalParameters;
 
-        document.body.style.overflow = 'hidden';
+    document.body.style.overflow = 'hidden';
 
-        // Call the entry point
-        entrypoint();
+    // Call the entry point
+    entrypoint();
 
-        // Fire the create event
-        webview.fireExternalEvent(SubWebView.CREATE_EVENT, {
-            id: webview.id
-        });
+    // Fire the create event
+    webview.fireExternalEvent(SubWebView.CREATE_EVENT, {
+        id: webview.id
+    });
 
-        // Update the layout when the page is resized
-        $(window).resize(function resizeWindow() {
-            webview.layout();
-        });
+    // Update the layout when the page is resized
+    browserUtils.onWindowResize(function resizeWindow() {
+        webview.layout();
     });
 });

@@ -6,9 +6,8 @@
 
 define([
     '../utils/I18nError',
-    '../utils/ErrorCode',
-    '../widget/LayoutParams'],
-function(I18nError, ErrorCode, LayoutParams) {
+    '../utils/ErrorCode'
+], function(I18nError, ErrorCode) {
     'use strict';
 
     /**

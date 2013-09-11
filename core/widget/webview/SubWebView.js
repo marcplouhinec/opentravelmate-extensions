@@ -5,11 +5,9 @@
  */
 
 define([
-    'underscore',
     '../../widget/Widget',
-    '../../widget/LayoutParams',
     'nativeWebView'
-], function(_, Widget, LayoutParams, nativeWebView) {
+], function(Widget, nativeWebView) {
     'use strict';
 
     /**
@@ -125,7 +123,7 @@ define([
 
         listeners.push({
             listener: listener,
-            listenOnce: _.isBoolean(listenOnce) ? listenOnce : true
+            listenOnce: typeof listenOnce === 'boolean' ? listenOnce : true
         });
     };
 
@@ -160,11 +158,15 @@ define([
     SubWebView._fireEvent = function(eventName, id) {
         var listeners = SubWebView._eventListeners[eventName][id];
         if (listeners) {
-            listeners = _.filter(listeners, function(/** @type {{listener: Function, listenOnce: Boolean}} */listenerInfo) {
+            var permanentListeners = [];
+            for (var i = 0; i < listeners.length; i += 1) {
+                var listenerInfo = /** @type {{listener: Function, listenOnce: Boolean}} */ listeners[i];
                 listenerInfo.listener();
-                return !listenerInfo.listenOnce;
-            });
-            SubWebView._eventListeners[eventName][id] = listeners;
+                if (!listenerInfo.listenOnce) {
+                    permanentListeners.push(listenerInfo);
+                }
+            }
+            SubWebView._eventListeners[eventName][id] = permanentListeners;
         }
     };
 
@@ -207,9 +209,9 @@ define([
     SubWebView.prototype.fireEventFromInternal = function(eventName, payload) {
         var listeners = this._internalEventListeners[eventName];
         if (listeners) {
-            _.each(listeners, function(listener) {
-                listener(payload);
-            });
+            for (var i = 0; i < listeners.length; i += 1) {
+                listeners[i](payload);
+            }
         }
     };
 

@@ -5,10 +5,11 @@
  */
 
 define([
-    'jquery',
+    'googleFastButton',
+    '../../../core/utils/browserUtils',
     '../../../core/widget/webview/webview',
     './constants'
-], function($, webview, constants) {
+], function(FastButton, browserUtils, webview, constants) {
     'use strict';
 
     var internalController = {
@@ -24,7 +25,7 @@ define([
             var divTitleLabel = /** @type {HTMLDivElement} */ document.getElementById('title-label');
 
             // Set the dialog box icon
-            $(divTitleLabel).text(title);
+            divTitleLabel.textContent = title;
             if (iconUrl) {
                 var divTitleIcon = /** @type {HTMLDivElement} */ document.getElementById('title-icon');
                 divTitleIcon.style.display = 'block';
@@ -37,18 +38,14 @@ define([
 
             // Set the dialog box content
             if (contentUrl) {
-                $.get('../../../../' + contentUrl).done(function(contentData) {
-                    $('#dialogbox-content').html(contentData);
-                }).fail(function() {
-                    $('#dialogbox-content').html('Error: unable to load ' + contentUrl + '.');
+                browserUtils.getText('../../../../' + contentUrl, function(responseText) {
+                    var divDialogContent = /** @type {HTMLDivElement} */ document.getElementById('dialogbox-content');
+                    divDialogContent.innerHTML = responseText;
                 });
             }
 
             // Fire an external event when the close button is pressed
-            $('#close-button').bind('touchstart click', function(event) {
-                event.stopPropagation();
-                event.preventDefault();
-
+            new FastButton(document.getElementById('close-button'), function() {
                 webview.fireExternalEvent(constants.DIALOGBOX_CLOSE_EVENT);
             });
         }
