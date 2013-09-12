@@ -14,38 +14,40 @@ body {
     top: 0px;
     left: 0px;
     right: 0px;
-    height: 44px;
+    height: 64px;
     border-bottom: 2px solid #0099cc;
 }
 
 #title-icon {
     display: none;
     position: absolute;
-    left: 5px;
-    top: 2px;
+    left: 12px;
+    top: 12px;
     height: 40px;
     width: 40px;
 }
 
 #title-label {
     position: absolute;
-    left: 5px;
-    top: 8px;
-    right: 44px;
+    left: 12px;
+    top: 16px;
+    right: 64px;
     bottom: 8px;
-    font-size: 20px;
+    font-size: 24px;
     color: #0099cc;
 }
 
 #close-button {
     position: absolute;
-    right: 2px;
-    top: 2px;
+    right: 10px;
+    top: 10px;
+    width: 44px;
+    height: 44px;
 }
 
 #dialogbox-content {
     position: absolute;
-    top: 46px;
+    top: 66px;
     bottom: 0px;
     left: 0px;
     right: 0px;

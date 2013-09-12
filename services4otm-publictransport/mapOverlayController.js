@@ -92,7 +92,7 @@ define([
                         title: marker.title,
                         iconUrl: 'extensions/services4otm-publictransport/waypoint-selection-dialog/ic_more_info_light.png',
                         contentUrl: 'extensions/services4otm-publictransport/waypoint-selection-dialog/content.html',
-                        height: 200
+                        height: 215
                     });
                     waypointSelectionDialog.open();
                 }

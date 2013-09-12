@@ -33,7 +33,7 @@ define([
                 imageElement.src = '../../../../' + iconUrl;
                 imageElement.style.height = '100%';
                 divTitleIcon.appendChild(imageElement);
-                divTitleLabel.style.left = '50px';
+                divTitleLabel.style.left = '60px';
             }
 
             // Set the dialog box content
