@@ -20,6 +20,7 @@ define([
             var title = /** @type {String} */ webview.additionalParameters['dialogboxtitle'];
             var iconUrl = /** @type {String=} */ webview.additionalParameters['dialogboxiconurl'];
             var contentUrl = /** @type {String=} */ webview.additionalParameters['dialogboxcontenturl'];
+            var stylesheetUrls = /** @type {Array.<String>} */ JSON.parse(webview.additionalParameters['dialogboxstylesheeturls']);
 
             // Set the dialog box title
             var divTitleLabel = /** @type {HTMLDivElement} */ document.getElementById('title-label');
@@ -34,6 +35,17 @@ define([
                 imageElement.style.height = '100%';
                 divTitleIcon.appendChild(imageElement);
                 divTitleLabel.style.left = '60px';
+            }
+
+            // Set the dialog box stylesheets
+            for (var i = 0; i < stylesheetUrls.length; i += 1) {
+                var stylesheetUrl = stylesheetUrls[i];
+                var linkElement = /** @type {HTMLLinkElement} */ document.createElement('link');
+                linkElement.href = '../../../../' + stylesheetUrl;
+                linkElement.rel = 'stylesheet';
+                linkElement.type = 'text/css';
+                linkElement.media = 'screen';
+                document.getElementsByTagName('head')[0].appendChild(linkElement);
             }
 
             // Set the dialog box content

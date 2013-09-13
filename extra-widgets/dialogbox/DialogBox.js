@@ -31,6 +31,7 @@ define([
      *     title: String=,
      *     iconUrl:String=,
      *     contentUrl:String=,
+     *     stylesheetUrls: Array.<String>=,
      *     width:Number=,
      *     height:Number=
      * }} options
@@ -57,6 +58,11 @@ define([
          * @type {String}
          */
         this.contentUrl = options.contentUrl || null;
+
+        /**
+         * @type {Array.<String>}
+         */
+        this.stylesheetUrls = options.stylesheetUrls || [];
 
         /**
          * @type {Number}
@@ -98,6 +104,7 @@ define([
         this._subWebViewPlaceHolder.setAttribute('data-otm-dialogboxtitle', this.title);
         this._subWebViewPlaceHolder.setAttribute('data-otm-dialogboxiconurl', this.iconUrl);
         this._subWebViewPlaceHolder.setAttribute('data-otm-dialogboxcontenturl', this.contentUrl);
+        this._subWebViewPlaceHolder.setAttribute('data-otm-dialogboxstylesheeturls', JSON.stringify(this.stylesheetUrls));
         document.body.appendChild(this._subWebViewPlaceHolder);
 
         // Register event handlers when the SubWebView is loaded
