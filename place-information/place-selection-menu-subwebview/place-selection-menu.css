@@ -37,7 +37,7 @@ body {
     right: 64px;
     bottom: 8px;
     font-size: 24px;
-    color: #0099cc;
+    color: #00bfff;
 }
 
 #close-button {
@@ -63,6 +63,10 @@ body {
     cursor: pointer;
 }
 
+#content .item:hover, #content .item:active {
+    background-color: #8e8f8d;
+}
+
 #content .item-icon {
     position: absolute;
     display: block;
@@ -72,7 +76,6 @@ body {
 }
 
 #content .item-label {
-    color: #BEBEBE;
     position: absolute;
     left: 50px;
     right: 60px;
