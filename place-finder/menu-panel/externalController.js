@@ -16,8 +16,11 @@ define([
     '../../core/widget/map/Marker',
     '../../extra-widgets/autocompletion/AutoCompleteTextInput',
     '../../extra-widgets/autocompletion/autocompletiondialog/autoCompletionDialog',
+    '../../place-information/placeSelectionMenu',
     './subwebview/constants'
-], function($, FunctionDam, Widget, SubWebView, webview, Map, LatLng, Point, Marker, AutoCompleteTextInput, autoCompletionDialog, subWebViewConstants) {
+], function(
+    $, FunctionDam, Widget, SubWebView, webview, Map, LatLng, Point, Marker,
+    AutoCompleteTextInput, autoCompletionDialog, placeSelectionMenu, subWebViewConstants) {
     'use strict';
 
     var webViewReadyDam = new FunctionDam();
@@ -47,6 +50,12 @@ define([
                 var place = placeByMarkerId[marker.id];
                 if (place) {
                     self._onPlaceMarkerClicked(marker, place);
+                }
+            });
+            map.onInfoWindowClick(function(marker) {
+                var place = placeByMarkerId[marker.id];
+                if (place) {
+                    placeSelectionMenu.open(place);
                 }
             });
         },

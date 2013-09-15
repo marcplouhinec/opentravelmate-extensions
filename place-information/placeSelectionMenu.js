@@ -10,8 +10,9 @@ define([
     '../core/widget/webview/webview',
     '../core/widget/webview/SubWebView',
     '../place-commons/Place',
+    './placeDetails',
     './place-selection-menu-subwebview/constants'
-], function(browserUtils, Widget, webview, SubWebView, Place, subWebViewConstants) {
+], function(browserUtils, Widget, webview, SubWebView, Place, placeDetails, subWebViewConstants) {
 
     var placeSelectionMenu = {
         /**
@@ -19,6 +20,12 @@ define([
          * @private
          */
         '_subWebViewPlaceHolder': null,
+
+        /**
+         * @type {Place}
+         * @private
+         */
+        '_place': null,
 
         /**
          * Open the menu popup for the given place.
@@ -31,6 +38,7 @@ define([
             }
 
             var self = this;
+            this._place = place;
             var windowDimension = browserUtils.getWindowDimension();
             var subWebViewDimension = {
                 width: Math.round(windowDimension.width * 0.9),
@@ -56,6 +64,15 @@ define([
                 subWebView.onInternalEvent(subWebViewConstants.CLOSE_EVENT, function() {
                     self._handleCloseEvent();
                 });
+                subWebView.onInternalEvent(subWebViewConstants.GO_THERE_SELECTED_EVENT, function() {
+                    self._handleItemSelectionEvent(subWebViewConstants.GO_THERE_SELECTED_EVENT);
+                });
+                subWebView.onInternalEvent(subWebViewConstants.FROM_THERE_SELECTED_EVENT, function() {
+                    self._handleItemSelectionEvent(subWebViewConstants.FROM_THERE_SELECTED_EVENT);
+                });
+                subWebView.onInternalEvent(subWebViewConstants.MORE_INFORMATION, function() {
+                    self._handleItemSelectionEvent(subWebViewConstants.MORE_INFORMATION);
+                });
             });
 
             webview.layout();
@@ -80,6 +97,26 @@ define([
         '_handleCloseEvent': function() {
             // Close the dialog box
             this.close();
+        },
+
+        /**
+         * Handle the ITEM SELECTION event.
+         *
+         * @private
+         */
+        '_handleItemSelectionEvent': function(eventName) {
+            switch (eventName) {
+                case subWebViewConstants.GO_THERE_SELECTED_EVENT:
+                    //TODO
+                    break;
+                case subWebViewConstants.FROM_THERE_SELECTED_EVENT:
+                    //TODO
+                    break;
+                case subWebViewConstants.MORE_INFORMATION:
+                    this.close();
+                    placeDetails.open(this._place);
+                    break;
+            }
         }
     };
 
