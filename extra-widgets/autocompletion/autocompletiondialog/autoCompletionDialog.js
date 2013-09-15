@@ -192,7 +192,7 @@ define([
             webViewPlaceHolder.style.width = this._width + 'px';
             webViewPlaceHolder.style.height = ITEM_HEIGHT + 'px';
             webViewPlaceHolder.setAttribute('data-otm-widget', 'SubWebView');
-            webViewPlaceHolder.setAttribute('data-otm-url', 'extensions/extra-widgets/autocompletion/autocompletiondialog/subwebview/dialog.html');
+            webViewPlaceHolder.setAttribute('data-otm-url', 'extensions/extra-widgets/autocompletion/autocompletiondialog/subwebview/place-selection-menu.html');
             webViewPlaceHolder.setAttribute('data-otm-entrypoint', 'extensions/extra-widgets/autocompletion/autocompletiondialog/subwebview/entryPoint');
             document.body.appendChild(webViewPlaceHolder);
 

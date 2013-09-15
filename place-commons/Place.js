@@ -38,7 +38,7 @@ define(function() {
         /**
          * Place name.
          *
-         * @type {Number}
+         * @type {String}
          */
         this.name = options.name;
 

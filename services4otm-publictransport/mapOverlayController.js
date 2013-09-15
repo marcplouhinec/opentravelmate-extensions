@@ -15,10 +15,13 @@ define([
     '../core/widget/map/Marker',
     '../core/widget/map/UrlMarkerIcon',
     '../core/widget/map/projectionUtils',
-    '../extra-widgets/dialogbox/DialogBox',
+    '../place-commons/Place',
+    '../place-information/placeSelectionMenu',
     './datastore/datastoreService',
     './datastore/Waypoint'
-], function(Widget, webview, Map, TileOverlay, LatLng, Point, Dimension, Marker, UrlMarkerIcon, projectionUtils, DialogBox, datastoreService, Waypoint) {
+], function(
+    Widget, webview, Map, TileOverlay, LatLng, Point, Dimension, Marker, UrlMarkerIcon,
+    projectionUtils, Place, placeSelectionMenu, datastoreService, Waypoint) {
     'use strict';
 
     var mapOverlayController = {
@@ -43,8 +46,10 @@ define([
 
         /**
          * Initialize the controller.
+         *
+         * @param {Services4otmPlaceProvider} services4otmPlaceProvider
          */
-        init: function() {
+        init: function(services4otmPlaceProvider) {
             var self = this;
             this._map = /** @type {Map} */ Widget.findById('map');
 
@@ -88,14 +93,16 @@ define([
             this._map.onInfoWindowClick(function(marker) {
                 var waypoint = self._waypointByMarkerId[marker.id];
                 if (waypoint) {
-                    var waypointSelectionDialog = new DialogBox({
-                        title: marker.title,
-                        iconUrl: 'extensions/services4otm-publictransport/waypoint-selection-dialog/ic_more_info_light.png',
-                        contentUrl: 'extensions/services4otm-publictransport/waypoint-selection-dialog/content.html',
-                        stylesheetUrls: ['extensions/services4otm-publictransport/waypoint-selection-dialog/content.css'],
-                        height: 215
-                    });
-                    waypointSelectionDialog.open();
+                    placeSelectionMenu.open(new Place({
+                        latitude: waypoint.latitude,
+                        longitude: waypoint.longitude,
+                        name: waypoint.stopName,
+                        accuracy: 1,
+                        placeProvider: services4otmPlaceProvider,
+                        additionalParameters: {
+                            waypointId: waypoint.id
+                        }
+                    }));
                 }
             });
         },

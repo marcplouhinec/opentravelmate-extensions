@@ -5,14 +5,16 @@
  */
 
 define([
-    './mapOverlayController'
-], function(mapOverlayController) {
+    './mapOverlayController',
+    './Services4otmPlaceProvider'
+], function(mapOverlayController, Services4otmPlaceProvider) {
     'use strict';
 
     /**
      * Extension entry point.
      */
     return function main() {
-        mapOverlayController.init();
+        var services4otmPlaceProvider = new Services4otmPlaceProvider();
+        mapOverlayController.init(services4otmPlaceProvider);
     };
 });

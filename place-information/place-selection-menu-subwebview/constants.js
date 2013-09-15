@@ -9,12 +9,20 @@ define(function() {
 
     var constants = {
         /**
+         * SubWebView ID.
+         *
+         * @const
+         * @type {String}
+         */
+        'SUBWEBVIEW_ID': 'waypoint-selection-menu-subwebview',
+
+        /**
          * "Close" event.
          *
          * @const
          * @type {String}
          */
-        "DIALOGBOX_CLOSE_EVENT": 'dialogbox-close-event'
+        'CLOSE_EVENT': 'waypoint-selection-menu-close-event'
     };
 
     return constants;

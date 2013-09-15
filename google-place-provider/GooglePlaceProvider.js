@@ -1,5 +1,5 @@
 /**
- * Place finder entry point.
+ * Provide places by using Google services.
  *
  * @author marc.plouhinec@gmail.com (Marc Plouhinec)
  */
