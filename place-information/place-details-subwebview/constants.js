@@ -17,6 +17,14 @@ define(function() {
         'SUBWEBVIEW_ID': 'place-details-subwebview',
 
         /**
+         * Place provider SubWebView ID.
+         *
+         * @const
+         * @type {String}
+         */
+        'PLACE_PROVIDER_SUBWEBVIEW_ID': 'place-provider-place-details-subwebview',
+
+        /**
          * "Close" event.
          *
          * @const

@@ -39,5 +39,14 @@ define([
         throw new I18nError({ code: ErrorCode.UNIMPLEMENTED_METHOD, i18nArgs: ['PlaceProvider.prototype.findPlace'] });
     };
 
+    /**
+     * Show the details of the given place in a new SubWebView (with the provided place holder).
+     *
+     * @param {HTMLDivElement} subWebViewPlaceHolder
+     */
+    PlaceProvider.prototype.showPlaceDetails = function(subWebViewPlaceHolder) {
+        throw new I18nError({ code: ErrorCode.UNIMPLEMENTED_METHOD, i18nArgs: ['PlaceProvider.prototype.showPlaceDetails'] });
+    };
+
     return PlaceProvider;
 });

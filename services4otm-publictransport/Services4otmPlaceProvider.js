@@ -44,5 +44,19 @@ define([
         callback([]);
     };
 
+    /**
+     * Show the details of the given place in a new SubWebView (with the provided place holder).
+     *
+     * @param {HTMLDivElement} subWebViewPlaceHolder
+     */
+    Services4otmPlaceProvider.prototype.showPlaceDetails = function(subWebViewPlaceHolder) {
+        subWebViewPlaceHolder.setAttribute(
+            'data-otm-url',
+            'extensions/services4otm-publictransport/services4otm-place-details-subwebview/services4otm-place-details.html');
+        subWebViewPlaceHolder.setAttribute(
+            'data-otm-entrypoint',
+            'extensions/services4otm-publictransport/services4otm-place-details-subwebview/entryPoint');
+    };
+
     return Services4otmPlaceProvider;
 });
