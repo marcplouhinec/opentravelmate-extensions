@@ -9,8 +9,9 @@ define([
     'underscore',
     './Waypoint',
     './WaypointDrawingInfo',
+    './Line',
     './WSError'
-], function($, _, Waypoint, WaypointDrawingInfo, WSError) {
+], function($, _, Waypoint, WaypointDrawingInfo, Line, WSError) {
     'use strict';
 
     /**
@@ -62,6 +63,30 @@ define([
                 });
 
                 callback(undefined, stopsWithDrawingData);
+            });
+        },
+
+        /**
+         * Find the lines and their directions (waypoints) that go through the given waypoint.
+         *
+         * @param {String} waypointId
+         * @param {function(error: WSError|undefined, lines: Array.<Line>, directions: Array.<Waypoint>)} callback
+         */
+        'findLinesAndDirectionsByWaypoint': function(waypointId, callback) {
+            var url = 'http://www.services4otm.com/datastore/publictransport/line/findLinesAndDirectionsByWaypoint/' + waypointId + '?callback=?';
+            $.getJSON(url).done(function(result) {
+                if (!result.success) {
+                    return callback(new WSError(result.errorcode, result.errormessage), [], []);
+                }
+
+                var lines = _.map(result.lines, function(line) {
+                    return new Line(line);
+                });
+                var directions = _.map(result.directions, function(direction) {
+                    return addWaypointToCache(new Waypoint(direction));
+                });
+
+                callback(undefined, lines, directions);
             });
         }
     };

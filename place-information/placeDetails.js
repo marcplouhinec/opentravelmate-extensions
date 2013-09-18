@@ -61,7 +61,7 @@ define([
             this._placeProviderSubWebViewPlaceHolder.style.top = '66px';
             this._placeProviderSubWebViewPlaceHolder.style.bottom = '0px';
             this._placeProviderSubWebViewPlaceHolder.setAttribute('data-otm-widget', 'SubWebView');
-            place.placeProvider.showPlaceDetails(this._placeProviderSubWebViewPlaceHolder);
+            place.placeProvider.showPlaceDetails(place, this._placeProviderSubWebViewPlaceHolder);
             document.body.appendChild(this._placeProviderSubWebViewPlaceHolder);
 
             // Register event handlers when the SubWebView is loaded

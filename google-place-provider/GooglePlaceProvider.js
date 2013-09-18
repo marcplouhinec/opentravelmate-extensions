@@ -79,9 +79,10 @@ define([
     /**
      * Show the details of the given place in a new SubWebView (with the provided place holder).
      *
+     * @param {Place} place
      * @param {HTMLDivElement} subWebViewPlaceHolder
      */
-    GooglePlaceProvider.prototype.showPlaceDetails = function(subWebViewPlaceHolder) {
+    GooglePlaceProvider.prototype.showPlaceDetails = function(place, subWebViewPlaceHolder) {
         subWebViewPlaceHolder.setAttribute('data-otm-url', 'extensions/google-place-provider/google-place-details-subwebview/google-place-details.html');
         subWebViewPlaceHolder.setAttribute('data-otm-entrypoint', 'extensions/google-place-provider/google-place-details-subwebview/entryPoint');
     };

@@ -8,7 +8,13 @@ define(function() {
     'use strict';
 
     var constants = {
-
+        /**
+         * "Place data loaded" event.
+         *
+         * @const
+         * @type {String}
+         */
+        'PLACE_DATA_LOADED_EVENT': 'services4otm-place-details-place-data-loaded-event'
     };
 
     return constants;

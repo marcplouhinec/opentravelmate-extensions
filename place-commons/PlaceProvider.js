@@ -42,9 +42,10 @@ define([
     /**
      * Show the details of the given place in a new SubWebView (with the provided place holder).
      *
+     * @param {Place} place
      * @param {HTMLDivElement} subWebViewPlaceHolder
      */
-    PlaceProvider.prototype.showPlaceDetails = function(subWebViewPlaceHolder) {
+    PlaceProvider.prototype.showPlaceDetails = function(place, subWebViewPlaceHolder) {
         throw new I18nError({ code: ErrorCode.UNIMPLEMENTED_METHOD, i18nArgs: ['PlaceProvider.prototype.showPlaceDetails'] });
     };
 
