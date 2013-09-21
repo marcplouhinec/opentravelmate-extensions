@@ -2,3 +2,22 @@ body {
     padding: 0;
     margin: 0;
 }
+
+#line-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 8px;
+}
+
+.line-name {
+    text-align: left;
+}
+.line-color-box {
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    border: 1px solid black;
+}
+#line-name-title, .line-color-box {
+    margin-left: 8px;
+}

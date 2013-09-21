@@ -8,7 +8,39 @@
     <link rel="stylesheet" href="services4otm-place-details.css" type="text/css" media="screen"/>
 </head>
 <body class="otm-panel">
-    <div id="message" style="margin: 8px;">TODO: Display lines</div>
-</table>
+    <table id="line-table">
+        <tr>
+            <th class="line-name"><span id="line-name-title">#</span></th>
+            <th>Line direction</th>
+            <th>&nbsp;</th>
+        </tr>
+    </table>
+
+    <script id="tpl-line-table-row" type="text/template">
+        <tr>
+            <td class="line-name">
+                <span class="line-color-box" style="background-color: #<%=line.color %>;">&nbsp;</span>
+                <%=line.name %>
+            </td>
+            <td><%=directionById[line.direction1Id].stopName %></td>
+            <td>
+                <button class="otm-button otm-button-middle">
+                    <img src="./image/ic_btn_clock.png" alt="Timetable"/>
+                </button>
+            </td>
+        </tr>
+        <tr>
+            <td class="line-name">
+                <span class="line-color-box" style="background-color: #<%=line.color %>;">&nbsp;</span>
+                <%=line.name %>
+            </td>
+            <td><%=directionById[line.direction2Id].stopName %></td>
+            <td>
+                <button class="otm-button otm-button-middle">
+                    <img src="./image/ic_btn_clock.png" alt="Timetable"/>
+                </button>
+            </td>
+        </tr>
+    </script>
 </body>
 </html>
