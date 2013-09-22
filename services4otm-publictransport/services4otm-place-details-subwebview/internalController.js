@@ -55,8 +55,6 @@ define([
                     directionById: directionById
                 }));
             });
-
-            console.log('lines: ' + JSON.stringify(lines) + '          directions: ' + JSON.stringify(directions));
         }
     };
 

@@ -73,7 +73,11 @@ define([
          * @param {function(error: WSError|undefined, lines: Array.<Line>, directions: Array.<Waypoint>)} callback
          */
         'findLinesAndDirectionsByWaypoint': function(waypointId, callback) {
-            var url = 'http://www.services4otm.com/datastore/publictransport/line/findLinesAndDirectionsByWaypoint/' + waypointId + '?callback=?';
+            var encodedWaypointId = encodeURIComponent(String(waypointId));
+            if (encodedWaypointId.indexOf('%2F')) {
+                encodedWaypointId = encodedWaypointId.replace('%2F', '%252F');
+            }
+            var url = 'http://www.services4otm.com/datastore/publictransport/line/findLinesAndDirectionsByWaypoint/' + encodedWaypointId + '?callback=?';
             $.getJSON(url).done(function(result) {
                 if (!result.success) {
                     return callback(new WSError(result.errorcode, result.errormessage), [], []);

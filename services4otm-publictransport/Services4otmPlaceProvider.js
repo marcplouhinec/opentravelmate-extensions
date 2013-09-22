@@ -62,14 +62,13 @@ define([
             'data-otm-entrypoint',
             'extensions/services4otm-publictransport/services4otm-place-details-subwebview/entryPoint');
 
-        // Load data for the SubWebView
+        // Wait the SubWebView is loaded before loading the data
         var waypointId = place.additionalParameters['waypointId'];
         var subWebViewId = subWebViewPlaceHolder.getAttribute('id');
-        datastoreService.findLinesAndDirectionsByWaypoint(waypointId, function(error, lines, directions) {
+        SubWebView.onCreate(subWebViewId, function() {
+            var subWebView = /** @type {SubWebView} */ Widget.findById(subWebViewId);
 
-            // Send the data to the SubWebView
-            SubWebView.onCreate(subWebViewId, function() {
-                var subWebView = /** @type {SubWebView} */ Widget.findById(subWebViewId);
+            datastoreService.findLinesAndDirectionsByWaypoint(waypointId, function(error, lines, directions) {
                 subWebView.fireInternalEvent(placeDetailsSubWebViewConstants.PLACE_DATA_LOADED_EVENT, {
                     error: error,
                     lines: lines,
