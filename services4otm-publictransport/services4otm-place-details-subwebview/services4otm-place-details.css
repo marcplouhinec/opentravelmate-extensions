@@ -21,8 +21,21 @@ body {
     text-align: left;
 }
 .line-color-box {
+    position: relative;
     display: inline-block;
     width: 1em;
     height: 1em;
     border: 1px solid black;
+    top: 3px;
+}
+
+#line-table th {
+    padding-bottom: 8px;
+}
+#line-table td {
+    padding-bottom: 2px;
+}
+
+.timetable-btn {
+    float: right;
 }
