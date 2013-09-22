@@ -8,6 +8,11 @@
     src: local('Roboto'), local('Roboto-Regular'), url(font/Roboto-Regular-webfont.woff) format('woff');
 }
 
+* {
+    outline: none;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0); 
+}
+
 /**
  * Default background style.
  */
