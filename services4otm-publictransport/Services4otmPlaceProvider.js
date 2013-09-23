@@ -38,6 +38,17 @@ define([
     };
 
     /**
+     * Get more details for the given place.
+     *
+     * @param {Place} place
+     * @param {function(place: Place)} callback
+     */
+    Services4otmPlaceProvider.prototype.getPlaceDetails = function(place, callback) {
+        // TODO - provide bus stops and lines
+        callback(place);
+    };
+
+    /**
      * Find one or more places for the given query.
      *
      * @param {String} query

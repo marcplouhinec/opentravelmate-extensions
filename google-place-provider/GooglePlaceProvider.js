@@ -5,10 +5,30 @@
  */
 
 define([
+    '../core/widget/Widget',
+    '../core/widget/webview/SubWebView',
     '../place-commons/PlaceProvider',
-    '../place-commons/Place'
-], function(PlaceProvider, Place) {
+    '../place-commons/Place',
+    './google-place-details-subwebview/constants',
+    'async!http://maps.googleapis.com/maps/api/js?libraries=places&sensor=true!callback'
+], function(Widget, SubWebView, PlaceProvider, Place, placeDetailsSubWebViewConstants) {
     'use strict';
+
+    var google = window.google;
+
+    /**
+     * Google Places AutoCompleteService.
+     *
+     * @type {google.maps.places.AutocompleteService}
+     */
+    var autoCompleteService = new google.maps.places.AutocompleteService();
+
+    /**
+     * Google Places PlacesService.
+     *
+     * @type {google.maps.places.PlacesService}
+     */
+    var placesService = new google.maps.places.PlacesService(document.createElement('div'));
 
     /**
      * Create a place provider that use Google services.
@@ -29,24 +49,32 @@ define([
      * @param {function(Array.<Place>)} callback
      */
     GooglePlaceProvider.prototype.suggestPlaces = function(query, callback) {
-        callback([
-            new Place({
-                latitude: 49.61,
-                longitude: 6.1305,
-                name: query + ' 1',
-                accuracy: 0.5,
-                placeProvider: this,
-                additionalParameters: {}
-            }),
-            new Place({
-                latitude: 49.61,
-                longitude: 6.1315,
-                name: query + ' 2',
-                accuracy: 0.4,
-                placeProvider: this,
-                additionalParameters: {}
-            })
-        ]);
+        var self = this;
+
+        // TODO: get the map bounds
+        var defaultBounds = new google.maps.LatLngBounds(
+            new google.maps.LatLng(49.5, 6.12),
+            new google.maps.LatLng(49.7, 6.14));
+
+        autoCompleteService.getPlacePredictions({input: query, bounds: defaultBounds}, function (predictions, status) {
+            if (status === 'OK') {
+                var places = [];
+                for (var i = 0; i < predictions.length; i += 1) {
+                    var prediction = predictions[i];
+                    places.push(new Place({
+                        latitude: 0,
+                        longitude: 0,
+                        name: prediction.description,
+                        accuracy: 0.5,
+                        placeProvider: self,
+                        additionalParameters: {
+                            reference: prediction.reference
+                        }
+                    }));
+                }
+                callback(places);
+            }
+        });
     };
 
     /**
@@ -56,24 +84,55 @@ define([
      * @param {function(Array.<Place>)} callback
      */
     GooglePlaceProvider.prototype.findPlaces = function(query, callback) {
-        callback([
-            new Place({
-                latitude: 49.605,
-                longitude: 6.131,
-                name: query + 'Dummy place 3',
-                accuracy: 0.5,
-                placeProvider: this,
-                additionalParameters: {}
-            }),
-            new Place({
-                latitude: 49.615,
-                longitude: 6.131,
-                name: query + 'Dummy place 4',
-                accuracy: 0.4,
-                placeProvider: this,
-                additionalParameters: {}
-            })
-        ]);
+        var self = this;
+
+        // TODO: get the map bounds
+        var defaultBounds = new google.maps.LatLngBounds(
+            new google.maps.LatLng(49.5, 6.12),
+            new google.maps.LatLng(49.7, 6.14));
+
+        placesService.textSearch({bounds: defaultBounds, query: query}, function(googlePlaces) {
+            var places = [];
+            for (var i = 0; i < googlePlaces.length; i += 1) {
+                var googlePlace = googlePlaces[i];
+                var latlng = googlePlace.geometry.location;
+                places.push(new Place({
+                    latitude: latlng.lat(),
+                    longitude: latlng.lng(),
+                    name: googlePlace.name,
+                    accuracy: 0.5,
+                    placeProvider: self,
+                    additionalParameters: {
+                        reference: googlePlace.reference,
+                        formatted_address: googlePlace.formatted_address
+                    }
+                }));
+            }
+            callback(places);
+        });
+    };
+
+    /**
+     * Get more details for the given place.
+     *
+     * @param {Place} place
+     * @param {function(place: Place)} callback
+     */
+    GooglePlaceProvider.prototype.getPlaceDetails = function(place, callback) {
+        placesService.getDetails({
+            reference: place.additionalParameters['reference']
+        }, function(googlePlace, status) {
+            if (status !== 'OK') {
+                callback(place);
+                return;
+            }
+
+            var latlng = googlePlace.geometry.location;
+            place.latitude = latlng.lat();
+            place.longitude = latlng.lng();
+            place.additionalParameters['formatted_address'] = googlePlace['formatted_address'];
+            callback(place);
+        });
     };
 
     /**
@@ -83,8 +142,31 @@ define([
      * @param {HTMLDivElement} subWebViewPlaceHolder
      */
     GooglePlaceProvider.prototype.showPlaceDetails = function(place, subWebViewPlaceHolder) {
+        var self = this;
+
         subWebViewPlaceHolder.setAttribute('data-otm-url', 'extensions/google-place-provider/google-place-details-subwebview/google-place-details.html');
         subWebViewPlaceHolder.setAttribute('data-otm-entrypoint', 'extensions/google-place-provider/google-place-details-subwebview/entryPoint');
+
+        // Wait the SubWebView is loaded before loading the data
+        var subWebViewId = subWebViewPlaceHolder.getAttribute('id');
+        SubWebView.onCreate(subWebViewId, function() {
+            var subWebView = /** @type {SubWebView} */ Widget.findById(subWebViewId);
+
+            function firePlaceDataLoadedEvent(place) {
+                subWebView.fireInternalEvent(placeDetailsSubWebViewConstants.PLACE_DATA_LOADED_EVENT, {
+                    placeAddress: place.additionalParameters['formatted_address']
+                });
+            }
+
+            // Load place details if necessary and send it to the subWebView
+            if (place.additionalParameters['formatted_address']) {
+                firePlaceDataLoadedEvent(place);
+            } else {
+                self.getPlaceDetails(place, function(updatedPlace) {
+                    firePlaceDataLoadedEvent(updatedPlace);
+                });
+            }
+        });
     };
 
     return GooglePlaceProvider;

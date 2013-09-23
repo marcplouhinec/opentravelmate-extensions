@@ -23,6 +23,12 @@ define([
     AutoCompleteTextInput, autoCompletionDialog, placeSelectionMenu, subWebViewConstants) {
     'use strict';
 
+    /**
+     * @constant
+     * @type {number}
+     */
+    var MAX_INFOWINDOW_TITLE_LENGTH = 20;
+
     var webViewReadyDam = new FunctionDam();
 
     /** @type {Object.<Number, Marker>} */
@@ -108,8 +114,10 @@ define([
                     self._buildSuggestedPlacesProvider(),
                     self._buildSuggestedPlaceRenderer());
                 autoCompleteTextInput.onSelect(function handleAutoCompleteTextInputSelection(item) {
-                    var places = [item];
-                    self._showFoundPlaces(places);
+                    // Get place details before processing it
+                    item.placeProvider.getPlaceDetails(item, function (place) {
+                        self._showFoundPlaces([place]);
+                    });
                 });
 
                 subWebView.onInternalEvent(subWebViewConstants.PLACE_FINDER_MENUPANEL_FINDPLACES_EVENT, function forwardSuggestPlacesEvent(payload) {
@@ -265,7 +273,12 @@ define([
          */
         '_onPlaceMarkerClicked': function(marker, place) {
             var map  = /** @Type {Map} */ Widget.findById('map');
-            map.showInfoWindow(marker, place.name);
+
+            var placeName = place.name;
+            if (placeName.length > MAX_INFOWINDOW_TITLE_LENGTH) {
+                placeName = placeName.substring(0, MAX_INFOWINDOW_TITLE_LENGTH) + '...';
+            }
+            map.showInfoWindow(marker, placeName);
         }
     };
 

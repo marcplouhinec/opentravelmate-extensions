@@ -40,6 +40,16 @@ define([
     };
 
     /**
+     * Get more details for the given place.
+     *
+     * @param {Place} place
+     * @param {function(place: Place)} callback
+     */
+    PlaceProvider.prototype.getPlaceDetails = function(place, callback) {
+        throw new I18nError({ code: ErrorCode.UNIMPLEMENTED_METHOD, i18nArgs: ['PlaceProvider.prototype.getPlaceDetails'] });
+    };
+
+    /**
      * Show the details of the given place in a new SubWebView (with the provided place holder).
      *
      * @param {Place} place

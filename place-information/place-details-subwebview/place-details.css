@@ -26,6 +26,9 @@ body {
     bottom: 8px;
     font-size: 24px;
     color: #00bfff;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
 }
 
 #close-button {
