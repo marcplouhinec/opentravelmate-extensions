@@ -30,7 +30,8 @@ requirejs.config({
         'underscore': {
             exports: '_'
         }
-    }
+    },
+    waitSeconds: 0
 });
 
 require([
