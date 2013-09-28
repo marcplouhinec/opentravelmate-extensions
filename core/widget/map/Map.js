@@ -79,6 +79,19 @@ define([
     };
 
     /**
+     * Get the map bounds (South-West and North-East points).
+     *
+     * @return {{sw: LatLng, ne: LatLng}} center
+     */
+    Map.prototype.getBounds = function(center) {
+        var bounds = JSON.parse(nativeMap.getBounds(this.id));
+        return {
+            sw: new LatLng(bounds.sw.lat, bounds.sw.lng),
+            ne: new LatLng(bounds.ne.lat, bounds.ne.lng)
+        };
+    };
+
+    /**
      * Add markers on the map.
      *
      * @param {Arrays.<Marker>} markers
