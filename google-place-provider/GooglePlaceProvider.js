@@ -51,12 +51,12 @@ define([
     GooglePlaceProvider.prototype.suggestPlaces = function(query, callback) {
         var self = this;
 
-        // TODO: get the map bounds
-        var defaultBounds = new google.maps.LatLngBounds(
-            new google.maps.LatLng(49.5, 6.12),
-            new google.maps.LatLng(49.7, 6.14));
-
-        autoCompleteService.getPlacePredictions({input: query, bounds: defaultBounds}, function (predictions, status) {
+        var map = /** @type {Map} */ Widget.findById('map');
+        var mapBounds = map.getBounds();
+        var gBounds = new google.maps.LatLngBounds(
+            new google.maps.LatLng(mapBounds.sw.lat, mapBounds.sw.lng),
+            new google.maps.LatLng(mapBounds.ne.lat, mapBounds.ne.lng));
+        autoCompleteService.getPlacePredictions({input: query, bounds: gBounds}, function (predictions, status) {
             if (status === 'OK') {
                 var places = [];
                 for (var i = 0; i < predictions.length; i += 1) {
@@ -86,12 +86,13 @@ define([
     GooglePlaceProvider.prototype.findPlaces = function(query, callback) {
         var self = this;
 
-        // TODO: get the map bounds
-        var defaultBounds = new google.maps.LatLngBounds(
-            new google.maps.LatLng(49.5, 6.12),
-            new google.maps.LatLng(49.7, 6.14));
+        var map = /** @type {Map} */ Widget.findById('map');
+        var mapBounds = map.getBounds();
+        var gBounds = new google.maps.LatLngBounds(
+            new google.maps.LatLng(mapBounds.sw.lat, mapBounds.sw.lng),
+            new google.maps.LatLng(mapBounds.ne.lat, mapBounds.ne.lng));
 
-        placesService.textSearch({bounds: defaultBounds, query: query}, function(googlePlaces) {
+        placesService.textSearch({bounds: gBounds, query: query}, function(googlePlaces) {
             var places = [];
             for (var i = 0; i < googlePlaces.length; i += 1) {
                 var googlePlace = googlePlaces[i];
