@@ -55,6 +55,12 @@ define([
          * @private
          */
         this._infoWindowClickListeners = [];
+
+        /**
+         * @type {Array.<MapButton>}
+         * @private
+         */
+        this._mapButtonById = [];
     }
 
     Map.prototype = new Widget();
@@ -107,6 +113,25 @@ define([
      */
     Map.prototype.removeMarkers = function(markers) {
         nativeMap.removeMarkers(this.id, JSON.stringify(markers));
+    };
+
+    /**
+     * Add a button on the map top-right corner.
+     *
+     * @param {MapButton} mapButton
+     */
+    Map.prototype.addMapButton = function(mapButton) {
+        this._mapButtonById[mapButton.id] = mapButton;
+        nativeMap.addMapButton(this.id, JSON.stringify(mapButton));
+    };
+
+    /**
+     * Fire the click event on the given map button.
+     *
+     * @param {Number} mapButtonId
+     */
+    Map.prototype.fireMapButtonClickEvent = function(mapButtonId) {
+        this._mapButtonById[mapButtonId].fireClickEvent();
     };
 
     /**
@@ -231,6 +256,16 @@ define([
         _.each(this._infoWindowClickListeners, function(listener) {
             listener(marker);
         });
+    };
+
+    /**
+     * Set the map type.
+     *
+     * @param {String} mapType
+     *     'ROADMAP' or 'SATELLITE'.
+     */
+    Map.prototype.setMapType = function(mapType) {
+        nativeMap.setMapType(this.id, mapType);
     };
 
     /**

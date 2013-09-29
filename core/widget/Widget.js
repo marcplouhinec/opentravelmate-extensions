@@ -47,6 +47,29 @@ define([
     };
 
     /**
+     * Find a widget by its ID.
+     *
+     * @param {String} id
+     * @param {Number} timeout in milliseconds
+     * @param {function(widget: Widget)} callback
+     */
+    Widget.findByIdAsync = function(id, timeout, callback) {
+        var callTime = +new Date();
+        function tryFindWidget() {
+            var widget = Widget.findById(id);
+            if (widget) {
+                callback(widget);
+            } else {
+                var now = +new Date();
+                if (callTime + timeout >= now) {
+                    setTimeout(tryFindWidget, 100);
+                }
+            }
+        }
+        setTimeout(tryFindWidget, 100);
+    };
+
+    /**
      * Remove a widget by its ID.
      *
      * @param {String} id
