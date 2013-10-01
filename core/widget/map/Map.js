@@ -126,6 +126,20 @@ define([
     };
 
     /**
+     * Update a button on the map.
+     *
+     * @param {MapButton} mapButton
+     */
+    Map.prototype.updateMapButton = function(mapButton) {
+        if (!this._mapButtonById[mapButton.id]) {
+            this.addMapButton(mapButton);
+            return;
+        }
+
+        nativeMap.updateMapButton(this.id, JSON.stringify(mapButton));
+    };
+
+    /**
      * Fire the click event on the given map button.
      *
      * @param {Number} mapButtonId
