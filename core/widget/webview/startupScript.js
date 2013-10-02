@@ -15,7 +15,8 @@ requirejs.config({
         'jqueryGoogleFastButton': 'extensions/core/lib/jquery.google.fastbutton',
         'nativeWebView': 'native/widget/webview/nativeWebView',
         'nativeMenu': 'native/widget/menu/nativeMenu',
-        'nativeMap': 'native/widget/map/nativeMap'
+        'nativeMap': 'native/widget/map/nativeMap'  ,
+        'nativeGeolocation': 'native/geolocation/nativeGeolocation'
     },
     shim: {
         'jquery': {

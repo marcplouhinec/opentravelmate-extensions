@@ -4,7 +4,11 @@
  * @author marc.plouhinec@gmail.com (Marc Plouhinec)
  */
 
-define(['../core/widget/map/MapButton'], function(MapButton) {
+define([
+    '../core/geolocation/geolocation',
+    '../core/geolocation/PositionOptions',
+    '../core/widget/map/MapButton'
+], function(geolocation, PositionOptions, MapButton) {
     'use strict';
 
     /**
@@ -47,8 +51,25 @@ define(['../core/widget/map/MapButton'], function(MapButton) {
             map.addMapButton(this._mapButton);
 
             this._mapButton.onClick(function() {
-                // TODO
+                self._showCurrentLocation();
             });
+        },
+
+        /**
+         * Find and show the current location of the device.
+         */
+        '_showCurrentLocation': function() {
+            geolocation.getCurrentPosition(function(position) {
+                // TODO create a map marker and move the map on it
+                console.log(position);
+            }, function(positionError) {
+                // TODO show the error
+                console.log(positionError);
+            }, new PositionOptions({
+                enableHighAccuracy: true,
+                timeout: 10 * 60 * 1000,
+                maximumAge: 10 * 60 * 1000
+            }));
         }
     };
 
