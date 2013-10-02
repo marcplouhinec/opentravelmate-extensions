@@ -48,6 +48,9 @@ define([
          */
         'fireCurrentPositionEvent': function(callbacksId, positionOptions, positionErrorOptions) {
             var callbacks = currentPositionCallbacksById[callbacksId];
+            if (!callbacks) {
+            	return;
+            }
             delete currentPositionCallbacksById[callbacksId];
 
             if (positionErrorOptions) {
