@@ -6,8 +6,9 @@
 
 define([
     '../core/widget/Widget',
-    './satelliteButtonHandler'
-], function(Widget, satelliteButtonHandler) {
+    './satelliteButtonHandler',
+    './currentPositionButtonHandler'
+], function(Widget, satelliteButtonHandler, currentPositionButtonHandler) {
     'use strict';
 
     /**
@@ -16,6 +17,7 @@ define([
     return function main() {
         Widget.findByIdAsync('map', 10000, function(map) {
             satelliteButtonHandler.createButton(map);
+            currentPositionButtonHandler.createButton(map);
         });
     };
 });
