@@ -85,8 +85,8 @@ define([
                     position: latlng,
                     title: 'Current location',
                     icon: new UrlMarkerIcon({
-                        anchor: new Point(16,32),
-                        size: new Dimension(32, 32),
+                        anchor: new Point(40 / 2, 40),
+                        size: new Dimension(40, 40),
                         url: webview.baseUrl + 'extensions/map-tools/image/ic_user_location.png'
                     })
                 });
