@@ -7,8 +7,15 @@
 define([
     '../core/geolocation/geolocation',
     '../core/geolocation/PositionOptions',
-    '../core/widget/map/MapButton'
-], function(geolocation, PositionOptions, MapButton) {
+    '../core/widget/map/MapButton',
+    '../core/widget/map/Marker',
+    '../core/widget/map/UrlMarkerIcon',
+    '../core/widget/map/LatLng',
+    '../core/widget/map/Point',
+    '../core/widget/map/Dimension',
+    '../core/widget/Widget',
+    '../core/widget/webview/webview'
+], function(geolocation, PositionOptions, MapButton, Marker, UrlMarkerIcon, LatLng, Point, Dimension, Widget, webview) {
     'use strict';
 
     /**
@@ -28,6 +35,12 @@ define([
          * @private
          */
         '_map': null,
+
+        /**
+         * @type {Marker}
+         * @private
+         */
+        '_marker': null,
 
         /**
          * @private
@@ -59,9 +72,26 @@ define([
          * Find and show the current location of the device.
          */
         '_showCurrentLocation': function() {
+            var self = this;
+
             geolocation.getCurrentPosition(function(position) {
-                // TODO create a map marker and move the map on it
-                console.log(position);
+                // Create a map marker and move the map on it
+                var map  = /** @Type {Map} */ Widget.findById('map');
+                if (self._marker) {
+                    map.removeMarkers([self._marker]);
+                }
+                var latlng = new LatLng(position.coords.latitude, position.coords.longitude);
+                self._marker = new Marker({
+                    position: latlng,
+                    title: 'Current location',
+                    icon: new UrlMarkerIcon({
+                        anchor: new Point(16,32),
+                        size: new Dimension(32, 32),
+                        url: webview.baseUrl + 'extensions/map-tools/image/ic_user_location.png'
+                    })
+                });
+                map.addMarkers([self._marker]);
+                map.panTo(latlng);
             }, function(positionError) {
                 // TODO show the error
                 console.log(positionError);
