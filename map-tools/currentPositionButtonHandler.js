@@ -94,12 +94,29 @@ define([
                 map.panTo(latlng);
             }, function(positionError) {
                 // TODO show the error
-                console.log(positionError);
+                console.log(JSON.stringify(positionError));
             }, new PositionOptions({
                 enableHighAccuracy: true,
                 timeout: 10 * 60 * 1000,
                 maximumAge: 10 * 60 * 1000
             }));
+
+            // TODO DEBUG ONLY!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            var watchId = geolocation.watchPosition(function(position) {
+                console.log(JSON.stringify(position));
+            }, function(positionError) {
+                // TODO show the error
+                console.log(JSON.stringify(positionError));
+            }, new PositionOptions({
+                enableHighAccuracy: true,
+                timeout: 10 * 60 * 1000,
+                maximumAge: 10 * 60 * 1000
+            }));
+            console.log('watchId = ' + watchId);
+            setTimeout(function() {
+                geolocation.clearWatch(watchId);
+                console.log('stop watching');
+            }, 10000);
         }
     };
 
