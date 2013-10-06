@@ -7,9 +7,10 @@
 define([
     './Position',
     './PositionError',
+    './PositionOptions',
     './Coordinates',
     'nativeGeolocation'
-], function(Position, PositionError, Coordinates, nativeGeolocation) {
+], function(Position, PositionError, PositionOptions, Coordinates, nativeGeolocation) {
     'use strict';
 
     /**
@@ -28,7 +29,7 @@ define([
          *
          * @param {function(position: Position)} successCallback
          * @param {function(positionError: PositionError)} errorCallback
-         * @param {PositionOptions} options
+         * @param {PositionOptions} options=
          */
         'getCurrentPosition': function(successCallback, errorCallback, options) {
             var callbacksId = 'callbacks-' + nextCallbacksId++;
@@ -36,7 +37,7 @@ define([
                 successCallback: successCallback,
                 errorCallback: errorCallback
             };
-            nativeGeolocation.getCurrentPosition(callbacksId, JSON.stringify(options));
+            nativeGeolocation.getCurrentPosition(callbacksId, JSON.stringify(options || new PositionOptions({})));
         },
 
         /**

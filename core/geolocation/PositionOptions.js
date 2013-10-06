@@ -11,19 +11,19 @@ define(function() {
      * Create new PositionOptions.
      *
      * @param {{
-     *     enableHighAccuracy: Boolean,
-     *     timeout: Number,
-     *     maximumAge: Number
+     *     enableHighAccuracy: =Boolean,
+     *     timeout: =Number,
+     *     maximumAge: =Number
      * }} options
      * @constructor
      */
     function PositionOptions(options) {
         /** @type {Boolean} */
-        this.enableHighAccuracy = options.enableHighAccuracy;
+        this.enableHighAccuracy = options.enableHighAccuracy | false;
         /** @type {Number} */
-        this.timeout = options.timeout;
+        this.timeout = options.timeout | 0;
         /** @type {Number} */
-        this.maximumAge = options.maximumAge;
+        this.maximumAge = options.maximumAge | 0;
     }
 
     return PositionOptions;
