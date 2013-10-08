@@ -21,10 +21,20 @@ define([
      * @extends PlaceProvider
      */
     function Services4otmPlaceProvider() {
+        PlaceProvider.register(this);
     }
 
     Services4otmPlaceProvider.prototype = new PlaceProvider();
     Services4otmPlaceProvider.prototype.constructor = Services4otmPlaceProvider;
+
+    /**
+     * Get the place provider name.
+     *
+     * @return {String}
+     */
+    Services4otmPlaceProvider.prototype.getName = function() {
+        return 'services4otm-publictransport/Services4otmPlaceProvider';
+    };
 
     /**
      * Suggest places to the user when he's still writing the query.

@@ -12,12 +12,48 @@ define([
     'use strict';
 
     /**
+     * @type {Object.<String, PlaceProvider>}
+     */
+    var placeProviderByName = {};
+
+    /**
      * Create a PlaceProvider.
      *
      * @constructor
      */
     function PlaceProvider() {
     }
+
+    /**
+     * Find a PlaceProvider by its name.
+     *
+     * @static
+     * @param {String} name
+     * @return {PlaceProvider=}
+     */
+    PlaceProvider.findByName = function(name) {
+        return placeProviderByName[name];
+    };
+
+    /**
+     * Register a place provider.
+     * Note: this function is normally called by the place provider themselves in their constructor.
+     *
+     * @param {PlaceProvider} placeProvider
+     */
+    PlaceProvider.register = function(placeProvider) {
+        placeProviderByName[placeProvider.getName()] = placeProvider;
+    };
+
+    /**
+     * Get the place provider name.
+     * Note: the name must be formatted like 'extension-name/ClassName'.
+     *
+     * @return {String}
+     */
+    PlaceProvider.prototype.getName = function() {
+        throw new I18nError({ code: ErrorCode.UNIMPLEMENTED_METHOD, i18nArgs: ['PlaceProvider.prototype.getName'] });
+    };
 
     /**
      * Suggest places to the user when he's still writing the query.

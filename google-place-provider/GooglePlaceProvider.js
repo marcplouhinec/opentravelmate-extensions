@@ -37,10 +37,20 @@ define([
      * @extends PlaceProvider
      */
     function GooglePlaceProvider() {
+        PlaceProvider.register(this);
     }
 
     GooglePlaceProvider.prototype = new PlaceProvider();
     GooglePlaceProvider.prototype.constructor = GooglePlaceProvider;
+
+    /**
+     * Get the place provider name.
+     *
+     * @return {String}
+     */
+    GooglePlaceProvider.prototype.getName = function() {
+        return 'google-place-provider/GooglePlaceProvider';
+    };
 
     /**
      * Suggest places to the user when he's still writing the query.

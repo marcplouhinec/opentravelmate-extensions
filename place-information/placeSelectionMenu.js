@@ -28,6 +28,12 @@ define([
         '_place': null,
 
         /**
+         * @type {Array.<function(place: Place)>}
+         * @private
+         */
+        '_menuOpenedListeners': [],
+
+        /**
          * Open the menu popup for the given place.
          *
          * @param {Place} place
@@ -76,6 +82,11 @@ define([
             });
 
             webview.layout();
+
+            // Call the opened listeners
+            for (var i = 0; i < this._menuOpenedListeners.length; i += 1) {
+                this._menuOpenedListeners[i](place);
+            }
         },
 
         /**
@@ -87,6 +98,15 @@ define([
                 delete this._subWebViewPlaceHolder;
                 webview.layout();
             }
+        },
+
+        /**
+         * Register a listener that will be called when the menu is opened.
+         *
+         * @param {function(place: Place)} listener
+         */
+        'onMenuOpened': function(listener) {
+            this._menuOpenedListeners.push(listener);
         },
 
         /**
