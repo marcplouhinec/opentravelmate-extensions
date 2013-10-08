@@ -30,6 +30,31 @@ define([
      */
     var ICON_URL = 'extensions/map-tools/image/ic_btn_show_my_position.png';
 
+    /**
+     * Maximum position watching time in milliseconds.
+     *
+     * @constant
+     * @type {number}
+     */
+    var MAX_WATCH_TIME = 60 * 1000;
+
+    /**
+     * Maximum position age in milliseconds.
+     *
+     * @constant
+     * @type {number}
+     */
+    var MAX_POSITION_AGE = 1000 * 60 * 2;
+
+    /**
+     * Acceptable accuracy in meters.
+     *
+     * @constant
+     * @type {number}
+     */
+    var ACCEPTABLE_ACCURACY = 100;
+
+
     var currentPositionButtonHandler = {
         /**
          * @private
@@ -47,6 +72,18 @@ define([
          * @type {MapButton}
          */
         '_mapButton': null,
+
+        /**
+         * @type {Number}
+         * @private
+         */
+        '_watchId': -1,
+
+        /**
+         * @type {Position=}
+         * @private
+         */
+        '_currentBestPosition': null,
 
         /**
          * Create a new current position button.
@@ -74,49 +111,102 @@ define([
         '_showCurrentLocation': function() {
             var self = this;
 
-            geolocation.getCurrentPosition(function(position) {
-                // Create a map marker and move the map on it
-                var map  = /** @Type {Map} */ Widget.findById('map');
-                if (self._marker) {
-                    map.removeMarkers([self._marker]);
-                }
-                var latlng = new LatLng(position.coords.latitude, position.coords.longitude);
-                self._marker = new Marker({
-                    position: latlng,
-                    title: 'Current location',
-                    icon: new UrlMarkerIcon({
-                        anchor: new Point(40 / 2, 40),
-                        size: new Dimension(40, 40),
-                        url: webview.baseUrl + 'extensions/map-tools/image/ic_user_location.png'
-                    })
-                });
-                map.addMarkers([self._marker]);
-                map.panTo(latlng);
-            }, function(positionError) {
-                // TODO show the error
-                console.log(JSON.stringify(positionError));
-            }, new PositionOptions({
-                enableHighAccuracy: true,
-                timeout: 10 * 60 * 1000,
-                maximumAge: 10 * 60 * 1000
-            }));
+            if (this._watchId < 0) {
+                this._watchId = geolocation.watchPosition(function(position) { self._handleNewPosition(position) }, function(positionError) {
+                    // TODO show the error
+                    console.log(JSON.stringify(positionError));
+                }, new PositionOptions({
+                    enableHighAccuracy: true,
+                    timeout: MAX_WATCH_TIME,
+                    maximumAge: MAX_POSITION_AGE
+                }));
+            }
 
-            // TODO DEBUG ONLY!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            var watchId = geolocation.watchPosition(function(position) {
-                console.log(JSON.stringify(position));
-            }, function(positionError) {
-                // TODO show the error
-                console.log(JSON.stringify(positionError));
-            }, new PositionOptions({
-                enableHighAccuracy: true,
-                timeout: 10 * 60 * 1000,
-                maximumAge: 10 * 60 * 1000
-            }));
-            console.log('watchId = ' + watchId);
+            // Stop watching the position after a certain time (to save battery)
             setTimeout(function() {
-                geolocation.clearWatch(watchId);
-                console.log('stop watching');
-            }, 10000);
+                if (self._watchId) {
+                    geolocation.clearWatch(self._watchId);
+                }
+            }, MAX_WATCH_TIME);
+        },
+
+        /**
+         * Handle a new position from the geolocation API.
+         *
+         * @param {Position} position
+         */
+        '_handleNewPosition': function(position) {
+            if (!this._isBetterPosition(position, this._currentBestPosition)) {
+                return;
+            }
+
+            this._currentBestPosition = position;
+
+            // Create a map marker and move the map on it
+            var map  = /** @Type {Map} */ Widget.findById('map');
+            if (this._marker) {
+                map.removeMarkers([this._marker]);
+            }
+            var latlng = new LatLng(position.coords.latitude, position.coords.longitude);
+            this._marker = new Marker({
+                position: latlng,
+                title: 'Current location',
+                icon: new UrlMarkerIcon({
+                    anchor: new Point(40 / 2, 40),
+                    size: new Dimension(40, 40),
+                    url: webview.baseUrl + 'extensions/map-tools/image/ic_user_location.png'
+                })
+            });
+            map.addMarkers([this._marker]);
+            map.panTo(latlng);
+
+            // Stop watching the position if the current one is acceptable
+            if (position.coords.accuracy <= ACCEPTABLE_ACCURACY) {
+                geolocation.clearWatch(this._watchId);
+                this._watchId = null;
+            }
+        },
+
+        /**
+         * Thanks to the Google Android developer page:
+         * @see http://developer.android.com/guide/topics/location/strategies.html
+         *
+         * @param {Position=} newPosition
+         * @param {Position=} currentBestPosition
+         * @returns {boolean} true if the newPosition is better than the current one, or false if not.
+         */
+        '_isBetterPosition': function(newPosition, currentBestPosition) {
+            if (!currentBestPosition) {
+                return true;
+            }
+            if (!newPosition) {
+                return false;
+            }
+
+            // Check whether the new position is newer or older
+            var timeDelta = newPosition.timestamp - currentBestPosition.timestamp;
+            var isSignificantlyNewer = timeDelta > MAX_POSITION_AGE;
+            var isSignificantlyOlder = timeDelta < -MAX_POSITION_AGE;
+            var isNewer = timeDelta > 0;
+
+            if (isSignificantlyNewer) {
+                return true;
+            } else if (isSignificantlyOlder) {
+                return false;
+            }
+
+            // Check whether the new position is more or less accurate
+            var accuracyDelta = newPosition.coords.accuracy - currentBestPosition.coords.accuracy;
+            var isMoreAccurate = accuracyDelta < 0;
+            var isSignificantlyLessAccurate = accuracyDelta > 2 * ACCEPTABLE_ACCURACY;
+
+            if (isMoreAccurate) {
+                return true;
+            } else if (isNewer && !isSignificantlyLessAccurate) {
+                return true;
+            }
+
+            return false;
         }
     };
 
