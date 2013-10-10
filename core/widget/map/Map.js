@@ -251,6 +251,13 @@ define([
     };
 
     /**
+     * Close the Info Window if any.
+     */
+    Map.prototype.closeInfoWindow = function() {
+        nativeMap.closeInfoWindow(this.id);
+    };
+
+    /**
      * Register a listener for the CLICK event on the info window.
      *
      * @param {function(marker: Marker)} listener

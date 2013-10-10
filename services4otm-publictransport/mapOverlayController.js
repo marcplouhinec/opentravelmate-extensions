@@ -103,6 +103,7 @@ define([
                             waypointId: waypoint.id
                         }
                     }));
+                    self._map.closeInfoWindow();
                 }
             });
         },

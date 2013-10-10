@@ -62,6 +62,7 @@ define([
                 var place = placeByMarkerId[marker.id];
                 if (place) {
                     placeSelectionMenu.open(place);
+                    map.closeInfoWindow();
                 }
             });
         },
