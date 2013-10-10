@@ -10,9 +10,10 @@ define([
     '../core/widget/webview/webview',
     '../core/widget/webview/SubWebView',
     '../place-commons/Place',
+    '../itinerary-finder/itineraryFinder',
     './placeDetails',
     './place-selection-menu-subwebview/constants'
-], function(browserUtils, Widget, webview, SubWebView, Place, placeDetails, subWebViewConstants) {
+], function(browserUtils, Widget, webview, SubWebView, Place, itineraryFinder, placeDetails, subWebViewConstants) {
 
     var placeSelectionMenu = {
         /**
@@ -127,10 +128,12 @@ define([
         '_handleItemSelectionEvent': function(eventName) {
             switch (eventName) {
                 case subWebViewConstants.GO_THERE_SELECTED_EVENT:
-                    //TODO
+                    this.close();
+                    itineraryFinder.setDestinationPlace(this._place);
                     break;
                 case subWebViewConstants.FROM_THERE_SELECTED_EVENT:
-                    //TODO
+                    this.close();
+                    itineraryFinder.setStartingPlace(this._place);
                     break;
                 case subWebViewConstants.MORE_INFORMATION:
                     this.close();
