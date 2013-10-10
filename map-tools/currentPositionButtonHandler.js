@@ -13,9 +13,12 @@ define([
     '../core/widget/map/LatLng',
     '../core/widget/map/Point',
     '../core/widget/map/Dimension',
+    '../place-commons/Place',
+    '../place-information/placeSelectionMenu',
     '../core/widget/Widget',
-    '../core/widget/webview/webview'
-], function(geolocation, PositionOptions, MapButton, Marker, UrlMarkerIcon, LatLng, Point, Dimension, Widget, webview) {
+    '../core/widget/webview/webview',
+    './CurrentPositionPlaceProvider'
+], function(geolocation, PositionOptions, MapButton, Marker, UrlMarkerIcon, LatLng, Point, Dimension, Place, placeSelectionMenu, Widget, webview, CurrentPositionPlaceProvider) {
     'use strict';
 
     /**
@@ -102,6 +105,27 @@ define([
 
             this._mapButton.onClick(function() {
                 self._showCurrentLocation();
+            });
+
+            // Handle current position marker & info window click
+            var currentPositionPlaceProvider = new CurrentPositionPlaceProvider();
+            this._map.onMarkerClick(function handleCurrentPositionMarkerClick(marker) {
+                if (self._marker && self._marker.id === marker.id) {
+                    self._map.showInfoWindow(marker, 'Current position');
+                }
+            });
+            this._map.onInfoWindowClick(function handleCurrentPositionInfoWindowClick(marker) {
+                if (self._marker && self._marker.id === marker.id) {
+                    placeSelectionMenu.open(new Place({
+                        latitude: self._currentBestPosition.coords.latitude,
+                        longitude: self._currentBestPosition.coords.longitude,
+                        name: 'Current Position',
+                        accuracy: 1,
+                        placeProvider: currentPositionPlaceProvider,
+                        additionalParameters: {}
+                    }));
+                    self._map.closeInfoWindow();
+                }
             });
         },
 

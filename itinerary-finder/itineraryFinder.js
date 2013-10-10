@@ -67,8 +67,10 @@ define([
             });
             map.addMarkers([this._startingPlaceMarker]);
 
-            // Compute the itinerary if possible
-            // TODO
+            // Find itineraries if possible
+            if (this._startingPlace && this._destinationPlace) {
+                this._findItineraries();
+            }
         },
 
         /**
@@ -97,7 +99,16 @@ define([
             });
             map.addMarkers([this._destinationPlaceMarker]);
 
-            // Compute the itinerary if possible
+            // Find itineraries if possible
+            if (this._startingPlace && this._destinationPlace) {
+                this._findItineraries();
+            }
+        },
+
+        /**
+         * Find itineraries between the starting place and the destination.
+         */
+        '_findItineraries': function() {
             // TODO
         }
     };
