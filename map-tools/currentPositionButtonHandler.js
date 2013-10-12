@@ -122,7 +122,14 @@ define([
                         name: 'Current Position',
                         accuracy: 1,
                         placeProvider: currentPositionPlaceProvider,
-                        additionalParameters: {}
+                        additionalParameters: {
+                            altitude: self._currentBestPosition.coords.altitude,
+                            accuracy: self._currentBestPosition.coords.accuracy,
+                            altitudeAccuracy: self._currentBestPosition.coords.altitudeAccuracy,
+                            heading: self._currentBestPosition.coords.heading,
+                            speed: self._currentBestPosition.coords.speed,
+                            timestamp: self._currentBestPosition.timestamp
+                        }
                     }));
                     self._map.closeInfoWindow();
                 }

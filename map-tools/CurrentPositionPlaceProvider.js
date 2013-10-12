@@ -5,9 +5,12 @@
  */
 
 define([
+    '../core/widget/Widget',
+    '../core/widget/webview/SubWebView',
     '../place-commons/PlaceProvider',
-    '../place-commons/Place'
-], function(PlaceProvider, Place) {
+    '../place-commons/Place',
+    './current-position-place-details-subwebview/constants'
+], function(Widget, SubWebView, PlaceProvider, Place, placeDetailsSubWebViewConstants) {
     'use strict';
 
     /**
@@ -73,6 +76,22 @@ define([
      */
     CurrentPositionPlaceProvider.prototype.showPlaceDetails = function(place, subWebViewPlaceHolder) {
         // TODO - Find and show the address where the device is located
+
+        subWebViewPlaceHolder.setAttribute(
+            'data-otm-url',
+            'extensions/map-tools/current-position-place-details-subwebview/current-position-place-details.html');
+        subWebViewPlaceHolder.setAttribute(
+            'data-otm-entrypoint',
+            'extensions/map-tools/current-position-place-details-subwebview/entryPoint');
+
+        // Wait the SubWebView is loaded before loading the data
+        var subWebViewId = subWebViewPlaceHolder.getAttribute('id');
+        SubWebView.onCreate(subWebViewId, function() {
+            var subWebView = /** @type {SubWebView} */ Widget.findById(subWebViewId);
+            subWebView.fireInternalEvent(placeDetailsSubWebViewConstants.PLACE_DATA_LOADED_EVENT, {
+                place: place
+            });
+        });
     };
 
     return CurrentPositionPlaceProvider;
