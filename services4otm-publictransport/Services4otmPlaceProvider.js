@@ -28,12 +28,18 @@ define([
     Services4otmPlaceProvider.prototype.constructor = Services4otmPlaceProvider;
 
     /**
+     * @constant
+     * @type {string}
+     */
+    Services4otmPlaceProvider.NAME = 'services4otm-publictransport/Services4otmPlaceProvider';
+
+    /**
      * Get the place provider name.
      *
      * @return {String}
      */
     Services4otmPlaceProvider.prototype.getName = function() {
-        return 'services4otm-publictransport/Services4otmPlaceProvider';
+        return Services4otmPlaceProvider.NAME;
     };
 
     /**
