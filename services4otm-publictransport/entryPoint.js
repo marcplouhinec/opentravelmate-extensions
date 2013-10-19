@@ -6,8 +6,10 @@
 
 define([
     './mapOverlayController',
-    './Services4otmPlaceProvider'
-], function(mapOverlayController, Services4otmPlaceProvider) {
+    './Services4otmPlaceProvider',
+    '../itinerary-finder/itineraryFinder',
+    './Services4otmItineraryProvider'
+], function(mapOverlayController, Services4otmPlaceProvider, itineraryFinder, Services4otmItineraryProvider) {
     'use strict';
 
     /**
@@ -16,5 +18,8 @@ define([
     return function main() {
         var services4otmPlaceProvider = new Services4otmPlaceProvider();
         mapOverlayController.init(services4otmPlaceProvider);
+
+        var services4otmItineraryProvider = new Services4otmItineraryProvider();
+        itineraryFinder.addItineraryProvider(services4otmItineraryProvider);
     };
 });

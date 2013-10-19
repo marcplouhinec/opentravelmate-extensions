@@ -6,7 +6,6 @@
 
 define([
     'jquery',
-    'underscore',
     '../core/widget/Widget',
     '../core/widget/webview/webview',
     '../core/widget/map/Point',
@@ -15,14 +14,8 @@ define([
     '../core/widget/map/Marker',
     '../core/widget/map/UrlMarkerIcon',
     '../services4otm-publictransport/Services4otmPlaceProvider'
-], function($, _, Widget, webview, Point, Dimension, LatLng, Marker, UrlMarkerIcon, Services4otmPlaceProvider) {
+], function($, Widget, webview, Point, Dimension, LatLng, Marker, UrlMarkerIcon, Services4otmPlaceProvider) {
     'use strict';
-
-    /**
-     * @constant
-     * @type {String}
-     */
-    var ITINERARY_WS_URL = 'http://www.services4otm.com/itinerary/publictransport/';
 
     var itineraryFinder = {
 
@@ -49,6 +42,21 @@ define([
          * @private
          */
         '_destinationPlaceMarker': null,
+
+        /**
+         * @type {Array.<ItineraryProvider>}
+         * @private
+         */
+        '_itineraryProviders': [],
+
+        /**
+         * Register the given itinerary provider.
+         *
+         * @param {ItineraryProvider} itineraryProvider
+         */
+        'addItineraryProvider': function(itineraryProvider) {
+            this._itineraryProviders.push(itineraryProvider);
+        },
 
         /**
          * Set the itinerary starting place.
@@ -119,36 +127,31 @@ define([
          */
         '_findItineraries': function() {
             var self = this;
-            var startPoint = this._startingPlace.placeProvider.getName() === Services4otmPlaceProvider.NAME ?
-                this._startingPlace.additionalParameters['waypointId'] :
-                {'latitude': this._startingPlace.latitude, 'longitude': this._startingPlace.longitude};
-            var endPoint = this._destinationPlace.placeProvider.getName() === Services4otmPlaceProvider.NAME ?
-                this._destinationPlace.additionalParameters['waypointId'] :
-                {'latitude': this._destinationPlace.latitude, 'longitude': this._destinationPlace.longitude};
-            var url = ITINERARY_WS_URL + '?' +
-                (_.isString(startPoint) ? 'startWaypointId=' + startPoint : 'startLocation=' + JSON.stringify(startPoint)) + '&' +
-                (_.isString(endPoint) ? 'endWaypointId=' + endPoint : 'endLocation=' + JSON.stringify(endPoint)) +
-                '&include_docs=true&jsoncallback=?';
-            $.getJSON(url, function (itineraryInformation) {
-                //Stop if an error occurred
-                if (itineraryInformation.error) {
-                    // TODO - Display an error to the user
-                    console.log(itineraryInformation.error);
-                    return;
-                }
 
-                self._handleItinerary(itineraryInformation);
-            });
+            for (var i = 0; i < this._itineraryProviders.length; i += 1) {
+                var itineraryProvider = this._itineraryProviders[i];
+                itineraryProvider.findItineraries(this._startingPlace, this._destinationPlace, function(result) {
+                    //Stop if an error occurred
+                    if (result.error) {
+                        // TODO - Display an error to the user
+                        console.log(result.error);
+                        return;
+                    }
+
+                    // Handle the itineraries
+                    self._showItineraries(result.itineraries);
+                });
+            }
         },
 
         /**
-         * Handle itinerary data from Services4otm.
+         * Show the itineraries .
          *
-         * @param itineraryInformation
+         * @param {Array.<Itinerary>} itineraries
          */
-        '_handleItinerary': function(itineraryInformation) {
+        '_showItineraries': function(itineraries) {
             // TODO
-            console.log(itineraryInformation);
+            console.log(itineraries);
         }
     };
 
