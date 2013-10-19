@@ -51,7 +51,7 @@ define(function() {
          *
          * @type {Number}
          */
-        this.accuracy = options.accuracy;
+        this.accuracy = options.accuracy || 0;
 
         /**
          * PlaceProvider that provided this place.

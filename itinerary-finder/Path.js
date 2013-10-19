@@ -22,14 +22,14 @@ define(function() {
          *
          * @type {Array.<Place>}
          */
-        this.places = options.places | [];
+        this.places = options.places || [];
 
         /**
          * Additional information from the ItineraryProvider.
          *
          * @type {Object.<String, Object>}
          */
-        this.additionalParameters = options.additionalParameters | {};
+        this.additionalParameters = options.additionalParameters || {};
     }
 
     return Path;

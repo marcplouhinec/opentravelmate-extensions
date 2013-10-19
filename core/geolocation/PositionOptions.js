@@ -21,9 +21,9 @@ define(function() {
         /** @type {Boolean} */
         this.enableHighAccuracy = options.enableHighAccuracy ? true : false;
         /** @type {Number} */
-        this.timeout = options.timeout | 0;
+        this.timeout = options.timeout || 0;
         /** @type {Number} */
-        this.maximumAge = options.maximumAge | 0;
+        this.maximumAge = options.maximumAge || 0;
     }
 
     return PositionOptions;

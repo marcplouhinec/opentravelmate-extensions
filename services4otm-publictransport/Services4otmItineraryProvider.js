@@ -7,8 +7,12 @@
 define([
     'underscore',
     '../itinerary-finder/ItineraryProvider',
+    '../itinerary-finder/Itinerary',
+    '../itinerary-finder/Path',
+    '../place-commons/Place',
+    '../place-commons/PlaceProvider',
     './Services4otmPlaceProvider'
-], function(_, ItineraryProvider, Services4otmPlaceProvider) {
+], function(_, ItineraryProvider, Itinerary, Path, Place, PlaceProvider, Services4otmPlaceProvider) {
     'use strict';
 
     /**
@@ -63,16 +67,41 @@ define([
         var url = ITINERARY_WS_URL + '?' +
             (_.isString(startPoint) ? 'startWaypointId=' + startPoint : 'startLocation=' + JSON.stringify(startPoint)) + '&' +
             (_.isString(endPoint) ? 'endWaypointId=' + endPoint : 'endLocation=' + JSON.stringify(endPoint)) +
-            '&include_docs=true&jsoncallback=?';
-        $.getJSON(url, function (itineraryInformation) {
+            '&callback=?';
+        $.getJSON(url, function (response) {
             //Stop if an error occurred
-            if (itineraryInformation.error) {
-                callback({ error: itineraryInformation.error });
+            if (!response.success) {
+                callback({ error: response.errormessage });
                 return;
             }
 
-            // TODO handle the results
-            console.log(itineraryInformation);
+            // Parse the result
+            var itineraries = [];
+            var placeProvider = PlaceProvider.findByName(Services4otmPlaceProvider.NAME);
+            var steps = _.map(response.itinerary.steps, function(step) {
+                if (step.type === 'Place') {
+                    step.placeProvider = placeProvider;
+                    return new Place(step);
+                } else {
+                    var places = _.map(step.places, function(place) {
+                        place.placeProvider = placeProvider;
+                        return new Place(place);
+                    });
+                    return new Path({
+                        places: places,
+                        additionalParameters: step.additionalParameters
+                    });
+                }
+            });
+            itineraries.push(new Itinerary({
+                steps: steps,
+                itineraryProvider: self
+            }));
+
+            // Return the results
+            callback({
+                itineraries: itineraries
+            });
         });
     };
 
