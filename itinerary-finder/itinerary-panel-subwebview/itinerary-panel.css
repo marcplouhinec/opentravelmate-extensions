@@ -1,0 +1,40 @@
+body {
+    margin: 0;
+    padding: 0;
+}
+
+#title-bar {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    height: 50px;
+}
+
+#title-bar #title {
+    position: absolute;
+    top: 8px;
+    left: 5px;
+    font-size: 24px;
+}
+
+#title-bar #title-bar-buttons {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 100px;
+}
+
+#title-bar #title-bar-buttons button {
+    float: right;
+    margin-left: 5px;
+}
+
+#itinerary-details {
+    position: absolute;
+    top: 50px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    background-color: white;
+}

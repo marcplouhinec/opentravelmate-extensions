@@ -13,8 +13,9 @@ define([
     '../core/widget/map/LatLng',
     '../core/widget/map/Marker',
     '../core/widget/map/UrlMarkerIcon',
-    '../services4otm-publictransport/Services4otmPlaceProvider'
-], function($, Widget, webview, Point, Dimension, LatLng, Marker, UrlMarkerIcon, Services4otmPlaceProvider) {
+    '../services4otm-publictransport/Services4otmPlaceProvider',
+    './itineraryPanel'
+], function($, Widget, webview, Point, Dimension, LatLng, Marker, UrlMarkerIcon, Services4otmPlaceProvider, itineraryPanel) {
     'use strict';
 
     var itineraryFinder = {
@@ -150,8 +151,8 @@ define([
          * @param {Array.<Itinerary>} itineraries
          */
         '_showItineraries': function(itineraries) {
-            // TODO
-            console.log(itineraries);
+            // Show the first itinerary only
+            itineraryPanel.open(itineraries[0]);
         }
     };
 
