@@ -18,6 +18,13 @@ define(function() {
      */
     function Path(options) {
         /**
+         * Object type.
+         *
+         * @type {string}
+         */
+        this.type = 'Path';
+
+        /**
          * Path steps.
          *
          * @type {Array.<Place>}

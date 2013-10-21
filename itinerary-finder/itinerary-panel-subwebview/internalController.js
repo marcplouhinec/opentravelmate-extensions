@@ -5,10 +5,11 @@
  */
 
 define([
+    'underscore',
     'googleFastButton',
     '../../core/widget/webview/webview',
     './constants'
-], function(FastButton, webview, constants) {
+], function(_, FastButton, webview, constants) {
     'use strict';
 
     var internalController = {
@@ -17,6 +18,12 @@ define([
          */
         'initWebView': function() {
             var itinerary = /** @type {Itinerary} */ JSON.parse(webview.additionalParameters['itinerary']);
+
+            // Build the itinerary details
+            var itineraryStepsTemplate = _.template(document.getElementById('tpl-itinerary-steps').textContent);
+            var renderedItineraryDetails = itineraryStepsTemplate({ itinerary: itinerary });
+            var itineraryDetailsElement = /** @type {HTMLDivElement} */ document.getElementById('itinerary-details');
+            itineraryDetailsElement.innerHTML = renderedItineraryDetails;
 
             // Handle the close button
             new FastButton(document.getElementById('close-button'), function() {

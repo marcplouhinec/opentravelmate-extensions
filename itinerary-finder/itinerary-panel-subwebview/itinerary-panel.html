@@ -20,7 +20,42 @@
         </div>
     </div>
     <div id="itinerary-details">
-
     </div>
+    <script id="tpl-itinerary-steps" type="text/template">
+        <table>
+            <tr id="place-elements">
+                <% _.each(itinerary.steps, function (step) { %>
+                <% if (step.type === 'Place') { %>
+                <td colspan="2"><%=step.name %></td>
+                <% } %>
+                <% }); %>
+            </tr>
+            <tr id="path-lines">
+                <td></td>
+                <% _.each(itinerary.steps, function (step, index) { %>
+                <% if (step.type === 'Path') { %>
+                <td style="background-color: #<%=step.additionalParameters['lineColor'] %>;">
+                    <div class="station-wrapper"><div class="station"></div></div>
+                </td>
+                <td style="background-color: #<%=step.additionalParameters['lineColor'] %>;">
+                    <% if (index >= itinerary.steps.length - 2) { %>
+                    <div class="station-wrapper-right"><div class="station"></div></div>
+                    <% } %>
+                </td>
+                <% } %>
+                <% }); %>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <% _.each(itinerary.steps, function (step) { %>
+                <% if (step.type === 'Path') { %>
+                <td colspan="2"><%=step.additionalParameters['lineName'] %></td>
+                <% } %>
+                <% }); %>
+                <td></td>
+            </tr>
+        </table>
+    </script>
 </body>
 </html>

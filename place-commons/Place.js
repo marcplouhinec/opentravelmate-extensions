@@ -22,6 +22,13 @@ define(function() {
      */
     function Place(options) {
         /**
+         * Object type.
+         *
+         * @type {string}
+         */
+        this.type = 'Place';
+
+        /**
          * Place latitude.
          *
          * @type {Number}
