@@ -37,7 +37,15 @@ define([
          * @param {Itinerary} itinerary
          */
         'open': function(itinerary) {
+            // Check if the panel doesn't already exist
             if (this._subWebViewPlaceHolder) {
+                // Send the itinerary to show via an event
+                var subWebView = /** @type {SubWebView} */ Widget.findById(subWebViewConstants.SUBWEBVIEW_ID);
+                if (subWebView) {
+                    subWebView.fireInternalEvent(subWebViewConstants.SHOW_ITINERARY_EVENT, {
+                        itinerary: itinerary
+                    });
+                }
                 return;
             }
 

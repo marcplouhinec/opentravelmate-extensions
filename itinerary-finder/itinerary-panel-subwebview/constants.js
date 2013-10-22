@@ -38,7 +38,15 @@ define(function() {
          * @const
          * @type {String}
          */
-        'MAXIMIZE_EVENT': 'itinerary-panel-maximize-event'
+        'MAXIMIZE_EVENT': 'itinerary-panel-maximize-event' ,
+
+        /**
+         * "Show itinerary" event.
+         *
+         * @const
+         * @type {String}
+         */
+        'SHOW_ITINERARY_EVENT': 'itinerary-panel-show-itinerary-event'
     };
 
     return constants;
