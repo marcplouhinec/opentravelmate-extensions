@@ -14,7 +14,8 @@ define(function() {
      *     places: Array.<Place>=,
      *     name: String=,
      *     color: String=,
-     *     additionalParameters: Object.<String, Object>=
+     *     additionalParameters: Object.<String, Object>=,
+     *     itineraryProvider: ItineraryProvider
      * }} options
      * @constructor
      */
@@ -53,6 +54,13 @@ define(function() {
          * @type {Object.<String, Object>}
          */
         this.additionalParameters = options.additionalParameters || {};
+
+        /**
+         * ItineraryProvider that provided this path.
+         *
+         * @type {ItineraryProvider}
+         */
+        this.itineraryProvider = options.itineraryProvider;
     }
 
     return Path;

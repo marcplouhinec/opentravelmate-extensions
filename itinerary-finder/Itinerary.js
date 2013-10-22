@@ -10,7 +10,10 @@ define(function() {
     /**
      * Create a new Itinerary.
      *
-     * @param options
+     * @param {{
+     *     steps: Array.<Place|Path>,
+     *     itineraryProvider: ItineraryProvider
+     * }} options
      * @constructor
      */
     function Itinerary(options) {
