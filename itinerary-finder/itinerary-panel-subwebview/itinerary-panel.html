@@ -34,10 +34,10 @@
                 <td></td>
                 <% _.each(itinerary.steps, function (step, index) { %>
                 <% if (step.type === 'Path') { %>
-                <td style="background-color: #<%=step.additionalParameters['lineColor'] %>;">
+                <td style="background-color: #<%=step.color %>;">
                     <div class="station-wrapper"><div class="station"></div></div>
                 </td>
-                <td style="background-color: #<%=step.additionalParameters['lineColor'] %>;">
+                <td style="background-color: #<%=step.color %>;">
                     <% if (index >= itinerary.steps.length - 2) { %>
                     <div class="station-wrapper-right"><div class="station"></div></div>
                     <% } %>
@@ -50,7 +50,7 @@
                 <td></td>
                 <% _.each(itinerary.steps, function (step) { %>
                 <% if (step.type === 'Path') { %>
-                <td colspan="2"><%=step.additionalParameters['lineName'] %></td>
+                <td colspan="2"><%=step.name %></td>
                 <% } %>
                 <% }); %>
                 <td></td>

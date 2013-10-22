@@ -12,6 +12,8 @@ define(function() {
      *
      * @param {{
      *     places: Array.<Place>=,
+     *     name: String=,
+     *     color: String=,
      *     additionalParameters: Object.<String, Object>=
      * }} options
      * @constructor
@@ -23,6 +25,20 @@ define(function() {
          * @type {string}
          */
         this.type = 'Path';
+
+        /**
+         * Path name or title.
+         *
+         * @type {string}
+         */
+        this.name = options.name || '';
+
+        /**
+         * Path color in the format 'RRGGBB'.
+         *
+         * @type {string}
+         */
+        this.color = options.color || '000000';
 
         /**
          * Path steps.
