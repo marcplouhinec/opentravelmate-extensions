@@ -22,7 +22,7 @@
     <div id="itinerary-details">
     </div>
     <script id="tpl-itinerary-steps" type="text/template">
-        <table>
+        <table id="itinerary-steps">
             <tr id="place-elements">
                 <% _.each(itinerary.steps, function (step) { %>
                 <% if (step.type === 'Place') { %>

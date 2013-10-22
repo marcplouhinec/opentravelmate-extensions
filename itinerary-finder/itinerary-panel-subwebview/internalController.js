@@ -25,6 +25,13 @@ define([
             var itineraryDetailsElement = /** @type {HTMLDivElement} */ document.getElementById('itinerary-details');
             itineraryDetailsElement.innerHTML = renderedItineraryDetails;
 
+            // Compute the table natural size
+            itineraryDetailsElement.style.width = '10000px';
+            var tableElement = /** @type {HTMLTableElement} */ document.getElementById('itinerary-steps');
+            var naturalTableWidth = window.getComputedStyle(tableElement).width;
+            tableElement.style.width = naturalTableWidth;
+            itineraryDetailsElement.style.width = 'auto';
+
             // Handle the close button
             new FastButton(document.getElementById('close-button'), function() {
                 webview.fireExternalEvent(constants.CLOSE_EVENT);
