@@ -314,5 +314,14 @@ define([
         nativeMap.removeView(this.id);
     };
 
+    /**
+     * Add the given polyline on the map.
+     *
+     * @param {Polyline} polyline
+     */
+    Map.prototype.addPolyline = function(polyline) {
+        nativeMap.addPolyline(this.id, JSON.stringify(polyline));
+    };
+
     return Map;
 });
