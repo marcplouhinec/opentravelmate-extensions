@@ -13,9 +13,10 @@ define([
     '../core/widget/map/LatLng',
     '../core/widget/map/Marker',
     '../core/widget/map/UrlMarkerIcon',
+    '../core/widget/map/Polyline',
     '../services4otm-publictransport/Services4otmPlaceProvider',
     './itineraryPanel'
-], function($, Widget, webview, Point, Dimension, LatLng, Marker, UrlMarkerIcon, Services4otmPlaceProvider, itineraryPanel) {
+], function($, Widget, webview, Point, Dimension, LatLng, Marker, UrlMarkerIcon, Polyline, Services4otmPlaceProvider, itineraryPanel) {
     'use strict';
 
     var itineraryFinder = {
@@ -153,6 +154,26 @@ define([
         '_showItineraries': function(itineraries) {
             // Show the first itinerary only
             itineraryPanel.open(itineraries[0]);
+
+
+            // DEBUG ONLY
+            var map  = /** @Type {Map} */ Widget.findById('map');
+            var polyline = new Polyline({
+                path: [
+                    new LatLng(49.61, 6.131),
+                    new LatLng(49.60, 6.131),
+                    new LatLng(49.60, 6.14),
+                    new LatLng(49.61, 6.14),
+                    new LatLng(49.61, 6.131)
+                ],
+                color: 0x806495ED,
+                width: 8
+            });
+            map.addPolyline(polyline);
+
+            setTimeout(function() {
+                map.removePolyline(polyline);
+            }, 5000);
         }
     };
 

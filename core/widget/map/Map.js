@@ -290,6 +290,24 @@ define([
     };
 
     /**
+     * Add the given polyline on the map.
+     *
+     * @param {Polyline} polyline
+     */
+    Map.prototype.addPolyline = function(polyline) {
+        nativeMap.addPolyline(this.id, JSON.stringify(polyline));
+    };
+
+    /**
+     * Remove the given polyline from the map.
+     *
+     * @param {Polyline} polyline
+     */
+    Map.prototype.removePolyline = function(polyline) {
+        nativeMap.removePolyline(this.id, JSON.stringify(polyline));
+    };
+
+    /**
      * Build the native view object for the current widget.
      * 
      * @param {LayoutParams} layoutParams
@@ -312,15 +330,6 @@ define([
      */
     Map.prototype.removeView = function() {
         nativeMap.removeView(this.id);
-    };
-
-    /**
-     * Add the given polyline on the map.
-     *
-     * @param {Polyline} polyline
-     */
-    Map.prototype.addPolyline = function(polyline) {
-        nativeMap.addPolyline(this.id, JSON.stringify(polyline));
     };
 
     return Map;
