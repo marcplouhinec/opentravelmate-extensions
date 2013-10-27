@@ -24,7 +24,7 @@ define(['./MarkerIcon', './Dimension'], function(MarkerIcon, Dimension) {
      * }} options
      * @constructor
      */
-    function SvgPathMarkerIcon(options) {
+    function VectorMarkerIcon(options) {
         MarkerIcon.call(this, options);
 
         /**
@@ -85,8 +85,8 @@ define(['./MarkerIcon', './Dimension'], function(MarkerIcon, Dimension) {
         this.strokeWeight = options.strokeWeight || this.scale;
     }
 
-    SvgPathMarkerIcon.protype = new MarkerIcon();
-    SvgPathMarkerIcon.protype.constructor = SvgPathMarkerIcon;
+    VectorMarkerIcon.protype = new MarkerIcon();
+    VectorMarkerIcon.protype.constructor = VectorMarkerIcon;
 
-    return SvgPathMarkerIcon;
+    return VectorMarkerIcon;
 });
