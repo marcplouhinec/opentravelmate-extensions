@@ -20,7 +20,7 @@ define(['./MarkerIcon', './Dimension'], function(MarkerIcon, Dimension) {
      *     scale: Number=,
      *     strokeColor: String=,
      *     strokeOpacity: Number=,
-     *     strokeWeight: Number=
+     *     strokeWidth: Number=
      * }} options
      * @constructor
      */
@@ -82,7 +82,7 @@ define(['./MarkerIcon', './Dimension'], function(MarkerIcon, Dimension) {
          *
          * @type {Number}
          */
-        this.strokeWeight = options.strokeWeight || this.scale;
+        this.strokeWidth = options.strokeWidth || this.scale;
     }
 
     VectorMarkerIcon.protype = new MarkerIcon();
