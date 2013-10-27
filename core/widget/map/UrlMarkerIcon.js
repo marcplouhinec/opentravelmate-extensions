@@ -12,6 +12,7 @@ define(['./MarkerIcon', './Dimension'], function(MarkerIcon, Dimension) {
      *
      * @param {{
      *   anchor: Point,
+     *   size: Dimension,
      *   url: String
      * }} options
      * @constructor
