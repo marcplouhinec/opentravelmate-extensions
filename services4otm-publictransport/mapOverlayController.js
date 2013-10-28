@@ -132,7 +132,9 @@ define([
                     var waypoint = stopWithDrawingData.waypoint;
                     var drawingInfo = stopWithDrawingData.drawingInfo;
                     //var waypointIcon = waypointMarkerIconBuilder.buildIcon(waypoint, drawingInfo);
-                    waypointMarkerIconBuilder.renderWaypoint(waypoint, drawingInfo, self._map);
+                    setTimeout(function() {
+                        waypointMarkerIconBuilder.renderWaypoint(waypoint, drawingInfo, self._map);
+                    }, 5000);
                     var marker = new Marker({
                         position: new LatLng(waypoint.latitude, waypoint.longitude),
                         title: waypoint.stopName,
