@@ -131,11 +131,12 @@ define([
                 var markers = /** @type {Array.<Marker>} */ _.map(stopsWithDrawingData, function(stopWithDrawingData) {
                     var waypoint = stopWithDrawingData.waypoint;
                     var drawingInfo = stopWithDrawingData.drawingInfo;
-                    var waypointIcon = waypointMarkerIconBuilder.buildIcon(waypoint, drawingInfo);
+                    //var waypointIcon = waypointMarkerIconBuilder.buildIcon(waypoint, drawingInfo);
+                    waypointMarkerIconBuilder.renderWaypoint(waypoint, drawingInfo, self._map);
                     var marker = new Marker({
                         position: new LatLng(waypoint.latitude, waypoint.longitude),
                         title: waypoint.stopName,
-                        icon: waypointIcon //self._transparentMarkerIcon
+                        icon: self._transparentMarkerIcon
                     });
                     self._waypointByMarkerId[marker.id] = waypoint;
                     return marker;

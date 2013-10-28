@@ -7,8 +7,11 @@
 define([
     '../core/widget/map/Point',
     '../core/widget/map/Dimension',
+    '../core/widget/map/LatLng',
+    '../core/widget/map/Polyline',
+    '../core/widget/map/projectionUtils',
     '../core/widget/map/VectorMarkerIcon'
-], function(Point, Dimension, VectorMarkerIcon) {
+], function(Point, Dimension, LatLng, Polyline, projectionUtils, VectorMarkerIcon) {
     'use strict';
 
     var waypointMarkerIconBuilder = {
@@ -63,6 +66,42 @@ define([
                 anchor: anchor,
                 size: new Dimension(50, 50)
             });
+        },
+
+        /**
+         * Render the given waypoint on the map.
+         *
+         * @param {Waypoint} waypoint
+         * @param {WaypointDrawingInfo} drawingInfo
+         * @param {Map} map
+         */
+        'renderWaypoint': function(waypoint, drawingInfo, map) {
+            var weight = drawingInfo.weight;
+            var bounds = drawingInfo.bounds;
+
+            var path = /** @type {Array.<LatLng>} */ [];
+            path.push(new LatLng(
+                projectionUtils.tileYToLat(13, bounds[0].y),
+                projectionUtils.tileXToLng(13, bounds[0].x)
+            ));
+            if (bounds.length > 1) {
+                path.push(new LatLng(
+                    projectionUtils.tileYToLat(13, bounds[1].y),
+                    projectionUtils.tileXToLng(13, bounds[1].x)
+                ));
+            } else {
+                path.push(new LatLng(
+                    projectionUtils.tileYToLat(13, bounds[0].y),
+                    projectionUtils.tileXToLng(13, bounds[0].x)
+                ));
+            }
+
+            var polyline = new Polyline({
+                path: path,
+                color: 0xFF0070C0,
+                width: weight
+            });
+            map.addPolyline(polyline);
         }
 
     };
