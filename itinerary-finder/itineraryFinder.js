@@ -152,7 +152,9 @@ define([
          */
         '_showItineraries': function(itineraries) {
             // Show the first itinerary only
-            itineraryPanel.open(itineraries[0]);
+            var firstItinerary = itineraries[0];
+            itineraryPanel.open(firstItinerary);
+            firstItinerary.itineraryProvider.showItinerary(firstItinerary);
         }
     };
 

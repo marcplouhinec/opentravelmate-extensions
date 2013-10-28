@@ -85,5 +85,14 @@ define([
         });
     };
 
+    /**
+     * Show the given itinerary to the user.
+     *
+     * @param {Itinerary} itinerary
+     */
+    GoogleItineraryProvider.prototype.showItinerary = function(itinerary) {
+        // TODO
+    };
+
     return GoogleItineraryProvider;
 });

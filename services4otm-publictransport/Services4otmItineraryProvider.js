@@ -74,6 +74,15 @@ define([
     };
 
     /**
+     * Show the given itinerary to the user.
+     *
+     * @param {Itinerary} itinerary
+     */
+    Services4otmItineraryProvider.prototype.showItinerary = function(itinerary) {
+        // TODO
+    };
+
+    /**
      * Find itineraries by using public transports for the given startingPlace and destinationPlace.
      *
      * @param {Place} startingPlace

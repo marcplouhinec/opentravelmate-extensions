@@ -66,5 +66,14 @@ define([
         throw new I18nError({ code: ErrorCode.UNIMPLEMENTED_METHOD, i18nArgs: ['ItineraryProvider.prototype.findItineraries'] });
     };
 
+    /**
+     * Show the given itinerary to the user.
+     *
+     * @param {Itinerary} itinerary
+     */
+    ItineraryProvider.prototype.showItinerary = function(itinerary) {
+        throw new I18nError({ code: ErrorCode.UNIMPLEMENTED_METHOD, i18nArgs: ['ItineraryProvider.prototype.showItinerary'] });
+    };
+
     return ItineraryProvider;
 });
