@@ -18,11 +18,10 @@ define([
     '../place-commons/Place',
     '../place-information/placeSelectionMenu',
     './datastore/datastoreService',
-    './datastore/Waypoint',
-    './waypointMarkerIconBuilder'
+    './datastore/Waypoint'
 ], function(
     Widget, webview, Map, TileOverlay, LatLng, Point, Dimension, Marker, UrlMarkerIcon,
-    projectionUtils, Place, placeSelectionMenu, datastoreService, Waypoint, waypointMarkerIconBuilder) {
+    projectionUtils, Place, placeSelectionMenu, datastoreService, Waypoint) {
     'use strict';
 
     var mapOverlayController = {
@@ -130,11 +129,6 @@ define([
                 // Create one transparent marker
                 var markers = /** @type {Array.<Marker>} */ _.map(stopsWithDrawingData, function(stopWithDrawingData) {
                     var waypoint = stopWithDrawingData.waypoint;
-                    var drawingInfo = stopWithDrawingData.drawingInfo;
-                    //var waypointIcon = waypointMarkerIconBuilder.buildIcon(waypoint, drawingInfo);
-                    setTimeout(function() {
-                        waypointMarkerIconBuilder.renderWaypoint(waypoint, drawingInfo, self._map);
-                    }, 5000);
                     var marker = new Marker({
                         position: new LatLng(waypoint.latitude, waypoint.longitude),
                         title: waypoint.stopName,
