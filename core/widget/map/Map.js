@@ -308,6 +308,24 @@ define([
     };
 
     /**
+     * Add the given polygons on the map.
+     *
+     * @param {Array.<Polygon>} polygons
+     */
+    Map.prototype.addPolygons = function(polygons) {
+        nativeMap.addPolygons(this.id, JSON.stringify(polygons));
+    };
+
+    /**
+     * Remove the given polygons from the map.
+     *
+     * @param {Array.<Polygon>} polygons
+     */
+    Map.prototype.removePolygons = function(polygons) {
+        nativeMap.removePolygons(this.id, JSON.stringify(polygons));
+    };
+
+    /**
      * Build the native view object for the current widget.
      * 
      * @param {LayoutParams} layoutParams

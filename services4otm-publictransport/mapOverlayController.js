@@ -18,10 +18,11 @@ define([
     '../place-commons/Place',
     '../place-information/placeSelectionMenu',
     './datastore/datastoreService',
-    './datastore/Waypoint'
+    './datastore/Waypoint',
+    './WaypointPolygon'
 ], function(
     Widget, webview, Map, TileOverlay, LatLng, Point, Dimension, Marker, UrlMarkerIcon,
-    projectionUtils, Place, placeSelectionMenu, datastoreService, Waypoint) {
+    projectionUtils, Place, placeSelectionMenu, datastoreService, Waypoint, WaypointPolygon) {
     'use strict';
 
     var mapOverlayController = {
@@ -127,8 +128,13 @@ define([
             });
             datastoreService.findStopsWithDrawingDataByTileIds(tileIds, function(error, stopsWithDrawingData) {
                 // Create one transparent marker
+                var waypointPolygons = [];
                 var markers = /** @type {Array.<Marker>} */ _.map(stopsWithDrawingData, function(stopWithDrawingData) {
                     var waypoint = stopWithDrawingData.waypoint;
+                    var drawingInfo = stopWithDrawingData.drawingInfo;
+                    var waypointPolygon = new WaypointPolygon(waypoint, drawingInfo);
+                    waypointPolygons.push(waypointPolygon);
+
                     var marker = new Marker({
                         position: new LatLng(waypoint.latitude, waypoint.longitude),
                         title: waypoint.stopName,
@@ -144,6 +150,9 @@ define([
                 });
 
                 self._map.addMarkers(markers);
+                self._map.addPolygons(_.map(waypointPolygons, function(waypointPolygon) {
+                    return waypointPolygon.buildPolygon(13)
+                }));
             });
         },
 
