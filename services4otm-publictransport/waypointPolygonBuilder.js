@@ -30,22 +30,46 @@ define([
                 boundsDistance = Math.sqrt(Math.pow(boundRight.x - boundLeft.x, 2) + Math.pow(boundRight.y - boundLeft.y, 2));
             }
 
-            // Create a rectangle
+            // Create a horizontal polygon
             var pathVectors = [
                 [
-                    [boundLeft.x - weight / 512],
+                    [boundLeft.x],
                     [boundLeft.y + weight / 512],
                     [1]
                 ], [
+                    [boundLeft.x - Math.cos(Math.PI / 4) * (weight / 512)],
+                    [boundLeft.y + Math.sin(Math.PI / 4) * (weight / 512)],
+                    [1]
+                ], [
                     [boundLeft.x - weight / 512],
+                    [boundLeft.y],
+                    [1]
+                ], [
+                    [boundLeft.x - Math.cos(Math.PI / 4) * (weight / 512)],
+                    [boundLeft.y - Math.sin(Math.PI / 4) * (weight / 512)],
+                    [1]
+                ], [
+                    [boundLeft.x],
                     [boundLeft.y - weight / 512],
                     [1]
                 ], [
-                    [boundLeft.x + weight / 512 + boundsDistance],
+                    [boundLeft.x + boundsDistance],
                     [boundLeft.y - weight / 512],
                     [1]
                 ], [
-                    [boundLeft.x + weight / 512 + boundsDistance],
+                    [boundLeft.x + boundsDistance + Math.cos(Math.PI / 4) * (weight / 512)],
+                    [boundLeft.y - Math.sin(Math.PI / 4) * (weight / 512)],
+                    [1]
+                ], [
+                    [boundLeft.x + boundsDistance + weight / 512],
+                    [boundLeft.y],
+                    [1]
+                ], [
+                    [boundLeft.x + boundsDistance + Math.cos(Math.PI / 4) * (weight / 512)],
+                    [boundLeft.y + Math.sin(Math.PI / 4) * (weight / 512)],
+                    [1]
+                ], [
+                    [boundLeft.x + boundsDistance],
                     [boundLeft.y + weight / 512],
                     [1]
                 ]
