@@ -46,6 +46,19 @@ define([
         '_waypointByMarkerId': {},
 
         /**
+         * @type {Object.<String, {drawingInfo: WaypointDrawingInfo, zoom: Number}>}
+         * @private
+         */
+        '_drawingInfoAndZoomByMarkerId': {},
+
+        /**
+         * Polygon displayed on top of a waypoint when the user put his mouse close to the marker.
+         *
+         * @private
+         */
+        '_highlightedWaypointPolygon': null,
+
+        /**
          * Initialize the controller.
          *
          * @param {Services4otmPlaceProvider} services4otmPlaceProvider
@@ -85,12 +98,19 @@ define([
             });
 
             // TODO
-            //this._map.onMarkerMouseEnter(function(marker) {
-            //    console.log('mouse enter: ' + marker.title);
-            //});
-            //this._map.onMarkerMouseLeave(function(marker) {
-            //    console.log('mouse leave: ' + marker.title);
-            //});
+            this._map.onMarkerMouseEnter(function(marker) {
+                var drawingInfoAndZoom = self._drawingInfoAndZoomByMarkerId[marker.id];
+                if (drawingInfoAndZoom) {
+                    self._highlightedWaypointPolygon = waypointPolygonBuilder.buildPolygon(drawingInfoAndZoom.drawingInfo, drawingInfoAndZoom.zoom);
+                    self._map.addPolygons([self._highlightedWaypointPolygon]);
+                }
+            });
+            this._map.onMarkerMouseLeave(function(marker) {
+                if (self._highlightedWaypointPolygon) {
+                    self._map.removePolygons([self._highlightedWaypointPolygon]);
+                    delete self._highlightedWaypointPolygon;
+                };
+            });
             this._map.onInfoWindowClick(function(marker) {
                 var waypoint = self._waypointByMarkerId[marker.id];
                 if (waypoint) {
@@ -136,10 +156,11 @@ define([
                         icon: self._transparentMarkerIcon
                     });
                     self._waypointByMarkerId[marker.id] = waypoint;
+                    self._drawingInfoAndZoomByMarkerId[marker.id] = {
+                        drawingInfo: stopWithDrawingData.drawingInfo,
+                        zoom: zoom
+                    };
                     return marker;
-                });
-                var polygons = /** @type {Array.<Polygon>} */ _.map(stopsWithDrawingData, function(stopWithDrawingData) {
-                    return waypointPolygonBuilder.buildPolygon(stopWithDrawingData.drawingInfo, zoom);
                 });
 
                 // Save the marker locally
@@ -148,7 +169,6 @@ define([
                 });
 
                 self._map.addMarkers(markers);
-                self._map.addPolygons(polygons);
             });
         },
 
@@ -166,6 +186,11 @@ define([
                 var storedMarkers = self._markersByTileId[tileId];
                 if (storedMarkers) {
                     self._map.removeMarkers(storedMarkers);
+
+                    _.each(storedMarkers, function(marker) {
+                        delete self._waypointByMarkerId[marker.id];
+                        delete self._drawingInfoAndZoomByMarkerId[marker.id];
+                    });
                 }
             });
         },
