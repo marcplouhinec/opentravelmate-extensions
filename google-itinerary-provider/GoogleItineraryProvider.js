@@ -5,11 +5,15 @@
  */
 
 define([
+    'underscore',
+    '../core/widget/Widget',
+    '../core/widget/map/LatLng',
+    '../core/widget/map/Polyline',
     '../itinerary-finder/ItineraryProvider',
     '../itinerary-finder/Itinerary',
     '../itinerary-finder/Path',
     'async!http://maps.googleapis.com/maps/api/js?libraries=places&sensor=true!callback'
-], function(ItineraryProvider, Itinerary, Path) {
+], function(_, Widget, LatLng, Polyline, ItineraryProvider, Itinerary, Path) {
     'use strict';
 
     var google = window.google;
@@ -91,7 +95,36 @@ define([
      * @param {Itinerary} itinerary
      */
     GoogleItineraryProvider.prototype.showItinerary = function(itinerary) {
-        // TODO
+        var self = this;
+
+        // Find the path provided by this provider
+        var paths = _.filter(itinerary.steps, function(step) {
+            return step.type === 'Path' && step.itineraryProvider === self;
+        });
+
+        // Create poly lines
+        var polylines = _.map(paths, function(path) {
+            var polylinePath = /** @type {Array.<LatLng>} */ [];
+            var rawResult = path.additionalParameters['rawResult'];
+            var routes = /** @type {Array} */ rawResult['routes'];
+            _.each(routes, function(route) {
+                var overviewPath = /** @type {Array} */ route['overview_path'];
+                _.each(overviewPath, function(gLatLng) {
+                    polylinePath.push(new LatLng(gLatLng.lat(), gLatLng.lng()));
+                });
+            });
+            return new Polyline({
+                path: polylinePath,
+                color: 0xA01E90FF,
+                width: 5
+            });
+        });
+
+        // Show the polylines on the map
+        var map = /** @type {Map} */ Widget.findById('map');
+        _.each(polylines, function(polyline) {
+            map.addPolyline(polyline);
+        });
     };
 
     return GoogleItineraryProvider;

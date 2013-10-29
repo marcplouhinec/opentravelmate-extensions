@@ -123,7 +123,6 @@ define([
             this._map.onMarkerMouseEnter(function(marker) {
                 var waypoint = self._waypointByMarkerId[marker.id];
                 if (!waypoint) {
-                    console.log(marker);
                     return;
                 }
                 var drawingInfoAndZoom = self._drawingInfoAndZoomByWaypointId[waypoint.id];

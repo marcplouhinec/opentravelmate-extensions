@@ -100,7 +100,8 @@ define([
         mapOverlayController.highlightItinerary(waypointIds);
 
         // Show the walking paths
-        // TODO
+        var googleItineraryProvider = ItineraryProvider.findByName(GoogleItineraryProvider.NAME);
+        googleItineraryProvider.showItinerary(itinerary);
     };
 
     /**
