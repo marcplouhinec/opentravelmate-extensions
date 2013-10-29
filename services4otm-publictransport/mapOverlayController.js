@@ -35,7 +35,8 @@ define([
      * @constant
      * @type {Number}
      */
-    var ITINERARY_POLYGON_SCALE = 1.4;
+    var ITINERARY_POLYGON_SCALE = 1.2;
+
 
     var mapOverlayController = {
 
@@ -284,9 +285,7 @@ define([
                             drawingInfoAndZoom.drawingInfo,
                             drawingInfoAndZoom.zoom,
                             ITINERARY_POLYGON_SCALE,
-                            ITINERARY_POLYGON_FILL_COLOR,
-                            0,
-                            0);
+                            ITINERARY_POLYGON_FILL_COLOR);
                         newPolygons.push(polygon);
                         self._itineraryPolygonByWaypointId[waypointId] = polygon;
                     }
