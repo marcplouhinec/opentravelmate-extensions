@@ -20,12 +20,14 @@ define([
          * @param {WaypointDrawingInfo} drawingInfo
          * @param {Number} zoom
          * @param {Number=} fillColor
+         * @param {Number=} strokeColor
+         * @param {Number=} strokeWidth
          */
-        'buildPolygon': function(drawingInfo, zoom, fillColor) {
+        'buildPolygon': function(drawingInfo, zoom, fillColor, strokeColor, strokeWidth) {
             var self = this;
             var boundLeft = drawingInfo.bounds[0];
             var boundRight = drawingInfo.bounds[drawingInfo.bounds.length > 1 ? 1 : 0];
-            var weight = drawingInfo.weight;
+            var weight = drawingInfo.weight * 1.4;
             var boundsDistance = 0;
             if (drawingInfo.bounds.length > 1) {
                 boundsDistance = Math.sqrt(Math.pow(boundRight.x - boundLeft.x, 2) + Math.pow(boundRight.y - boundLeft.y, 2));
@@ -112,9 +114,9 @@ define([
 
             return new Polygon({
                 path: pathLatLng,
-                fillColor: fillColor ? fillColor : 0xFF0070C0,
-                strokeColor: 0xFF000000,
-                strokeWidth: 1
+                fillColor: _.isNumber(fillColor) ? fillColor : 0xFF0070C0,
+                strokeColor: _.isNumber(strokeColor) ? strokeColor : 0xFF000000,
+                strokeWidth: _.isNumber(strokeWidth) ? strokeWidth : 1
             });
         },
 

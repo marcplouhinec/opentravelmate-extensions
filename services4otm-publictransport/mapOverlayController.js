@@ -274,7 +274,7 @@ define([
                     var drawingInfoAndZoom = self._drawingInfoAndZoomByWaypointId[waypointId];
 
                     if (drawingInfoAndZoom) {
-                        var polygon = waypointPolygonBuilder.buildPolygon(drawingInfoAndZoom.drawingInfo, drawingInfoAndZoom.zoom, ITINERARY_POLYGON_FILL_COLOR);
+                        var polygon = waypointPolygonBuilder.buildPolygon(drawingInfoAndZoom.drawingInfo, drawingInfoAndZoom.zoom, ITINERARY_POLYGON_FILL_COLOR, 0x00000000, 0);
                         newPolygons.push(polygon);
                         self._itineraryPolygonByWaypointId[waypointId] = polygon;
                     }

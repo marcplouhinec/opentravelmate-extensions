@@ -47,7 +47,7 @@ define(function() {
          *
          * @type {Number}
          */
-        this.fillColor = options.fillColor || 0xFF000000;
+        this.fillColor = typeof options.fillColor === 'number' ? options.fillColor : 0xFF000000;
 
         /**
          * Color in the format 0xOORRGGBB where
@@ -56,14 +56,14 @@ define(function() {
          *
          * @type {Number}
          */
-        this.strokeColor = options.strokeColor || 0xFF000000;
+        this.strokeColor = typeof options.strokeColor === 'number' ? options.strokeColor : 0xFF000000;
 
         /**
          * Width of the stroke in pixels.
          *
          * @type {Number}
          */
-        this.strokeWidth = options.strokeWidth || 1;
+        this.strokeWidth = typeof options.strokeWidth === 'number' ? options.strokeWidth : 1;
     }
 
     return Polygon;
