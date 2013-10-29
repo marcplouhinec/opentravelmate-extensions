@@ -31,6 +31,12 @@ define([
      */
     var ITINERARY_POLYGON_FILL_COLOR = 0xFF70c000;
 
+    /**
+     * @constant
+     * @type {Number}
+     */
+    var ITINERARY_POLYGON_SCALE = 1.4;
+
     var mapOverlayController = {
 
         /**
@@ -274,7 +280,13 @@ define([
                     var drawingInfoAndZoom = self._drawingInfoAndZoomByWaypointId[waypointId];
 
                     if (drawingInfoAndZoom) {
-                        var polygon = waypointPolygonBuilder.buildPolygon(drawingInfoAndZoom.drawingInfo, drawingInfoAndZoom.zoom, ITINERARY_POLYGON_FILL_COLOR, 0x00000000, 0);
+                        var polygon = waypointPolygonBuilder.buildPolygon(
+                            drawingInfoAndZoom.drawingInfo,
+                            drawingInfoAndZoom.zoom,
+                            ITINERARY_POLYGON_SCALE,
+                            ITINERARY_POLYGON_FILL_COLOR,
+                            0,
+                            0);
                         newPolygons.push(polygon);
                         self._itineraryPolygonByWaypointId[waypointId] = polygon;
                     }
