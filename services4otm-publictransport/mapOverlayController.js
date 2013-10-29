@@ -18,10 +18,11 @@ define([
     '../place-commons/Place',
     '../place-information/placeSelectionMenu',
     './datastore/datastoreService',
-    './datastore/Waypoint'
+    './datastore/Waypoint',
+    './waypointPolygonBuilder'
 ], function(
     Widget, webview, Map, TileOverlay, LatLng, Point, Dimension, Marker, UrlMarkerIcon,
-    projectionUtils, Place, placeSelectionMenu, datastoreService, Waypoint) {
+    projectionUtils, Place, placeSelectionMenu, datastoreService, Waypoint, waypointPolygonBuilder) {
     'use strict';
 
     var mapOverlayController = {
@@ -137,6 +138,9 @@ define([
                     self._waypointByMarkerId[marker.id] = waypoint;
                     return marker;
                 });
+                var polygons = /** @type {Array.<Polygon>} */ _.map(stopsWithDrawingData, function(stopWithDrawingData) {
+                    return waypointPolygonBuilder.buildPolygon(stopWithDrawingData.drawingInfo, zoom);
+                });
 
                 // Save the marker locally
                 _.each(markers, function(marker) {
@@ -144,6 +148,7 @@ define([
                 });
 
                 self._map.addMarkers(markers);
+                self._map.addPolygons(polygons);
             });
         },
 
