@@ -25,6 +25,12 @@ define([
     projectionUtils, Place, placeSelectionMenu, datastoreService, Waypoint, waypointPolygonBuilder) {
     'use strict';
 
+    /**
+     * @constant
+     * @type {Number}
+     */
+    var ITINERARY_POLYGON_FILL_COLOR = 0xFF70c000;
+
     var mapOverlayController = {
 
         /**
@@ -49,14 +55,31 @@ define([
          * @type {Object.<String, {drawingInfo: WaypointDrawingInfo, zoom: Number}>}
          * @private
          */
-        '_drawingInfoAndZoomByMarkerId': {},
+        '_drawingInfoAndZoomByWaypointId': {},
 
         /**
          * Polygon displayed on top of a waypoint when the user put his mouse close to the marker.
-         *
          * @private
          */
         '_highlightedWaypointPolygon': null,
+
+        /**
+         * @private
+         * @type {Array.<String>} Array of waypoint IDs in the itinerary order.
+         */
+        '_itineraryWaypointIdArray': [],
+
+        /**
+         * @private
+         * @type {Object.<String, Boolean>} Object.<Waypoint ID on itinerary, true>
+         */
+        '_itineraryWaypointIdSet': {},
+
+        /**
+         * @private
+         * @type {Object.<String, Polygon>}
+         */
+        '_itineraryPolygonByWaypointId': {},
 
         /**
          * Initialize the controller.
@@ -97,9 +120,13 @@ define([
                 }
             });
 
-            // TODO
             this._map.onMarkerMouseEnter(function(marker) {
-                var drawingInfoAndZoom = self._drawingInfoAndZoomByMarkerId[marker.id];
+                var waypoint = self._waypointByMarkerId[marker.id];
+                if (!waypoint) {
+                    console.log(marker);
+                    return;
+                }
+                var drawingInfoAndZoom = self._drawingInfoAndZoomByWaypointId[waypoint.id];
                 if (drawingInfoAndZoom) {
                     self._highlightedWaypointPolygon = waypointPolygonBuilder.buildPolygon(drawingInfoAndZoom.drawingInfo, drawingInfoAndZoom.zoom);
                     self._map.addPolygons([self._highlightedWaypointPolygon]);
@@ -156,7 +183,7 @@ define([
                         icon: self._transparentMarkerIcon
                     });
                     self._waypointByMarkerId[marker.id] = waypoint;
-                    self._drawingInfoAndZoomByMarkerId[marker.id] = {
+                    self._drawingInfoAndZoomByWaypointId[waypoint.id] = {
                         drawingInfo: stopWithDrawingData.drawingInfo,
                         zoom: zoom
                     };
@@ -168,7 +195,11 @@ define([
                     self._addToMarkersByTileId(marker, zoom);
                 });
 
+                // Show the markers on the map
                 self._map.addMarkers(markers);
+
+                // Update the itinerary polygons
+                self._updateItineraryPolygons();
             });
         },
 
@@ -181,6 +212,7 @@ define([
             var self = this;
 
             // Remove the markers from the tiles
+            var removedWaypointIdSet = /** @type {Object.<String, Boolean>} */ {};
             _.each(tileCoordinates, function(tileCoordinate) {
                 var tileId = tileCoordinate.zoom + '_' + tileCoordinate.x + '_' + tileCoordinate.y;
                 var storedMarkers = self._markersByTileId[tileId];
@@ -188,11 +220,68 @@ define([
                     self._map.removeMarkers(storedMarkers);
 
                     _.each(storedMarkers, function(marker) {
-                        delete self._waypointByMarkerId[marker.id];
-                        delete self._drawingInfoAndZoomByMarkerId[marker.id];
+                        var waypoint = self._waypointByMarkerId[marker.id];
+                        if (waypoint) {
+                            removedWaypointIdSet[waypoint.id] = true;
+                            delete self._waypointByMarkerId[marker.id];
+                        }
+                        if (self._drawingInfoAndZoomByWaypointId[marker.id])
+                            delete self._drawingInfoAndZoomByWaypointId[marker.id];
                     });
                 }
             });
+
+            // Update the itinerary polygons
+            self._updateItineraryPolygons(removedWaypointIdSet);
+        },
+
+        /**
+         * Highlight the markers related to the given waypoints.
+         *
+         * @param {Array.<String>} waypointIds
+         */
+        'highlightItinerary': function(waypointIds) {
+            this._itineraryWaypointIdArray = waypointIds;
+            this._itineraryWaypointIdSet = {};
+            for (var i = 0; i < waypointIds.length; i++) {
+                this._itineraryWaypointIdSet[waypointIds[i]] = true;
+            }
+
+            this._updateItineraryPolygons();
+        },
+
+        /**
+         * Add or remove itinerary polygons automatically.
+         *
+         * @param {Object.<String, Boolean>=} removedWaypointIdSet If set, force the polygons related to the given waypoints to be removed.
+         */
+        '_updateItineraryPolygons': function(removedWaypointIdSet) {
+            var self = this;
+
+            // Find the polygons to remove
+            var polygonsToRemove = [];
+            _.each(this._itineraryPolygonByWaypointId, function(polygon, waypointId) {
+                if (!self._itineraryWaypointIdSet[waypointId] || (removedWaypointIdSet && removedWaypointIdSet[waypointId])) {
+                    polygonsToRemove.push(polygon);
+                    delete self._itineraryPolygonByWaypointId[waypointId];
+                }
+            });
+            this._map.removePolygons(polygonsToRemove);
+
+            // Find the new polygons to add
+            var newPolygons = /** @type {Array.<Polygon>} */ [];
+            _.each(this._itineraryWaypointIdSet, function(alwaysTrue, waypointId) {
+                if (!self._itineraryPolygonByWaypointId[waypointId] && (!removedWaypointIdSet || !removedWaypointIdSet[waypointId])) {
+                    var drawingInfoAndZoom = self._drawingInfoAndZoomByWaypointId[waypointId];
+
+                    if (drawingInfoAndZoom) {
+                        var polygon = waypointPolygonBuilder.buildPolygon(drawingInfoAndZoom.drawingInfo, drawingInfoAndZoom.zoom, ITINERARY_POLYGON_FILL_COLOR);
+                        newPolygons.push(polygon);
+                        self._itineraryPolygonByWaypointId[waypointId] = polygon;
+                    }
+                }
+            });
+            this._map.addPolygons(newPolygons);
         },
 
         /**

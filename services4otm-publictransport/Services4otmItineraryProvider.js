@@ -12,8 +12,9 @@ define([
     '../place-commons/Place',
     '../place-commons/PlaceProvider',
     '../google-itinerary-provider/GoogleItineraryProvider',
-    './Services4otmPlaceProvider'
-], function(_, ItineraryProvider, Itinerary, Path, Place, PlaceProvider, GoogleItineraryProvider, Services4otmPlaceProvider) {
+    './Services4otmPlaceProvider',
+    './mapOverlayController'
+], function(_, ItineraryProvider, Itinerary, Path, Place, PlaceProvider, GoogleItineraryProvider, Services4otmPlaceProvider, mapOverlayController) {
     'use strict';
 
     /**
@@ -79,6 +80,26 @@ define([
      * @param {Itinerary} itinerary
      */
     Services4otmItineraryProvider.prototype.showItinerary = function(itinerary) {
+        var self = this;
+
+        // Find all the places that are waypoints
+        var waypointIds = /** @type {Array.<String>} */[];
+        _.each(itinerary.steps, function(step) {
+            if (step.type === 'Place' && step.additionalParameters['waypointId']) {
+                waypointIds.push(step.additionalParameters['waypointId']);
+            } else if (step.type === 'Path' && step.itineraryProvider === self) {
+                _.each(step.places, function(place) {
+                    if (place.additionalParameters['waypointId']) {
+                        waypointIds.push(place.additionalParameters['waypointId']);
+                    }
+                });
+            }
+        });
+
+        // Highlight them on the map
+        mapOverlayController.highlightItinerary(waypointIds);
+
+        // Show the walking paths
         // TODO
     };
 

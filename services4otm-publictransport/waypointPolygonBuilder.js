@@ -19,8 +19,9 @@ define([
          *
          * @param {WaypointDrawingInfo} drawingInfo
          * @param {Number} zoom
+         * @param {Number=} fillColor
          */
-        'buildPolygon': function(drawingInfo, zoom) {
+        'buildPolygon': function(drawingInfo, zoom, fillColor) {
             var self = this;
             var boundLeft = drawingInfo.bounds[0];
             var boundRight = drawingInfo.bounds[drawingInfo.bounds.length > 1 ? 1 : 0];
@@ -111,7 +112,7 @@ define([
 
             return new Polygon({
                 path: pathLatLng,
-                fillColor: 0xFF0070C0,
+                fillColor: fillColor ? fillColor : 0xFF0070C0,
                 strokeColor: 0xFF000000,
                 strokeWidth: 1
             });
