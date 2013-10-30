@@ -75,5 +75,14 @@ define([
         throw new I18nError({ code: ErrorCode.UNIMPLEMENTED_METHOD, i18nArgs: ['ItineraryProvider.prototype.showItinerary'] });
     };
 
+    /**
+     * Cancel the given itinerary for the user.
+     *
+     * @param {Itinerary} itinerary
+     */
+    ItineraryProvider.prototype.clearItinerary = function(itinerary) {
+        throw new I18nError({ code: ErrorCode.UNIMPLEMENTED_METHOD, i18nArgs: ['ItineraryProvider.prototype.clearItinerary'] });
+    };
+
     return ItineraryProvider;
 });

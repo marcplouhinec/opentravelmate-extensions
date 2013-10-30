@@ -28,6 +28,8 @@ define([
      */
     function GoogleItineraryProvider() {
         ItineraryProvider.register(this);
+
+        this._displayedPolylines = /** @type {Array.<Itinerary>} */ [];
     }
 
     GoogleItineraryProvider.prototype = new ItineraryProvider();
@@ -103,7 +105,7 @@ define([
         });
 
         // Create poly lines
-        var polylines = _.map(paths, function(path) {
+        this._displayedPolylines = _.map(paths, function(path) {
             var polylinePath = /** @type {Array.<LatLng>} */ [];
             var rawResult = path.additionalParameters['rawResult'];
             var routes = /** @type {Array} */ rawResult['routes'];
@@ -122,9 +124,22 @@ define([
 
         // Show the polylines on the map
         var map = /** @type {Map} */ Widget.findById('map');
-        _.each(polylines, function(polyline) {
+        _.each(this._displayedPolylines, function(polyline) {
             map.addPolyline(polyline);
         });
+    };
+
+    /**
+     * Cancel the given itinerary for the user.
+     *
+     * @param {Itinerary} itinerary
+     */
+    GoogleItineraryProvider.prototype.clearItinerary = function(itinerary) {
+        var map = /** @type {Map} */ Widget.findById('map');
+        _.each(this._displayedPolylines, function(polyline) {
+            map.removePolyline(polyline);
+        });
+        this._displayedPolylines = [];
     };
 
     return GoogleItineraryProvider;

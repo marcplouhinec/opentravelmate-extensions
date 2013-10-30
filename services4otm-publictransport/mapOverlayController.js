@@ -72,12 +72,6 @@ define([
 
         /**
          * @private
-         * @type {Array.<String>} Array of waypoint IDs in the itinerary order.
-         */
-        '_itineraryWaypointIdArray': [],
-
-        /**
-         * @private
          * @type {Object.<String, Boolean>} Object.<Waypoint ID on itinerary, true>
          */
         '_itineraryWaypointIdSet': {},
@@ -247,12 +241,19 @@ define([
          * @param {Array.<String>} waypointIds
          */
         'highlightItinerary': function(waypointIds) {
-            this._itineraryWaypointIdArray = waypointIds;
             this._itineraryWaypointIdSet = {};
             for (var i = 0; i < waypointIds.length; i++) {
                 this._itineraryWaypointIdSet[waypointIds[i]] = true;
             }
 
+            this._updateItineraryPolygons();
+        },
+
+        /**
+         * Clear the currently displayed itinerary.
+         */
+        'clearItinerary': function() {
+            this._itineraryWaypointIdSet = {};
             this._updateItineraryPolygons();
         },
 

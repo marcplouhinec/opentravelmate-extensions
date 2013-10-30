@@ -105,6 +105,20 @@ define([
     };
 
     /**
+     * Cancel the given itinerary for the user.
+     *
+     * @param {Itinerary} itinerary
+     */
+    Services4otmItineraryProvider.prototype.clearItinerary = function(itinerary) {
+        // Remove the highlighted waypoints from the map
+        mapOverlayController.clearItinerary();
+
+        // Remove the walking paths
+        var googleItineraryProvider = ItineraryProvider.findByName(GoogleItineraryProvider.NAME);
+        googleItineraryProvider.clearItinerary(itinerary);
+    };
+
+    /**
      * Find itineraries by using public transports for the given startingPlace and destinationPlace.
      *
      * @param {Place} startingPlace

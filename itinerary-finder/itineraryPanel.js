@@ -33,11 +33,27 @@ define([
         '_subWebViewPlaceHolder': null,
 
         /**
+         * @type {Itinerary}
+         * @private
+         */
+        '_itinerary': null,
+
+        /**
+         * @type {itineraryFinder}
+         * @private
+         */
+        '_itineraryFinder': null,
+
+        /**
          * Open the itinerary panel for the given place.
          *
          * @param {Itinerary} itinerary
+         * @param {itineraryFinder} itineraryFinder
          */
-        'open': function(itinerary) {
+        'open': function(itinerary, itineraryFinder) {
+            this._itinerary = itinerary;
+            this._itineraryFinder = itineraryFinder;
+
             // Check if the panel doesn't already exist
             if (this._subWebViewPlaceHolder) {
                 // Send the itinerary to show via an event
@@ -87,32 +103,46 @@ define([
          * Close the itinerary panel.
          */
         'close': function() {
-            var self = this;
-
-            if (this._subWebViewPlaceHolder) {
-                // Show a confirm dialog
-                messageBox.open(
-                    'Cancelling itinerary',
-                    'Are you sure to cancel this itinerary?',
-                    [
-                        {
-                            id: 'NO',
-                            name: 'No'
-                        }, {
-                            id: 'YES',
-                            name: 'Yes'
-                        }
-                    ],
-                    function(clickedButtonId) {
-                        if (clickedButtonId === 'YES') {
-                            document.body.removeChild(self._subWebViewPlaceHolder);
-                            delete self._subWebViewPlaceHolder;
-                            webview.layout();
-                        }
-                        messageBox.close();
-                    }
-                );
+            if (!this._subWebViewPlaceHolder) {
+                return;
             }
+            var self = this;
+            this._showCancelItineraryConfirmDialog(function() {
+                document.body.removeChild(self._subWebViewPlaceHolder);
+                delete self._subWebViewPlaceHolder;
+                webview.layout();
+
+                self._itinerary.itineraryProvider.clearItinerary(self._itinerary);
+                self._itineraryFinder.clearStartingAndDestinationPlaces();
+            });
+        },
+
+        /**
+         * Show a message box asking the user to confirm he really want to cancel the itinerary.
+         *
+         * @private
+         * @param {Function} callback Function called if the user really want to cancel the itinerary.
+         */
+        '_showCancelItineraryConfirmDialog': function(callback) {
+            messageBox.open(
+                'Cancelling itinerary',
+                'Are you sure to cancel this itinerary?',
+                [
+                    {
+                        id: 'NO',
+                        name: 'No'
+                    }, {
+                    id: 'YES',
+                    name: 'Yes'
+                }
+                ],
+                function(clickedButtonId) {
+                    if (clickedButtonId === 'YES') {
+                        callback();
+                    }
+                    messageBox.close();
+                }
+            );
         },
 
         /**

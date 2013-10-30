@@ -124,6 +124,24 @@ define([
         },
 
         /**
+         * Clear the starting and destination places on the map.
+         */
+        'clearStartingAndDestinationPlaces': function() {
+            var markersToRemove = [];
+            if (this._startingPlaceMarker) {
+                markersToRemove.push(this._startingPlaceMarker);
+            }
+            if (this._destinationPlaceMarker) {
+                markersToRemove.push(this._destinationPlaceMarker);
+            }
+            var map  = /** @Type {Map} */ Widget.findById('map');
+            map.removeMarkers(markersToRemove);
+
+            this._startingPlace = null;
+            this._destinationPlace = null;
+        },
+
+        /**
          * Find itineraries between the starting place and the destination.
          */
         '_findItineraries': function() {
@@ -153,7 +171,7 @@ define([
         '_showItineraries': function(itineraries) {
             // Show the first itinerary only
             var firstItinerary = itineraries[0];
-            itineraryPanel.open(firstItinerary);
+            itineraryPanel.open(firstItinerary, this);
             firstItinerary.itineraryProvider.showItinerary(firstItinerary);
         }
     };
