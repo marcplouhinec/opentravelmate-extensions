@@ -9,8 +9,9 @@ define([
     '../core/widget/Widget',
     '../core/widget/webview/webview',
     '../core/widget/webview/SubWebView',
+    '../extra-widgets/messagebox/messageBox',
     './itinerary-panel-subwebview/constants'
-], function(browserUtils, Widget, webview, SubWebView, subWebViewConstants) {
+], function(browserUtils, Widget, webview, SubWebView, messageBox, subWebViewConstants) {
 
     /**
      * @constant
@@ -86,10 +87,31 @@ define([
          * Close the itinerary panel.
          */
         'close': function() {
+            var self = this;
+
             if (this._subWebViewPlaceHolder) {
-                document.body.removeChild(this._subWebViewPlaceHolder);
-                delete this._subWebViewPlaceHolder;
-                webview.layout();
+                // Show a confirm dialog
+                messageBox.open(
+                    'Cancelling itinerary',
+                    'Are you sure to cancel this itinerary?',
+                    [
+                        {
+                            id: 'NO',
+                            name: 'No'
+                        }, {
+                            id: 'YES',
+                            name: 'Yes'
+                        }
+                    ],
+                    function(clickedButtonId) {
+                        if (clickedButtonId === 'YES') {
+                            document.body.removeChild(self._subWebViewPlaceHolder);
+                            delete self._subWebViewPlaceHolder;
+                            webview.layout();
+                        }
+                        messageBox.close();
+                    }
+                );
             }
         },
 
