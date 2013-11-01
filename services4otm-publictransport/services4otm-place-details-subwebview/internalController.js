@@ -7,9 +7,10 @@
 define([
     'jquery',
     'underscore',
+    'googleFastButton',
     '../../core/widget/webview/webview',
     './constants'
-], function($, _, webview, constants) {
+], function($, _, FastButton, webview, constants) {
     'use strict';
 
     var internalController = {
@@ -33,6 +34,7 @@ define([
                     // TODO show error
                 } else {
                     self._showLines(payload.lines, payload.directions);
+                    self._listenToTimetableButtons();
                 }
             });
         },
@@ -54,6 +56,23 @@ define([
                     line: line,
                     directionById: directionById
                 }));
+            });
+        },
+
+        /**
+         * Listen to the timetable buttons and send the event externally.
+         */
+        '_listenToTimetableButtons': function() {
+            $('.timetable-btn').each(function() {
+                var buttonElement = $(this).get(0);
+                new FastButton(buttonElement, function() {
+                    var payload = {
+                        lineId: buttonElement.getAttribute('data-lineid'),
+                        direction1Id: buttonElement.getAttribute('data-direction1id'),
+                        direction2Id: buttonElement.getAttribute('data-direction2id')
+                    };
+                    webview.fireExternalEvent(constants.SHOW_TIMETABLE_EVENT, payload);
+                });
             });
         }
     };

@@ -95,11 +95,22 @@ define([
         SubWebView.onCreate(subWebViewId, function() {
             var subWebView = /** @type {SubWebView} */ Widget.findById(subWebViewId);
 
+            // Load line information to the sub web view
             datastoreService.findLinesAndDirectionsByWaypoint(waypointId, function(error, lines, directions) {
                 subWebView.fireInternalEvent(placeDetailsSubWebViewConstants.PLACE_DATA_LOADED_EVENT, {
                     error: error,
                     lines: lines,
                     directions: directions
+                });
+            });
+
+            // Show a timetable when the user click on a timetable button.
+            subWebView.onInternalEvent(placeDetailsSubWebViewConstants.SHOW_TIMETABLE_EVENT, function(payload) {
+                datastoreService.findTimetablesByLineAndDirections(payload.lineId, payload.direction1Id, payload.direction2Id, function(error, periods, timetables) {
+                    // TODO
+                    console.log(error);
+                    console.log(periods);
+                    console.log(timetables);
                 });
             });
         });

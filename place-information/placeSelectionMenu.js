@@ -51,6 +51,9 @@ define([
                 width: Math.round(windowDimension.width * 0.9),
                 height: 215
             };
+            if (subWebViewDimension.width > 350) {
+                subWebViewDimension.width = 350;
+            }
 
             this._subWebViewPlaceHolder = /** @type {HTMLDivElement} */document.createElement('div');
             this._subWebViewPlaceHolder.setAttribute('id', subWebViewConstants.SUBWEBVIEW_ID);

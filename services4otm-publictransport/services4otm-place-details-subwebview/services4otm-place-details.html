@@ -26,7 +26,10 @@
             </td>
             <td><%=directionById[line.direction1Id].stopName %></td>
             <td>
-                <button class="otm-button otm-button-middle timetable-btn">
+                <button class="otm-button otm-button-middle timetable-btn"
+                        data-lineid="<%=line.id %>"
+                        data-direction1id="<%=line.direction1Id %>"
+                        data-direction2id="<%=line.direction2Id %>">
                     <img src="./image/ic_btn_clock.png" alt="Timetable"/>
                 </button>
             </td>
@@ -38,7 +41,10 @@
             </td>
             <td><%=directionById[line.direction2Id].stopName %></td>
             <td>
-                <button class="otm-button otm-button-middle timetable-btn">
+                <button class="otm-button otm-button-middle timetable-btn"
+                        data-lineid="<%=line.id %>"
+                        data-direction1id="<%=line.direction2Id %>"
+                        data-direction2id="<%=line.direction1Id %>">
                     <img src="./image/ic_btn_clock.png" alt="Timetable"/>
                 </button>
             </td>

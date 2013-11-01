@@ -34,6 +34,13 @@ define(function() {
          * @type {String}
          */
         this.transportAuthorityId = options.transportAuthorityId;
+
+        /**
+         * Display order.
+         *
+         * @type {Number}
+         */
+        this.order = options.order;
     }
 
     return TimetablePeriod;

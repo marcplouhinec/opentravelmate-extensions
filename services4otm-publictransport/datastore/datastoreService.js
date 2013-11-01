@@ -10,8 +10,10 @@ define([
     './Waypoint',
     './WaypointDrawingInfo',
     './Line',
+    './TimetablePeriod',
+    './Timetable',
     './WSError'
-], function($, _, Waypoint, WaypointDrawingInfo, Line, WSError) {
+], function($, _, Waypoint, WaypointDrawingInfo, Line, TimetablePeriod, Timetable, WSError) {
     'use strict';
 
     /**
@@ -73,10 +75,7 @@ define([
          * @param {function(error: WSError|undefined, lines: Array.<Line>, directions: Array.<Waypoint>)} callback
          */
         'findLinesAndDirectionsByWaypoint': function(waypointId, callback) {
-            var encodedWaypointId = encodeURIComponent(String(waypointId));
-            if (encodedWaypointId.indexOf('%2F')) {
-                encodedWaypointId = encodedWaypointId.replace('%2F', '%252F');
-            }
+            var encodedWaypointId = this._encodeId(waypointId);
             var url = 'http://www.services4otm.com/datastore/publictransport/line/findLinesAndDirectionsByWaypoint/' + encodedWaypointId + '?callback=?';
             $.getJSON(url).done(function(result) {
                 if (!result.success) {
@@ -92,6 +91,51 @@ define([
 
                 callback(undefined, lines, directions);
             });
+        },
+
+        /**
+         * Find the timetables for the given line and directions.
+         *
+         * @param {String} lineId
+         * @param {String} direction1Id
+         * @param {String} direction2Id
+         * @param {function(error: WSError|undefined, periods: Array.<TimetablePeriod>, timetables: Array.<Timetable>)} callback
+         */
+        'findTimetablesByLineAndDirections' : function(lineId, direction1Id, direction2Id, callback) {
+            var encodedLineId = this._encodeId(lineId);
+            var encodedDirection1Id = this._encodeId(direction1Id);
+            var encodedDirection2Id = this._encodeId(direction2Id);
+            var url = 'http://www.services4otm.com/datastore/publictransport/timetable/findByLinesAndDirections/' +
+                encodedLineId + '/' + encodedDirection1Id + '/' + encodedDirection2Id + '?callback=?';
+            $.getJSON(url).done(function(result) {
+                if (!result.success) {
+                    return callback(new WSError(result.errorcode, result.errormessage), [], []);
+                }
+
+                var periods = _.map(result.periods, function(period) {
+                    return new TimetablePeriod(period);
+                });
+                var directions = _.map(result.timetables, function(timetable) {
+                    return new Timetable(timetable);
+                });
+
+                callback(undefined, periods, directions);
+            });
+        },
+
+        /**
+         * Encode an ID in order to make it URI-compatible.
+         *
+         * @private
+         * @param {String} id
+         * @return {String} encoded ID
+         */
+        '_encodeId': function(id) {
+            var encodedId = encodeURIComponent(String(id));
+            if (encodedId.indexOf('%2F')) {
+                encodedId = encodedId.replace('%2F', '%252F');
+            }
+            return encodedId;
         }
     };
 

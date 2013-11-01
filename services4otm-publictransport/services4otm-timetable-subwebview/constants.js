@@ -9,20 +9,20 @@ define(function() {
 
     var constants = {
         /**
-         * "Place data loaded" event.
+         * SubWebView ID.
          *
          * @const
          * @type {String}
          */
-        'PLACE_DATA_LOADED_EVENT': 'services4otm-place-details-place-data-loaded-event',
+        'SUBWEBVIEW_ID': 'services4otm-timetable-subwebview',
 
         /**
-         * "Show timetable" event.
+         * "Close" event.
          *
          * @const
          * @type {String}
          */
-        'SHOW_TIMETABLE_EVENT': 'services4otm-place-details-show-timetable-event'
+        'CLOSE_EVENT': 'services4otm-timetable-close-event'
     };
 
     return constants;
