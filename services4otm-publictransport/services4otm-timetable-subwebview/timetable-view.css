@@ -69,6 +69,7 @@ body {
 #content th {
     text-align: left;
     font-weight: normal;
+    min-width: 200px;
 }
 #content td {
     text-align: right;
