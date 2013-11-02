@@ -68,8 +68,11 @@ define([
                 new FastButton(buttonElement, function() {
                     var payload = {
                         lineId: buttonElement.getAttribute('data-lineid'),
+                        lineName: buttonElement.getAttribute('data-linename'),
                         direction1Id: buttonElement.getAttribute('data-direction1id'),
-                        direction2Id: buttonElement.getAttribute('data-direction2id')
+                        direction1StopName: buttonElement.getAttribute('data-direction1stopname'),
+                        direction2Id: buttonElement.getAttribute('data-direction2id'),
+                        direction2StopName: buttonElement.getAttribute('data-direction2stopname')
                     };
                     webview.fireExternalEvent(constants.SHOW_TIMETABLE_EVENT, payload);
                 });

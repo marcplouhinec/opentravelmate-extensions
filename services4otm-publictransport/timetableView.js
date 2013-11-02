@@ -22,10 +22,13 @@ define([
         /**
          * Open the web view.
          *
+         * @param {String} lineName
+         * @param {String} direction1StopName
+         * @param {String} direction2StopName
          * @param {Array.<TimetablePeriod>} periods
          * @param {Array.<Timetable>} timetables
          */
-        'open': function(periods, timetables) {
+        'open': function(lineName, direction1StopName, direction2StopName, periods, timetables) {
             // Check if the panel doesn't already exist
             if (this._subWebViewPlaceHolder) {
                 return;
@@ -44,6 +47,9 @@ define([
             this._subWebViewPlaceHolder.setAttribute('data-otm-widget', 'SubWebView');
             this._subWebViewPlaceHolder.setAttribute('data-otm-url', 'extensions/services4otm-publictransport/services4otm-timetable-subwebview/timetable-view.html');
             this._subWebViewPlaceHolder.setAttribute('data-otm-entrypoint', 'extensions/services4otm-publictransport/services4otm-timetable-subwebview/entryPoint');
+            this._subWebViewPlaceHolder.setAttribute('data-otm-linename', lineName);
+            this._subWebViewPlaceHolder.setAttribute('data-otm-direction1stopname', direction1StopName);
+            this._subWebViewPlaceHolder.setAttribute('data-otm-direction2stopname', direction2StopName);
             this._subWebViewPlaceHolder.setAttribute('data-otm-periods', JSON.stringify(periods));
             this._subWebViewPlaceHolder.setAttribute('data-otm-timetables', JSON.stringify(timetables));
             document.body.appendChild(this._subWebViewPlaceHolder);
@@ -60,13 +66,24 @@ define([
         },
 
         /**
+         * Close the details panel.
+         */
+        'close': function() {
+            if (this._subWebViewPlaceHolder) {
+                document.body.removeChild(this._subWebViewPlaceHolder);
+                delete this._subWebViewPlaceHolder;
+                webview.layout();
+            }
+        },
+
+        /**
          * Handle the CLOSE event.
          *
          * @private
          */
         '_handleCloseEvent': function() {
             // Close the dialog box
-            // TODO
+            this.close();
         }
     };
 

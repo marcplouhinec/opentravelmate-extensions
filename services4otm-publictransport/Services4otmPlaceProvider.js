@@ -10,8 +10,9 @@ define([
     '../place-commons/PlaceProvider',
     '../place-commons/Place',
     './datastore/datastoreService',
-    './services4otm-place-details-subwebview/constants'
-], function(Widget, SubWebView, PlaceProvider, Place, datastoreService, placeDetailsSubWebViewConstants) {
+    './services4otm-place-details-subwebview/constants',
+    './timetableView'
+], function(Widget, SubWebView, PlaceProvider, Place, datastoreService, placeDetailsSubWebViewConstants, timetableView) {
     'use strict';
 
     /**
@@ -107,10 +108,7 @@ define([
             // Show a timetable when the user click on a timetable button.
             subWebView.onInternalEvent(placeDetailsSubWebViewConstants.SHOW_TIMETABLE_EVENT, function(payload) {
                 datastoreService.findTimetablesByLineAndDirections(payload.lineId, payload.direction1Id, payload.direction2Id, function(error, periods, timetables) {
-                    // TODO
-                    console.log(error);
-                    console.log(periods);
-                    console.log(timetables);
+                    timetableView.open(payload.lineName, payload.direction1StopName, payload.direction2StopName, periods, timetables);
                 });
             });
         });

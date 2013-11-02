@@ -1,9 +1,35 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title></title>
+    <meta charset="utf-8"/>
+    <title>Open Travel Mate</title>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no"/>
+    <link rel="stylesheet" href="../../core/style/common.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="timetable-view.css" type="text/css" media="screen"/>
 </head>
-<body>
+<body class="otm-panel">
+    <div id="titlebar">
+        <div id="title-label"></div>
+        <button id="close-button" class="otm-button otm-button-middle">
+            <img src="../../core/style/image/ic_btn_close.png" alt="Close"/>
+        </button>
+    </div>
+    <div id="content">
 
+    </div>
+
+    <script id="tpl-timetable" type="text/template">
+        <h1><%=period.name %></h1>
+        <table>
+            <% for (var i = 0; i < timetable.rows.length; i++) { %>
+            <tr>
+                <th><%=timetable.rows[i].waypointId %></th>
+                <% for (var j = 0; j < timetable.rows[i].times.length; j++) { %>
+                <td class="<%=(j % 2 === 0 ? 'column_even' : 'column_odd') %>"><%=timetable.rows[i].times[j] %></td>
+                <% } %>
+            </tr>
+            <% } %>
+        </table>
+    </script>
 </body>
 </html>
