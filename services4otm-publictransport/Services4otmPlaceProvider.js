@@ -107,8 +107,8 @@ define([
 
             // Show a timetable when the user click on a timetable button.
             subWebView.onInternalEvent(placeDetailsSubWebViewConstants.SHOW_TIMETABLE_EVENT, function(payload) {
-                datastoreService.findTimetablesByLineAndDirections(payload.lineId, payload.direction1Id, payload.direction2Id, function(error, periods, timetables) {
-                    timetableView.open(payload.lineName, payload.direction1StopName, payload.direction2StopName, periods, timetables);
+                datastoreService.findTimetablesByLineAndDirections(payload.lineId, payload.direction1Id, payload.direction2Id, function(error, periods, timetables, stopNameById) {
+                    timetableView.open(payload.lineName, payload.direction1StopName, payload.direction2StopName, periods, timetables, stopNameById);
                 });
             });
         });

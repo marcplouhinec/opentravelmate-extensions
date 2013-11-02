@@ -99,7 +99,7 @@ define([
          * @param {String} lineId
          * @param {String} direction1Id
          * @param {String} direction2Id
-         * @param {function(error: WSError|undefined, periods: Array.<TimetablePeriod>, timetables: Array.<Timetable>)} callback
+         * @param {function(error: WSError|undefined, periods: Array.<TimetablePeriod>, timetables: Array.<Timetable>, stopNameById: Object.<String, String>)} callback
          */
         'findTimetablesByLineAndDirections' : function(lineId, direction1Id, direction2Id, callback) {
             var encodedLineId = this._encodeId(lineId);
@@ -119,7 +119,7 @@ define([
                     return new Timetable(timetable);
                 });
 
-                callback(undefined, periods, directions);
+                callback(undefined, periods, directions, result.stopNameById);
             });
         },
 

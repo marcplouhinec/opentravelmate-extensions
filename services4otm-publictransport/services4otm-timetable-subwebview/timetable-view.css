@@ -49,6 +49,7 @@ body {
 }
 
 #content h1 {
+    width: auto;
     font-size: 20px;
     background-color: rgba(255, 255, 255, 0.4);
     margin: 0;
@@ -62,11 +63,15 @@ body {
 
 #content td, #content th {
     padding: 2px;
+    height: 2em;
 }
 
 #content th {
     text-align: left;
     font-weight: normal;
+}
+#content td {
+    text-align: right;
 }
 
 #content .column_even {

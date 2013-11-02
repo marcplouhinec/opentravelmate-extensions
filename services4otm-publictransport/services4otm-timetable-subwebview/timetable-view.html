@@ -23,7 +23,7 @@
         <table>
             <% for (var i = 0; i < timetable.rows.length; i++) { %>
             <tr>
-                <th><%=timetable.rows[i].waypointId %></th>
+                <th id="cell_<%=i %>_0" class="first-column"><%=stopNameById[timetable.rows[i].waypointId] %></th>
                 <% for (var j = 0; j < timetable.rows[i].times.length; j++) { %>
                 <td class="<%=(j % 2 === 0 ? 'column_even' : 'column_odd') %>"><%=timetable.rows[i].times[j] %></td>
                 <% } %>
