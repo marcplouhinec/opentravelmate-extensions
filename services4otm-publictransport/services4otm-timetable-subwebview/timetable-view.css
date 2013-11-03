@@ -57,22 +57,46 @@ body {
 }
 
 #content table {
-    margin-bottom: 10px;
     border-collapse: collapse;
 }
 
-#content td, #content th {
-    padding: 2px;
-    height: 2em;
+#content .timetable-wrapper {
+    position: relative;
+    padding-bottom: 20px;
 }
 
-#content th {
-    text-align: left;
-    font-weight: normal;
-    min-width: 200px;
+#content tr.stop-row {
+    font-size: 14px;
 }
+#content tr.times {
+    font-size: 18px;
+}
+
 #content td {
-    text-align: right;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    padding-left: 2px;
+    padding-right: 2px;
+}
+
+#content tr.stop-row td {
+    padding-top: 5px;
+}
+
+#content .stops-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+#content .times-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow-y: hidden;
+    overflow-x: auto;
 }
 
 #content .column_even {

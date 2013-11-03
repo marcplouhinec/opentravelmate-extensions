@@ -20,16 +20,38 @@
 
     <script id="tpl-timetable" type="text/template">
         <h1><%=period.name %></h1>
-        <table>
+        <div class="timetable-wrapper">
+            <table class="timetable spacer-table">
             <% for (var i = 0; i < timetable.rows.length; i++) { %>
-            <tr>
-                <th><%=stopNameById[timetable.rows[i].waypointId] %></th>
-                <% for (var j = 0; j < timetable.rows[i].times.length; j++) { %>
-                <td class="<%=(j % 2 === 0 ? 'column_even' : 'column_odd') %>"><%=timetable.rows[i].times[j] %></td>
-                <% } %>
-            </tr>
+                <tr class="stop-row"><td>&nbsp;</td></tr>
+                <tr class="times-row"><td>&nbsp;</td></tr>
             <% } %>
-        </table>
+            </table>
+            <div class="times-wrapper">
+                <table class="timetable">
+                    <% for (var i = 0; i < timetable.rows.length; i++) { %>
+                    <tr class="stop-row">
+                        <% for (var j = 0; j < timetable.rows[i].times.length; j++) { %>
+                        <td class="<%=(j % 2 === 0 ? 'column_even' : 'column_odd') %>">&nbsp;</td>
+                        <% } %>
+                    </tr>
+                    <tr class="times-row">
+                        <% for (var j = 0; j < timetable.rows[i].times.length; j++) { %>
+                        <td class="<%=(j % 2 === 0 ? 'column_even' : 'column_odd') %>"><%=timetable.rows[i].times[j] %></td>
+                        <% } %>
+                    </tr>
+                    <% } %>
+                </table>
+            </div>
+            <div class="stops-wrapper">
+                <table class="timetable">
+                    <% for (var i = 0; i < timetable.rows.length; i++) { %>
+                    <tr class="stop-row"><td><%=stopNameById[timetable.rows[i].waypointId] %></td></tr>
+                    <tr class="times-row"><td>&nbsp;</td></tr>
+                    <% } %>
+                </table>
+            </div>
+        </div>
     </script>
 </body>
 </html>
