@@ -77,8 +77,8 @@ define(['../core/widget/map/MapButton'], function(MapButton) {
          * Set the map mode to 'satellite'.
          */
         '_switchToSatelliteMapMode': function() {
-            this._map.setMapType('SATELLITE');
-            this._currentMapMode = 'SATELLITE';
+            this._map.setMapType('HYBRID');
+            this._currentMapMode = 'HYBRID';
 
             this._mapButton.tooltip = TOOLTIP_SATELLITE_MODE;
             this._mapButton.iconUrl = ICON_URL_SATELLITE_MODE;
