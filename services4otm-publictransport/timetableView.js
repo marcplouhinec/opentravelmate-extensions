@@ -28,8 +28,9 @@ define([
          * @param {Array.<TimetablePeriod>} periods
          * @param {Array.<Timetable>} timetables
          * @param {Object.<String, String>} stopNameById
+         * @param {String} waypointIdToHighlight
          */
-        'open': function(lineName, direction1StopName, direction2StopName, periods, timetables, stopNameById) {
+        'open': function(lineName, direction1StopName, direction2StopName, periods, timetables, stopNameById, waypointIdToHighlight) {
             // Check if the panel doesn't already exist
             if (this._subWebViewPlaceHolder) {
                 return;
@@ -54,6 +55,7 @@ define([
             this._subWebViewPlaceHolder.setAttribute('data-otm-periods', JSON.stringify(periods));
             this._subWebViewPlaceHolder.setAttribute('data-otm-timetables', JSON.stringify(timetables));
             this._subWebViewPlaceHolder.setAttribute('data-otm-stopnamebyid', JSON.stringify(stopNameById));
+            this._subWebViewPlaceHolder.setAttribute('data-otm-waypointid-to-highlight', waypointIdToHighlight);
             document.body.appendChild(this._subWebViewPlaceHolder);
 
             // Register event handlers when the SubWebView is loaded

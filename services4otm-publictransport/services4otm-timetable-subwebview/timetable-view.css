@@ -82,3 +82,7 @@ body {
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+
+#content .highlight {
+    background-color: #0099cc;
+}

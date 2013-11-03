@@ -24,6 +24,7 @@ define([
             var periods = /** @type {Array.<TimetablePeriod>} */ JSON.parse(webview.additionalParameters['periods']);
             var timetables = /** @type {Array.<Timetable>} */ JSON.parse(webview.additionalParameters['timetables']);
             var stopNameById = /** @type {Object.<String, String>} */ JSON.parse(webview.additionalParameters['stopnamebyid']);
+            var waypointIdToHighlight = /** @type {String} */ webview.additionalParameters['waypointid-to-highlight'];
 
             // Build the page
             document.getElementById('title-label').textContent = 'Line ' + lineName + ' - ' + direction1StopName + ' - ' + direction2StopName;
@@ -39,7 +40,8 @@ define([
                 content += templateTimetable({
                     period: period,
                     timetable: timetable,
-                    stopNameById: stopNameById
+                    stopNameById: stopNameById,
+                    waypointIdToHighlight: waypointIdToHighlight
                 });
             });
             content += '<div id="empty-element"></div>';

@@ -28,7 +28,7 @@
                 </td>
             </tr>
             <% } %>
-            <tr class="stop-row">
+            <tr class="stop-row <%=waypointIdToHighlight === timetable.rows[i].waypointId ? 'highlight' : '' %>">
                 <% for (var j = 0; j < timetable.rows[i].times.length; j++) { %>
                 <td class="<%=(j % 2 === 0 ? 'column_even' : 'column_odd') %>">
                     <% if (j === 0) { %>
@@ -38,7 +38,7 @@
                 </td>
                 <% } %>
             </tr>
-            <tr class="times-row">
+            <tr class="times-row <%=waypointIdToHighlight === timetable.rows[i].waypointId ? 'highlight' : '' %>">
                 <% for (var j = 0; j < timetable.rows[i].times.length; j++) { %>
                 <td class="<%=(j % 2 === 0 ? 'column_even' : 'column_odd') %>"><%=timetable.rows[i].times[j] %></td>
                 <% } %>
