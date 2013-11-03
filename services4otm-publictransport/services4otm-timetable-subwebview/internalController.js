@@ -8,9 +8,8 @@ define([
     'underscore',
     'googleFastButton',
     '../../core/widget/webview/webview',
-    '../../core/utils/browserUtils',
     './constants'
-], function(_, FastButton, webview, browserUtils, constants) {
+], function(_, FastButton, webview, constants) {
     'use strict';
 
     var internalController = {
@@ -44,18 +43,6 @@ define([
                 });
             });
             document.getElementById('content').innerHTML = content;
-
-            // Limit the size of the stop names
-            var windowDimension = browserUtils.getWindowDimension();
-            var firstCell = /** @type {HTMLTableCellElement} */ document.getElementById('cell_0_0');
-            var maxFirstColumnSize = Math.round(windowDimension.width * 0.75);
-            if (firstCell.offsetWidth > maxFirstColumnSize) {
-                //var firstColumnCells = document.querySelectorAll('.first-column');
-                //for (var i = 0; i < firstColumnCells.length; i++) {
-                //    var cell = firstColumnCells.item(i);
-                //    cell.style.width = maxFirstColumnSize + 'px';
-                //}
-            }
 
             // Forward the close button click event
             new FastButton(document.getElementById('close-button'), function() {
