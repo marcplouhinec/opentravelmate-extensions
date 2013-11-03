@@ -48,57 +48,37 @@ body {
     overflow-y: auto;
 }
 
-#content h1 {
-    width: auto;
+
+#content td {
+    padding: 0 2px 0 2px;
+}
+
+#content .header-row td {
     font-size: 20px;
     background-color: rgba(255, 255, 255, 0.4);
-    margin: 0;
     padding: 13px;
 }
 
 #content table {
     border-collapse: collapse;
 }
-
-#content .timetable-wrapper {
-    position: relative;
-    padding-bottom: 20px;
-}
-
 #content tr.stop-row {
     font-size: 14px;
 }
 #content tr.times {
     font-size: 18px;
 }
-
-#content td {
-    padding-top: 0px;
-    padding-bottom: 0px;
-    padding-left: 2px;
-    padding-right: 2px;
-}
-
 #content tr.stop-row td {
     padding-top: 5px;
 }
-
-#content .stops-wrapper {
-    position: absolute;
-    top: 0;
-    left: 0;
-}
-
-#content .times-wrapper {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    overflow-y: hidden;
-    overflow-x: auto;
-}
-
 #content .column_even {
     background-color: rgba(255, 255, 255, 0.1);
+}
+#content .stop-name {
+    position: absolute;
+    left: 2px;
+    width: 300px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }

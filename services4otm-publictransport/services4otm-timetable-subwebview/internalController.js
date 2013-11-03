@@ -42,12 +42,27 @@ define([
                     stopNameById: stopNameById
                 });
             });
+            content += '<div id="empty-element"></div>';
             document.getElementById('content').innerHTML = content;
 
             // Forward the close button click event
             new FastButton(document.getElementById('close-button'), function() {
                 webview.fireExternalEvent(constants.CLOSE_EVENT);
             });
+
+            // Move the stop names when the page is scrolled horizontally
+            var lastPageX = 0;
+            document.getElementById('content').onscroll = function() {
+                var pageX = document.getElementById('empty-element').getBoundingClientRect().left;
+                if (pageX !== lastPageX) {
+                    lastPageX = pageX;
+
+                    var stopNameElements = document.querySelectorAll('.stop-name');
+                    for (var i = 0; i < stopNameElements.length; i++) {
+                        stopNameElements.item(i).style.left = (2 - pageX) + 'px';
+                    }
+                }
+            };
         }
     };
 

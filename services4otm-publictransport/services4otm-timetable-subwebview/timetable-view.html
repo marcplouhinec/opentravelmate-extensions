@@ -19,39 +19,32 @@
     </div>
 
     <script id="tpl-timetable" type="text/template">
-        <h1><%=period.name %></h1>
-        <div class="timetable-wrapper">
-            <table class="timetable spacer-table">
+        <table class="timetable">
             <% for (var i = 0; i < timetable.rows.length; i++) { %>
-                <tr class="stop-row"><td>&nbsp;</td></tr>
-                <tr class="times-row"><td>&nbsp;</td></tr>
+            <% if (i === 0) { %>
+            <tr class="header-row">
+                <td colspan="<%=timetable.rows[i].times.length %>">
+                    <%=period.name %>
+                </td>
+            </tr>
             <% } %>
-            </table>
-            <div class="times-wrapper">
-                <table class="timetable">
-                    <% for (var i = 0; i < timetable.rows.length; i++) { %>
-                    <tr class="stop-row">
-                        <% for (var j = 0; j < timetable.rows[i].times.length; j++) { %>
-                        <td class="<%=(j % 2 === 0 ? 'column_even' : 'column_odd') %>">&nbsp;</td>
-                        <% } %>
-                    </tr>
-                    <tr class="times-row">
-                        <% for (var j = 0; j < timetable.rows[i].times.length; j++) { %>
-                        <td class="<%=(j % 2 === 0 ? 'column_even' : 'column_odd') %>"><%=timetable.rows[i].times[j] %></td>
-                        <% } %>
-                    </tr>
+            <tr class="stop-row">
+                <% for (var j = 0; j < timetable.rows[i].times.length; j++) { %>
+                <td class="<%=(j % 2 === 0 ? 'column_even' : 'column_odd') %>">
+                    <% if (j === 0) { %>
+                    <div class="stop-name"><%=stopNameById[timetable.rows[i].waypointId] %></div>
                     <% } %>
-                </table>
-            </div>
-            <div class="stops-wrapper">
-                <table class="timetable">
-                    <% for (var i = 0; i < timetable.rows.length; i++) { %>
-                    <tr class="stop-row"><td><%=stopNameById[timetable.rows[i].waypointId] %></td></tr>
-                    <tr class="times-row"><td>&nbsp;</td></tr>
-                    <% } %>
-                </table>
-            </div>
-        </div>
+                    &nbsp;
+                </td>
+                <% } %>
+            </tr>
+            <tr class="times-row">
+                <% for (var j = 0; j < timetable.rows[i].times.length; j++) { %>
+                <td class="<%=(j % 2 === 0 ? 'column_even' : 'column_odd') %>"><%=timetable.rows[i].times[j] %></td>
+                <% } %>
+            </tr>
+            <% } %>
+        </table>
     </script>
 </body>
 </html>
