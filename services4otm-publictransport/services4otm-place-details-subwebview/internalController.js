@@ -51,7 +51,10 @@ define([
             var $lineTable = $('#line-table');
             var directionById = _.indexBy(directions, 'id');
 
-            _.each(lines, function(line) {
+            var sortedLines = _.sortBy(lines, function(line) {
+                return line.name;
+            });
+            _.each(sortedLines, function(line) {
                 $lineTable.append(self._templateLineTableRow({
                     line: line,
                     directionById: directionById
