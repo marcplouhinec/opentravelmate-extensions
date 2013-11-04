@@ -292,19 +292,19 @@ define([
     /**
      * Add the given polyline on the map.
      *
-     * @param {Polyline} polyline
+     * @param {Array.<Polyline>} polylines
      */
-    Map.prototype.addPolyline = function(polyline) {
-        nativeMap.addPolyline(this.id, JSON.stringify(polyline));
+    Map.prototype.addPolylines = function(polylines) {
+        nativeMap.addPolylines(this.id, JSON.stringify(polylines));
     };
 
     /**
      * Remove the given polyline from the map.
      *
-     * @param {Polyline} polyline
+     * @param {Array.<Polyline>} polylines
      */
-    Map.prototype.removePolyline = function(polyline) {
-        nativeMap.removePolyline(this.id, JSON.stringify(polyline));
+    Map.prototype.removePolylines = function(polylines) {
+        nativeMap.removePolylines(this.id, JSON.stringify(polylines));
     };
 
     /**

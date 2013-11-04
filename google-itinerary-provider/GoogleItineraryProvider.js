@@ -124,9 +124,7 @@ define([
 
         // Show the polylines on the map
         var map = /** @type {Map} */ Widget.findById('map');
-        _.each(this._displayedPolylines, function(polyline) {
-            map.addPolyline(polyline);
-        });
+        map.addPolylines(this._displayedPolylines);
     };
 
     /**
@@ -136,9 +134,7 @@ define([
      */
     GoogleItineraryProvider.prototype.clearItinerary = function(itinerary) {
         var map = /** @type {Map} */ Widget.findById('map');
-        _.each(this._displayedPolylines, function(polyline) {
-            map.removePolyline(polyline);
-        });
+        map.removePolylines(this._displayedPolylines);
         this._displayedPolylines = [];
     };
 
