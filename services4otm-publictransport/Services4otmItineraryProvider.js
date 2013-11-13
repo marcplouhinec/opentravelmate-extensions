@@ -159,7 +159,7 @@ define([
                     });
                     return new Path({
                         places: places,
-                        name: step.name,
+                        name: 'Line ' +  step.name,
                         color: step.color,
                         additionalParameters: step.additionalParameters,
                         itineraryProvider: self

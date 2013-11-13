@@ -50,7 +50,7 @@
                 <td></td>
                 <% _.each(itinerary.steps, function (step) { %>
                 <% if (step.type === 'Path') { %>
-                <td colspan="2">Line <%=step.name %></td>
+                <td colspan="2"><%=step.name %></td>
                 <% } %>
                 <% }); %>
                 <td></td>
