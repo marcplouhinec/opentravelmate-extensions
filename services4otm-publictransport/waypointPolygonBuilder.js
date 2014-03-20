@@ -12,6 +12,12 @@ define([
 ], function(_, LatLng, Polygon, projectionUtils) {
     'use strict';
 
+    /**
+     * @const
+     * @type {number}
+     */
+    var WAYPOINT_RADIUS = 7 / 256;
+
     var waypointPolygonBuilder = {
 
         /**
@@ -25,132 +31,21 @@ define([
          * @param {Number=} strokeWidth
          */
         'buildPolygon': function(drawingInfo, zoom, scale, fillColor, strokeColor, strokeWidth) {
-            var self = this;
-            var boundLeft = drawingInfo.bounds[0];
-            var boundRight = drawingInfo.bounds[drawingInfo.bounds.length > 1 ? 1 : 0];
-            var weight = drawingInfo.weight * (scale ? scale : 1);
-            var boundsDistance = 0;
-            if (drawingInfo.bounds.length > 1) {
-                boundsDistance = Math.sqrt(Math.pow(boundRight.x - boundLeft.x, 2) + Math.pow(boundRight.y - boundLeft.y, 2));
-            }
-
-            // Create a horizontal polygon
-            var pathVectors = [
-                [
-                    [boundLeft.x],
-                    [boundLeft.y + weight / 512],
-                    [1]
-                ], [
-                    [boundLeft.x - Math.cos(Math.PI / 4) * (weight / 512)],
-                    [boundLeft.y + Math.sin(Math.PI / 4) * (weight / 512)],
-                    [1]
-                ], [
-                    [boundLeft.x - weight / 512],
-                    [boundLeft.y],
-                    [1]
-                ], [
-                    [boundLeft.x - Math.cos(Math.PI / 4) * (weight / 512)],
-                    [boundLeft.y - Math.sin(Math.PI / 4) * (weight / 512)],
-                    [1]
-                ], [
-                    [boundLeft.x],
-                    [boundLeft.y - weight / 512],
-                    [1]
-                ], [
-                    [boundLeft.x + boundsDistance],
-                    [boundLeft.y - weight / 512],
-                    [1]
-                ], [
-                    [boundLeft.x + boundsDistance + Math.cos(Math.PI / 4) * (weight / 512)],
-                    [boundLeft.y - Math.sin(Math.PI / 4) * (weight / 512)],
-                    [1]
-                ], [
-                    [boundLeft.x + boundsDistance + weight / 512],
-                    [boundLeft.y],
-                    [1]
-                ], [
-                    [boundLeft.x + boundsDistance + Math.cos(Math.PI / 4) * (weight / 512)],
-                    [boundLeft.y + Math.sin(Math.PI / 4) * (weight / 512)],
-                    [1]
-                ], [
-                    [boundLeft.x + boundsDistance],
-                    [boundLeft.y + weight / 512],
-                    [1]
-                ]
-            ];
-
-            // Apply a translation to have the boundLeft as origin, then a rotation and finally translate back to the first origin
-            // see http://www.useragentman.com/blog/2011/01/07/css3-matrix-transform-for-the-mathematically-challenged/
-            var angle = drawingInfo.angleWithAbscissaAxis;
-            var translation1Matrix = [
-                [1, 0, -boundLeft.x],
-                [0, 1, -boundLeft.y],
-                [0, 0, 1           ]
-            ];
-            var rotationMatrix = [
-                [Math.cos(angle), -Math.sin(angle), 0],
-                [Math.sin(angle),  Math.cos(angle), 0],
-                [0              ,  0              , 1]
-            ];
-            var translation2Matrix = [
-                [1, 0, boundLeft.x],
-                [0, 1, boundLeft.y],
-                [0, 0, 1          ]
-            ];
-            var transformationMatrix = translation1Matrix;
-            transformationMatrix = this._multiplyMatrices(rotationMatrix, transformationMatrix, 3, 3, 3, 3);
-            transformationMatrix = this._multiplyMatrices(translation2Matrix, transformationMatrix, 3, 3, 3, 3);
-
-            pathVectors = _.map(pathVectors, function(pathVector) {
-                return self._multiplyMatrices(transformationMatrix, pathVector, 3, 3, 1, 3);
-            });
-
-            // Convert to LatLng coordinates
-            var pathLatLng = _.map(pathVectors, function(pathVector) {
-                return new LatLng(
-                    projectionUtils.tileYToLat(zoom, pathVector[1][0]),
-                    projectionUtils.tileXToLng(zoom, pathVector[0][0])
-                );
-            });
-
             return new Polygon({
-                path: pathLatLng,
+                path: _.map(_.range(0, 2 * Math.PI, Math.PI / 8), function(angle) {
+                    var point = {
+                        x: Math.cos(angle) * WAYPOINT_RADIUS + drawingInfo.centerPosition.x,
+                        y: Math.sin(angle) * WAYPOINT_RADIUS + drawingInfo.centerPosition.y
+                    };
+                    return new LatLng(
+                        projectionUtils.tileYToLat(zoom, point.y),
+                        projectionUtils.tileXToLng(zoom, point.x)
+                    );
+                }),
                 fillColor: _.isNumber(fillColor) ? fillColor : 0xFF0070C0,
                 strokeColor: _.isNumber(strokeColor) ? strokeColor : 0xFF000000,
                 strokeWidth: _.isNumber(strokeWidth) ? strokeWidth : 1
             });
-        },
-
-        /**
-         * Multiply two matrices.
-         * @see http://rosettacode.org/wiki/Matrix_multiplication#JavaScript
-         *
-         * @private
-         * @param {Array.<Array.<Number>>} matrix1
-         * @param {Array.<Array.<Number>>} matrix2
-         * @param {Number} matrix1Width
-         * @param {Number} matrix1Height
-         * @param {Number} matrix2Width
-         * @param {Number} matrix2Height
-         * @return {Array.<Array.<Number>>}
-         */
-        '_multiplyMatrices': function(matrix1, matrix2, matrix1Width, matrix1Height, matrix2Width, matrix2Height) {
-            if (matrix1Width !== matrix2Height) {
-                throw new Error('Incompatible sizes');
-            }
-
-            var result = [];
-            for (var i = 0; i < matrix1Height; i++) {
-                result[i] = [];
-                for (var j = 0; j < matrix2Width; j++) {
-                    var sum = 0;
-                    for (var k = 0; k < matrix1Width; k++) {
-                        sum += matrix1[i][k] * matrix2[k][j];
-                    }
-                    result[i][j] = sum;
-                }
-            }
-            return result;
         }
     };
 
