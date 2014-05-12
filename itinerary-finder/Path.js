@@ -11,7 +11,7 @@ define(function() {
      * Create a new Path.
      *
      * @param {{
-     *     places: Array.<Place>=,
+     *     waypoints: Array.<LatLng>=,
      *     name: String=,
      *     color: String=,
      *     additionalParameters: Object.<String, Object>=,
@@ -44,9 +44,9 @@ define(function() {
         /**
          * Path steps.
          *
-         * @type {Array.<Place>}
+         * @type {Array.<LatLng>}
          */
-        this.places = options.places || [];
+        this.waypoints = options.waypoints || [];
 
         /**
          * Additional information from the ItineraryProvider.

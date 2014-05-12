@@ -1,8 +1,5 @@
 /**
  * Define a set of information about how to draw a waypoint on the map.
- * Note: waypoints are drawn by combining two circles and a rectangle:
- *  ____
- * (____)
  *
  * @author marc.plouhinec@gmail.com (Marc Plouhinec)
  */

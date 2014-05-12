@@ -23,19 +23,19 @@ define([
         /**
          * Build a polygon.
          *
-         * @param {WaypointDrawingInfo} drawingInfo
+         * @param {Waypoint} waypoint
          * @param {Number} zoom
          * @param {Number=} scale
          * @param {Number=} fillColor
          * @param {Number=} strokeColor
          * @param {Number=} strokeWidth
          */
-        'buildPolygon': function(drawingInfo, zoom, scale, fillColor, strokeColor, strokeWidth) {
+        'buildPolygon': function(waypoint, zoom, scale, fillColor, strokeColor, strokeWidth) {
             return new Polygon({
                 path: _.map(_.range(0, 2 * Math.PI, Math.PI / 8), function(angle) {
                     var point = {
-                        x: Math.cos(angle) * WAYPOINT_RADIUS + drawingInfo.centerPosition.x,
-                        y: Math.sin(angle) * WAYPOINT_RADIUS + drawingInfo.centerPosition.y
+                        x: Math.cos(angle) * WAYPOINT_RADIUS + projectionUtils.lngToTileX(zoom, waypoint.longitude),
+                        y: Math.sin(angle) * WAYPOINT_RADIUS + projectionUtils.latToTileY(zoom, waypoint.latitude)
                     };
                     return new LatLng(
                         projectionUtils.tileYToLat(zoom, point.y),

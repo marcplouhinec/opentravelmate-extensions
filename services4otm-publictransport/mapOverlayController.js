@@ -5,6 +5,7 @@
  */
 
 define([
+    'underscore',
     '../core/widget/Widget',
     '../core/widget/webview/webview',
     '../core/widget/map/Map',
@@ -15,14 +16,15 @@ define([
     '../core/widget/map/Marker',
     '../core/widget/map/UrlMarkerIcon',
     '../core/widget/map/projectionUtils',
+    '../core/widget/map/Polyline',
     '../place-commons/Place',
     '../place-information/placeSelectionMenu',
     './datastore/datastoreService',
     './datastore/Waypoint',
     './waypointPolygonBuilder'
 ], function(
-    Widget, webview, Map, TileOverlay, LatLng, Point, Dimension, Marker, UrlMarkerIcon,
-    projectionUtils, Place, placeSelectionMenu, datastoreService, Waypoint, waypointPolygonBuilder) {
+    _, Widget, webview, Map, TileOverlay, LatLng, Point, Dimension, Marker, UrlMarkerIcon,
+    projectionUtils, Polyline, Place, placeSelectionMenu, datastoreService, Waypoint, waypointPolygonBuilder) {
     'use strict';
 
     /**
@@ -30,6 +32,12 @@ define([
      * @type {Number}
      */
     var ITINERARY_POLYGON_FILL_COLOR = 0xFF70c000;
+
+    /**
+     * @constant
+     * @type {Number}
+     */
+    var ITINERARY_POLYLINE_WEIGHT = 8;
 
     /**
      * @constant
@@ -59,10 +67,10 @@ define([
         '_waypointByMarkerId': {},
 
         /**
-         * @type {Object.<String, {drawingInfo: WaypointDrawingInfo, zoom: Number}>}
+         * @type {Object.<String, {waypoint: Waypoint, zoom: Number}>}
          * @private
          */
-        '_drawingInfoAndZoomByWaypointId': {},
+        '_waypointAndZoomByWaypointId': {},
 
         /**
          * Polygon displayed on top of a waypoint when the user put his mouse close to the marker.
@@ -75,6 +83,12 @@ define([
          * @type {Object.<String, Boolean>} Object.<Waypoint ID on itinerary, true>
          */
         '_itineraryWaypointIdSet': {},
+
+        /**
+         * @private
+         * @type {Array.<Polyline>}
+         */
+        '_itineraryPolylines': [],
 
         /**
          * @private
@@ -126,9 +140,9 @@ define([
                 if (!waypoint) {
                     return;
                 }
-                var drawingInfoAndZoom = self._drawingInfoAndZoomByWaypointId[waypoint.id];
-                if (drawingInfoAndZoom) {
-                    self._highlightedWaypointPolygon = waypointPolygonBuilder.buildPolygon(drawingInfoAndZoom.drawingInfo, drawingInfoAndZoom.zoom);
+                var waypointAndZoom = self._waypointAndZoomByWaypointId[waypoint.id];
+                if (waypointAndZoom) {
+                    self._highlightedWaypointPolygon = waypointPolygonBuilder.buildPolygon(waypointAndZoom.waypoint, waypointAndZoom.zoom);
                     self._map.addPolygons([self._highlightedWaypointPolygon]);
                 }
             });
@@ -183,8 +197,8 @@ define([
                         icon: self._transparentMarkerIcon
                     });
                     self._waypointByMarkerId[marker.id] = waypoint;
-                    self._drawingInfoAndZoomByWaypointId[waypoint.id] = {
-                        drawingInfo: stopWithDrawingData.drawingInfo,
+                    self._waypointAndZoomByWaypointId[waypoint.id] = {
+                        waypoint: waypoint,
                         zoom: zoom
                     };
                     return marker;
@@ -225,8 +239,8 @@ define([
                             removedWaypointIdSet[waypoint.id] = true;
                             delete self._waypointByMarkerId[marker.id];
                         }
-                        if (self._drawingInfoAndZoomByWaypointId[marker.id])
-                            delete self._drawingInfoAndZoomByWaypointId[marker.id];
+                        if (self._waypointAndZoomByWaypointId[marker.id])
+                            delete self._waypointAndZoomByWaypointId[marker.id];
                     });
                 }
             });
@@ -236,16 +250,42 @@ define([
         },
 
         /**
-         * Highlight the markers related to the given waypoints.
+         * Show the given itinerary on the map.
          *
-         * @param {Array.<String>} waypointIds
+         * @param {Itinerary} itinerary
          */
-        'highlightItinerary': function(waypointIds) {
-            this._itineraryWaypointIdSet = {};
-            for (var i = 0; i < waypointIds.length; i++) {
-                this._itineraryWaypointIdSet[waypointIds[i]] = true;
-            }
+        'showItinerary': function(itinerary) {
+            var self = this;
 
+            // Show the itinerary paths
+            this._itineraryPolylines = [];
+            var lastPlace = null;
+            _.each(itinerary.steps, function(step) {
+                if (step.type === 'Place') {
+                    lastPlace = step;
+                    if (self._itineraryPolylines.length > 0) {
+                        var lastPolyline = self._itineraryPolylines[self._itineraryPolylines.length - 1];
+                        lastPolyline.path.push(new LatLng(step.latitude, step.longitude));
+                    }
+                } else if (step.type === 'Path') {
+                    var pathLatLng = [new LatLng(lastPlace.latitude, lastPlace.longitude)].concat(step.waypoints);
+                    self._itineraryPolylines.push(new Polyline({
+                        path: pathLatLng,
+                        color: 0xFF000000 + parseInt(step.color, 16),
+                        width: ITINERARY_POLYLINE_WEIGHT
+                    }));
+                }
+            });
+            this._map.addPolylines(this._itineraryPolylines);
+
+            // Show the itinerary stops
+            this._itineraryWaypointIdSet = {};
+            _.each(itinerary.steps, function(step) {
+                if (step.type === 'Place' && step.additionalParameters['waypointId']) {
+                    var waypointId = step.additionalParameters['waypointId'];
+                    self._itineraryWaypointIdSet[waypointId] = true;
+                }
+            });
             this._updateItineraryPolygons();
         },
 
@@ -255,6 +295,8 @@ define([
         'clearItinerary': function() {
             this._itineraryWaypointIdSet = {};
             this._updateItineraryPolygons();
+            this._map.removePolylines(this._itineraryPolylines);
+            this._itineraryPolylines = [];
         },
 
         /**
@@ -279,12 +321,12 @@ define([
             var newPolygons = /** @type {Array.<Polygon>} */ [];
             _.each(this._itineraryWaypointIdSet, function(alwaysTrue, waypointId) {
                 if (!self._itineraryPolygonByWaypointId[waypointId] && (!removedWaypointIdSet || !removedWaypointIdSet[waypointId])) {
-                    var drawingInfoAndZoom = self._drawingInfoAndZoomByWaypointId[waypointId];
+                    var waypointAndZoom = self._waypointAndZoomByWaypointId[waypointId];
 
-                    if (drawingInfoAndZoom) {
+                    if (waypointAndZoom) {
                         var polygon = waypointPolygonBuilder.buildPolygon(
-                            drawingInfoAndZoom.drawingInfo,
-                            drawingInfoAndZoom.zoom,
+                            waypointAndZoom.waypoint,
+                            waypointAndZoom.zoom,
                             ITINERARY_POLYGON_SCALE,
                             ITINERARY_POLYGON_FILL_COLOR);
                         newPolygons.push(polygon);

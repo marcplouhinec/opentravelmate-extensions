@@ -6,6 +6,7 @@
 
 define([
     'underscore',
+    '../core/widget/map/LatLng',
     '../itinerary-finder/ItineraryProvider',
     '../itinerary-finder/Itinerary',
     '../itinerary-finder/Path',
@@ -14,14 +15,14 @@ define([
     '../google-itinerary-provider/GoogleItineraryProvider',
     './Services4otmPlaceProvider',
     './mapOverlayController'
-], function(_, ItineraryProvider, Itinerary, Path, Place, PlaceProvider, GoogleItineraryProvider, Services4otmPlaceProvider, mapOverlayController) {
+], function(_, LatLng, ItineraryProvider, Itinerary, Path, Place, PlaceProvider, GoogleItineraryProvider, Services4otmPlaceProvider, mapOverlayController) {
     'use strict';
 
     /**
      * @constant
      * @type {String}
      */
-    var ITINERARY_WS_URL = 'http://www.services4otm.com/itinerary/publictransport/';
+    var ITINERARY_WS_URL = 'http://www.services4otm.com/itineraries';
 
     /**
      * Create the itinerary provider.
@@ -82,22 +83,7 @@ define([
     Services4otmItineraryProvider.prototype.showItinerary = function(itinerary) {
         var self = this;
 
-        // Find all the places that are waypoints
-        var waypointIds = /** @type {Array.<String>} */[];
-        _.each(itinerary.steps, function(step) {
-            if (step.type === 'Place' && step.additionalParameters['waypointId']) {
-                waypointIds.push(step.additionalParameters['waypointId']);
-            } else if (step.type === 'Path' && step.itineraryProvider === self) {
-                _.each(step.places, function(place) {
-                    if (place.additionalParameters['waypointId']) {
-                        waypointIds.push(place.additionalParameters['waypointId']);
-                    }
-                });
-            }
-        });
-
-        // Highlight them on the map
-        mapOverlayController.highlightItinerary(waypointIds);
+        mapOverlayController.showItinerary(itinerary);
 
         // Show the walking paths
         var googleItineraryProvider = ItineraryProvider.findByName(GoogleItineraryProvider.NAME);
@@ -128,48 +114,61 @@ define([
      */
     Services4otmItineraryProvider.prototype._computePublicTransportItineraries = function(startingPlace, destinationPlace, callback) {
         var self = this;
-        var startPoint = startingPlace.placeProvider.getName() === Services4otmPlaceProvider.NAME ?
-            startingPlace.additionalParameters['waypointId'] :
-        {'latitude': startingPlace.latitude, 'longitude': startingPlace.longitude};
-        var endPoint = destinationPlace.placeProvider.getName() === Services4otmPlaceProvider.NAME ?
-            destinationPlace.additionalParameters['waypointId'] :
-        {'latitude': destinationPlace.latitude, 'longitude': destinationPlace.longitude};
-        var url = ITINERARY_WS_URL + '?' +
-            (_.isString(startPoint) ? 'startWaypointId=' + startPoint : 'startLocation=' + JSON.stringify(startPoint)) + '&' +
-            (_.isString(endPoint) ? 'endWaypointId=' + endPoint : 'endLocation=' + JSON.stringify(endPoint)) +
-            '&callback=?';
+
+        var url = '' + ITINERARY_WS_URL;
+        if (startingPlace.placeProvider.getName() === Services4otmPlaceProvider.NAME) {
+            url += '/origin-stop/' + startingPlace.additionalParameters['waypointId'];
+        } else {
+            url += '/origin-latitude/' + startingPlace.latitude + '/origin-longitude/' + startingPlace.longitude;
+        }
+        if (destinationPlace.placeProvider.getName() === Services4otmPlaceProvider.NAME) {
+            url += '/destination-stop/' + destinationPlace.additionalParameters['waypointId'];
+        } else {
+            url += '/destination-latitude/' + destinationPlace.latitude + '/destination-longitude/' + destinationPlace.longitude;
+        }
+        url += '?callback=?';
         $.getJSON(url, function (response) {
-            //Stop if an error occurred
+            // Stop if an error occurred
             if (!response.success) {
                 callback({ error: response.errormessage });
                 return;
             }
 
             // Parse the result
-            var itineraries = [];
             var placeProvider = PlaceProvider.findByName(Services4otmPlaceProvider.NAME);
-            var steps = _.map(response.itinerary.steps, function(step) {
-                if (step.type === 'Place') {
-                    step.placeProvider = placeProvider;
-                    return new Place(step);
-                } else {
-                    var places = _.map(step.places, function(place) {
-                        place.placeProvider = placeProvider;
-                        return new Place(place);
-                    });
-                    return new Path({
-                        places: places,
-                        name: 'Line ' +  step.name,
-                        color: step.color,
-                        additionalParameters: step.additionalParameters,
-                        itineraryProvider: self
-                    });
-                }
+            var itineraries = _.map(response.itineraries, function(itinerary) {
+                var steps = _.map(itinerary.steps, function(step) {
+                    if (step.type === 'stop') {
+                        return new Place({
+                            latitude: step.latitude,
+                            longitude: step.longitude,
+                            name: step.stopName,
+                            placeProvider: placeProvider,
+                            additionalParameters: {
+                                waypointId: step.waypointId
+                            }
+                        });
+                    } else if (step.type === 'line') {
+                        var waypoints = _.map(step.intermediateWaypointCoordinates, function(coordinates) {
+                            return new LatLng(coordinates.latitude, coordinates.longitude);
+                        });
+                        return new Path({
+                            waypoints: waypoints,
+                            name: 'Line ' +  step.lineName,
+                            color: step.lineColor,
+                            additionalParameters: {
+                                lineId: step.lineId
+                            },
+                            itineraryProvider: self
+                        });
+                    }
+                });
+
+                return new Itinerary({
+                    steps: steps,
+                    itineraryProvider: self
+                });
             });
-            itineraries.push(new Itinerary({
-                steps: steps,
-                itineraryProvider: self
-            }));
 
             // Return the results
             callback({
