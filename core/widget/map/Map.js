@@ -76,6 +76,15 @@ define([
     };
 
     /**
+     * Remove an overlay from the map.
+     *
+     * @param {TileOverlay} tileOverlay
+     */
+    Map.prototype.removeTileOverlay = function(tileOverlay) {
+        nativeMap.removeTileOverlay(this.id, JSON.stringify(tileOverlay));
+    };
+
+    /**
      * Move the map center to the given location.
      *
      * @param {LatLng} center

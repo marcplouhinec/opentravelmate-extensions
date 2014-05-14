@@ -19,7 +19,8 @@ define(function() {
      *
      * @param {{
      *     zIndex: Number=,
-     *     tileUrlPattern: String
+     *     tileUrlPattern: String,
+     *     enableGrayscaleFilter: Boolean=,
      * }} options
      * @constructor
      */
@@ -27,10 +28,12 @@ define(function() {
         /** @type {number} */
         this.id = nextTileOverlayId++;
 
-        /** @type {Number=} */
+        /** @type {Number} */
         this.zIndex = options.zIndex || 0;
         /** @type {String} */
         this.tileUrlPattern = options.tileUrlPattern;
+        /** @type {Boolean} */
+        this.enableGrayscaleFilter = options.enableGrayscaleFilter || false;
     }
 
     return TileOverlay;

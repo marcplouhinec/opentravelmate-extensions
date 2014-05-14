@@ -55,6 +55,24 @@ define([
         '_map': undefined,
 
         /**
+         * @type {UrlMarkerIcon}
+         * @private
+         */
+        '_transparentMarkerIcon': undefined,
+
+        /**
+         * @type {TileOverlay}
+         * @private
+         */
+        '_tileOverlay': undefined,
+
+        /**
+         * @type {TileOverlay}
+         * @private
+         */
+        '_grayTileOverlay': undefined,
+
+        /**
          * @type {Object.<String, Array.<Marker>>}
          * @private
          */
@@ -113,11 +131,16 @@ define([
             });
 
             // Create an overlay that displays public transport
-            var tileOverlay = new TileOverlay({
+            this._tileOverlay = new TileOverlay({
                 'zIndex': 0,
                 'tileUrlPattern': 'http://www.services4otm.com/mapoverlay/publictransport/tile/${zoom}_${x}_${y}.png'
             });
-            this._map.addTileOverlay(tileOverlay);
+            this._grayTileOverlay = new TileOverlay({
+                'zIndex': 1,
+                'tileUrlPattern': 'http://www.services4otm.com/mapoverlay/publictransport/tile/${zoom}_${x}_${y}.png',
+                'enableGrayscaleFilter': true
+            });
+            this._map.addTileOverlay(this._tileOverlay);
 
             // Load the markers
             this._map.onTilesDisplayed(function handleTilesDisplayed(tileCoordinates) {
@@ -287,16 +310,25 @@ define([
                 }
             });
             this._updateItineraryPolygons();
+
+            // Show the gray tile overlay
+            this._map.addTileOverlay(this._grayTileOverlay);
         },
 
         /**
          * Clear the currently displayed itinerary.
          */
         'clearItinerary': function() {
+            // Remove the itinerary stops
             this._itineraryWaypointIdSet = {};
             this._updateItineraryPolygons();
+
+            // Remove the itinerary lines
             this._map.removePolylines(this._itineraryPolylines);
             this._itineraryPolylines = [];
+
+            // Hide the gray tile overlay
+            this._map.removeTileOverlay(this._grayTileOverlay);
         },
 
         /**
