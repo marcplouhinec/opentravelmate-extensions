@@ -103,12 +103,6 @@ define([
 
         /**
          * @private
-         * @type {Object.<String, Boolean>} Object.<Waypoint ID on itinerary, true>
-         */
-        '_itineraryWaypointIdSet': {},
-
-        /**
-         * @private
          * @type {Array.<Polyline>}
          */
         '_itineraryPolylines': [],
