@@ -17,9 +17,8 @@ define([
      */
     return function main() {
         var services4otmPlaceProvider = new Services4otmPlaceProvider();
-        mapOverlayController.init(services4otmPlaceProvider);
-
         var services4otmItineraryProvider = new Services4otmItineraryProvider();
+        mapOverlayController.init(services4otmPlaceProvider, services4otmItineraryProvider);
         itineraryFinder.addItineraryProvider(services4otmItineraryProvider);
     };
 });

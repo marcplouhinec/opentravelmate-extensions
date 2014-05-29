@@ -30,22 +30,16 @@ define([
      * @constant
      * @type {Number}
      */
-    var ITINERARY_POLYGON_FILL_COLOR = 0xFF70c000;
-
-    /**
-     * @constant
-     * @type {Number}
-     */
     var ITINERARY_POLYLINE_WEIGHT = 8;
-
-    /**
-     * @constant
-     * @type {Number}
-     */
-    var ITINERARY_POLYGON_SCALE = 1.2;
 
 
     var mapOverlayController = {
+
+        /**
+         * @type {Services4otmItineraryProvider}
+         * @private
+         */
+        '_services4otmItineraryProvider': undefined,
 
         /**
          * @type {Map}
@@ -117,9 +111,11 @@ define([
          * Initialize the controller.
          *
          * @param {Services4otmPlaceProvider} services4otmPlaceProvider
+         * @param {Services4otmItineraryProvider} services4otmItineraryProvider
          */
-        init: function(services4otmPlaceProvider) {
+        init: function(services4otmPlaceProvider, services4otmItineraryProvider) {
             var self = this;
+            this._services4otmItineraryProvider = services4otmItineraryProvider;
             this._map = /** @type {Map} */ Widget.findById('map');
 
             // Create a marker icons
@@ -284,20 +280,24 @@ define([
             // Show the itinerary paths
             this._itineraryPolylines = [];
             var lastPlace = null;
+            var lastPathItineraryProvider = null;
             _.each(itinerary.steps, function(step) {
                 if (step.type === 'Place') {
                     lastPlace = step;
-                    if (self._itineraryPolylines.length > 0) {
+                    if (self._itineraryPolylines.length > 0 && lastPathItineraryProvider === self._services4otmItineraryProvider) {
                         var lastPolyline = self._itineraryPolylines[self._itineraryPolylines.length - 1];
                         lastPolyline.path.push(new LatLng(step.latitude, step.longitude));
                     }
                 } else if (step.type === 'Path') {
-                    var pathLatLng = [new LatLng(lastPlace.latitude, lastPlace.longitude)].concat(step.waypoints);
-                    self._itineraryPolylines.push(new Polyline({
-                        path: pathLatLng,
-                        color: 0xFF000000 + parseInt(step.color, 16),
-                        width: ITINERARY_POLYLINE_WEIGHT
-                    }));
+                    lastPathItineraryProvider = step.itineraryProvider;
+                    if (step.itineraryProvider === self._services4otmItineraryProvider) {
+                        var pathLatLng = [new LatLng(lastPlace.latitude, lastPlace.longitude)].concat(step.waypoints);
+                        self._itineraryPolylines.push(new Polyline({
+                            path: pathLatLng,
+                            color: 0xFF000000 + parseInt(step.color, 16),
+                            width: ITINERARY_POLYLINE_WEIGHT
+                        }));
+                    }
                 }
             });
             this._map.addPolylines(this._itineraryPolylines);
