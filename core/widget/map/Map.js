@@ -109,7 +109,7 @@ define([
     /**
      * Add markers on the map.
      *
-     * @param {Arrays.<Marker>} markers
+     * @param {Array.<Marker>} markers
      */
     Map.prototype.addMarkers = function(markers) {
         nativeMap.addMarkers(this.id, JSON.stringify(markers));
@@ -118,7 +118,7 @@ define([
     /**
      * Remove markers from the map.
      *
-     * @param {Arrays.<Marker>} markers
+     * @param {Array.<Marker>} markers
      */
     Map.prototype.removeMarkers = function(markers) {
         nativeMap.removeMarkers(this.id, JSON.stringify(markers));
