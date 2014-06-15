@@ -51,6 +51,14 @@ define([
         '_itineraryProviders': [],
 
         /**
+         * Currently shown itinerary.
+         *
+         * @type {Itinerary}
+         * @private
+         */
+        '_shownItinerary': null,
+
+        /**
          * Register the given itinerary provider.
          *
          * @param {ItineraryProvider} itineraryProvider
@@ -169,10 +177,30 @@ define([
          * @param {Array.<Itinerary>} itineraries
          */
         '_showItineraries': function(itineraries) {
+            var self = this;
+
+            // Clear the currently shown itinerary if necessary
+            if (this._shownItinerary) {
+                this._hideItineraries();
+            }
+
             // Show the first itinerary only
             var firstItinerary = itineraries[0];
-            itineraryPanel.open(firstItinerary, this);
+            this._shownItinerary = firstItinerary;
+            itineraryPanel.open(firstItinerary, function handleCloseEvent(itinerary) {
+                self._hideItineraries();
+            });
             firstItinerary.itineraryProvider.showItinerary(firstItinerary);
+        },
+
+        /**
+         * Clear the shown itineraries.
+         */
+        '_hideItineraries': function() {
+            this._shownItinerary.itineraryProvider.clearItinerary(self._itinerary);
+            delete this._shownItinerary;
+
+            this.clearStartingAndDestinationPlaces();
         }
     };
 

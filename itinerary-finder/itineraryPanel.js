@@ -39,20 +39,20 @@ define([
         '_itinerary': null,
 
         /**
-         * @type {itineraryFinder}
+         * @type {function(itinerary: Itinerary)} closeListener
          * @private
          */
-        '_itineraryFinder': null,
+        '_closeListener': null,
 
         /**
          * Open the itinerary panel for the given place.
          *
          * @param {Itinerary} itinerary
-         * @param {itineraryFinder} itineraryFinder
+         * @param {function(itinerary: Itinerary)} closeListener
          */
-        'open': function(itinerary, itineraryFinder) {
+        'open': function(itinerary, closeListener) {
             this._itinerary = itinerary;
-            this._itineraryFinder = itineraryFinder;
+            this._closeListener = closeListener;
 
             // Check if the panel doesn't already exist
             if (this._subWebViewPlaceHolder) {
@@ -112,8 +112,7 @@ define([
                 delete self._subWebViewPlaceHolder;
                 webview.layout();
 
-                self._itinerary.itineraryProvider.clearItinerary(self._itinerary);
-                self._itineraryFinder.clearStartingAndDestinationPlaces();
+                self._closeListener(self._itinerary);
             });
         },
 
