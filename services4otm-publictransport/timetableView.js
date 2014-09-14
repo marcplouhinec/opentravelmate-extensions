@@ -22,15 +22,11 @@ define([
         /**
          * Open the web view.
          *
-         * @param {String} lineName
-         * @param {String} direction1StopName
-         * @param {String} direction2StopName
-         * @param {Array.<TimetablePeriod>} periods
+         * @param {Route} route
          * @param {Array.<Timetable>} timetables
-         * @param {Object.<String, String>} stopNameById
-         * @param {String} waypointIdToHighlight
+         * @param {String} stopIdToHighlight
          */
-        'open': function(lineName, direction1StopName, direction2StopName, periods, timetables, stopNameById, waypointIdToHighlight) {
+        'open': function(route, timetables, stopIdToHighlight) {
             // Check if the panel doesn't already exist
             if (this._subWebViewPlaceHolder) {
                 return;
@@ -49,13 +45,10 @@ define([
             this._subWebViewPlaceHolder.setAttribute('data-otm-widget', 'SubWebView');
             this._subWebViewPlaceHolder.setAttribute('data-otm-url', 'extensions/services4otm-publictransport/services4otm-timetable-subwebview/timetable-view.html');
             this._subWebViewPlaceHolder.setAttribute('data-otm-entrypoint', 'extensions/services4otm-publictransport/services4otm-timetable-subwebview/entryPoint');
-            this._subWebViewPlaceHolder.setAttribute('data-otm-linename', lineName);
-            this._subWebViewPlaceHolder.setAttribute('data-otm-direction1stopname', direction1StopName);
-            this._subWebViewPlaceHolder.setAttribute('data-otm-direction2stopname', direction2StopName);
-            this._subWebViewPlaceHolder.setAttribute('data-otm-periods', JSON.stringify(periods));
+            this._subWebViewPlaceHolder.setAttribute('data-otm-route-shortname', route.shortName);
+            this._subWebViewPlaceHolder.setAttribute('data-otm-route-longname', route.longName);
             this._subWebViewPlaceHolder.setAttribute('data-otm-timetables', JSON.stringify(timetables));
-            this._subWebViewPlaceHolder.setAttribute('data-otm-stopnamebyid', JSON.stringify(stopNameById));
-            this._subWebViewPlaceHolder.setAttribute('data-otm-waypointid-to-highlight', waypointIdToHighlight);
+            this._subWebViewPlaceHolder.setAttribute('data-otm-stopid-to-highlight', stopIdToHighlight);
             document.body.appendChild(this._subWebViewPlaceHolder);
 
             // Register event handlers when the SubWebView is loaded

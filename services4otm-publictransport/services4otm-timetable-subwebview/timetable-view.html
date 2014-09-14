@@ -24,23 +24,31 @@
             <% if (i === 0) { %>
             <tr class="header-row">
                 <td colspan="<%=timetable.rows[i].times.length %>">
-                    <%=period.name %>
+                    <%=timetable.headSign %> - <%=timetable.calendar.name %>
                 </td>
             </tr>
             <% } %>
-            <tr class="stop-row <%=waypointIdToHighlight === timetable.rows[i].waypointId ? 'highlight' : '' %>">
+            <tr class="stop-row <%=stopIdToHighlight === timetable.rows[i].stopId ? 'highlight' : '' %>">
                 <% for (var j = 0; j < timetable.rows[i].times.length; j++) { %>
                 <td class="<%=(j % 2 === 0 ? 'column_even' : 'column_odd') %>">
                     <% if (j === 0) { %>
-                    <div class="stop-name"><%=stopNameById[timetable.rows[i].waypointId] %></div>
+                    <div class="stop-name"><%=timetable.rows[i].stopName %></div>
                     <% } %>
                     &nbsp;
                 </td>
                 <% } %>
             </tr>
-            <tr class="times-row <%=waypointIdToHighlight === timetable.rows[i].waypointId ? 'highlight' : '' %>">
+            <tr class="times-row <%=stopIdToHighlight === timetable.rows[i].stopId ? 'highlight' : '' %>">
                 <% for (var j = 0; j < timetable.rows[i].times.length; j++) { %>
-                <td class="<%=(j % 2 === 0 ? 'column_even' : 'column_odd') %>"><%=timetable.rows[i].times[j] %></td>
+                <td class="<%=(j % 2 === 0 ? 'column_even' : 'column_odd') %>">
+                    <%
+                        var time = timetable.rows[i].times[j];
+                        if (time) {
+                            time = time.substring(0, time.length - 3);
+                        }
+                    %>
+                    <%=time %>
+                </td>
                 <% } %>
             </tr>
             <% } %>

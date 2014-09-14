@@ -138,11 +138,11 @@ define([
             // Create an overlay that displays public transport
             this._tileOverlay = new TileOverlay({
                 'zIndex': 0,
-                'tileUrlPattern': 'http://www.services4otm.com/mapoverlay/publictransport/tile/${zoom}_${x}_${y}.png'
+                'tileUrlPattern': 'http://mplouhinec.dyndns.org:9091/tile/${zoom}_${x}_${y}.png'
             });
             this._grayTileOverlay = new TileOverlay({
                 'zIndex': 1,
-                'tileUrlPattern': 'http://www.services4otm.com/mapoverlay/publictransport/tile/${zoom}_${x}_${y}.png',
+                'tileUrlPattern': 'http://mplouhinec.dyndns.org:9091/tile/${zoom}_${x}_${y}.png',
                 'enableGrayscaleFilter': true
             });
             this._map.addTileOverlay(this._tileOverlay);
@@ -219,16 +219,15 @@ define([
             var tileIds = _.map(tileCoordinates, function(tileCoordinate) {
                 return tileCoordinate.zoom + '_' + tileCoordinate.x + '_' + tileCoordinate.y;
             });
-            datastoreService.findStopsWithDrawingDataByTileIds(tileIds, function(error, stopsWithDrawingData) {
+            datastoreService.findStopsByTileIds(tileIds, function(error, stops) {
                 // Create one transparent marker
-                var markers = /** @type {Array.<Marker>} */ _.map(stopsWithDrawingData, function(stopWithDrawingData) {
-                    var waypoint = stopWithDrawingData.waypoint;
+                var markers = /** @type {Array.<Marker>} */ _.map(stops, function(stop) {
                     var marker = new Marker({
-                        position: new LatLng(waypoint.latitude, waypoint.longitude),
-                        title: waypoint.stopName,
+                        position: new LatLng(stop.latitude, stop.longitude),
+                        title: stop.stopName,
                         icon: self._transparentMarkerIcon
                     });
-                    self._waypointByMarkerId[marker.id] = waypoint;
+                    self._waypointByMarkerId[marker.id] = stop;
                     return marker;
                 });
 
@@ -279,39 +278,35 @@ define([
 
             // Show the itinerary paths
             this._itineraryPolylines = [];
-            var lastPlace = null;
-            var lastPathItineraryProvider = null;
-            _.each(itinerary.steps, function(step) {
-                if (step.type === 'Place') {
-                    lastPlace = step;
-                    if (self._itineraryPolylines.length > 0 && lastPathItineraryProvider === self._services4otmItineraryProvider) {
-                        var lastPolyline = self._itineraryPolylines[self._itineraryPolylines.length - 1];
-                        lastPolyline.path.push(new LatLng(step.latitude, step.longitude));
-                    }
-                } else if (step.type === 'Path') {
-                    lastPathItineraryProvider = step.itineraryProvider;
-                    if (step.itineraryProvider === self._services4otmItineraryProvider) {
-                        var pathLatLng = [new LatLng(lastPlace.latitude, lastPlace.longitude)].concat(step.waypoints);
-                        self._itineraryPolylines.push(new Polyline({
-                            path: pathLatLng,
-                            color: 0xFF000000 + parseInt(step.color, 16),
-                            width: ITINERARY_POLYLINE_WEIGHT
-                        }));
-                    }
-                }
+            _.each(itinerary.legs, function(leg) {
+                var pathLatLng = _.map(leg.points, function (point) { return new LatLng(point.latitude, point.longitude); });
+                self._itineraryPolylines.push(new Polyline({
+                    path: pathLatLng,
+                    color: leg.routeColor ? 0xFF000000 + parseInt(leg.routeColor, 16) : 0xFF1E90FF,
+                    width: ITINERARY_POLYLINE_WEIGHT
+                }));
             });
             this._map.addPolylines(this._itineraryPolylines);
 
             // Show the itinerary stops
-            this._itineraryWaypointMarkers = _.chain(itinerary.steps)
-                .filter(function (step) { return step.type === 'Place'; })
-                .map(function (/** @type {Place} */ place) {
-                    return new Marker({
-                        position: new LatLng(place.latitude, place.longitude),
-                        title: place.name,
+            this._itineraryWaypointMarkers = _.chain(itinerary.legs)
+                .map(function (leg, index) {
+                    var markers = [];
+                    if (index === 0) {
+                        markers.push(new Marker({
+                            position: new LatLng(leg.startPlacePoint.latitude, leg.startPlacePoint.longitude),
+                            title: leg.startPlaceName,
+                            icon: self._greenMarkerIcon
+                        }));
+                    }
+                    markers.push(new Marker({
+                        position: new LatLng(leg.endPlacePoint.latitude, leg.endPlacePoint.longitude),
+                        title: leg.endPlaceName,
                         icon: self._greenMarkerIcon
-                    });
+                    }));
+                    return markers;
                 })
+                .flatten(true)
                 .value();
             this._map.addMarkers(this._itineraryWaypointMarkers);
 

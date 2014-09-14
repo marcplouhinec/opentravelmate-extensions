@@ -4,7 +4,7 @@
  * @author marc.plouhinec@gmail.com (Marc Plouhinec)
  */
 
-define(function() {
+define(['./Calendar', './TimetableRow'], function(Calendar, TimetableRow) {
     'use strict';
 
     /**
@@ -15,46 +15,28 @@ define(function() {
      */
     function Timetable(options) {
         /**
-         * Internal ID.
+         * Text displayed on the vehicle.
          *
          * @type {String}
          */
-        this.id = options.id;
+        this.headSign = options.headSign;
 
         /**
-         * Period when this timetable is valid.
+         * Calendar when this timetable is valid.
          *
-         * @type {String}
+         * @type {Calendar}
          */
-        this.timetablePeriodId = options.timetablePeriodId;
+        this.calendar = new Calendar(options.calendar);
 
         /**
-         * Line where this timetable applies.
+         * Rows of the timetable.
          *
-         * @type {String}
+         * @type {Array.<TimetableRow>}
          */
-        this.lineId = options.lineId;
-
-        /**
-         * Waypoint ID of the first line bound.
-         *
-         * @type {String}
-         */
-        this.direction1Id = options.direction1Id;
-
-        /**
-         * Waypoint ID of the second line bound.
-         *
-         * @type {String}
-         */
-        this.direction2Id = options.direction2Id;
-
-        /**
-         * Time table rows.
-         *
-         * @type {Array.<{waypointId: String, times: Array.<String>}>}
-         */
-        this.rows = options.rows;
+        this.rows = [];
+        for (var i = 0; i < options.rows.length; i++) {
+            this.rows.push(new TimetableRow(options.rows[i]));
+        }
     }
 
     return Timetable;

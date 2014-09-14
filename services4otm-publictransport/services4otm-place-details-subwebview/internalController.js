@@ -19,21 +19,21 @@ define([
          * @type {Function}
          * @private
          */
-        '_templateLineTableRow': null,
+        '_templateRouteTableRow': null,
 
         /**
          * Initialize the SubWebView.
          */
         'initWebView': function() {
             var self = this;
-            this._templateLineTableRow = _.template($('#tpl-line-table-row').text());
+            this._templateRouteTableRow = _.template($('#tpl-route-table-row').text());
 
             // Listen to the PLACE DATA LOADED event
             webview.onExternalEvent(constants.PLACE_DATA_LOADED_EVENT, function(payload) {
                 if (payload.error) {
                     // TODO show error
                 } else {
-                    self._showLines(payload.lines, payload.directions);
+                    self._showRoutes(payload.routes);
                     self._listenToTimetableButtons();
                 }
             });
@@ -43,21 +43,24 @@ define([
          * Show lines on the panel.
          *
          * @private
-         * @param {Array.<Line>} lines
-         * @param {Array.Waypoint} directions
+         * @param {Array.<Route>} routes
          */
-        '_showLines': function(lines, directions) {
+        '_showRoutes': function(routes) {
             var self = this;
-            var $lineTable = $('#line-table');
-            var directionById = _.indexBy(directions, 'id');
+            var $routeTable = $('#route-table');
 
-            var sortedLines = _.sortBy(lines, function(line) {
-                return line.name;
+            // Sort the lines by their short names
+            var routeWithLongestShortNameLength = _.max(routes, function(route) { return route.shortName ? route.shortName.length : 0; });
+            var maxRouteShortNameLength = routeWithLongestShortNameLength ? routeWithLongestShortNameLength.shortName.length : 0;
+
+            var sortedRoutes = _.sortBy(routes, function(route) {
+                var paddingLength = maxRouteShortNameLength - route.shortName.length;
+                var padding = paddingLength == 0 ? '' : new Array(paddingLength + 1).join(' ');
+                return padding + route.shortName;
             });
-            _.each(sortedLines, function(line) {
-                $lineTable.append(self._templateLineTableRow({
-                    line: line,
-                    directionById: directionById
+            _.each(sortedRoutes, function(route) {
+                $routeTable.append(self._templateRouteTableRow({
+                    route: route
                 }));
             });
         },
@@ -70,12 +73,7 @@ define([
                 var buttonElement = $(this).get(0);
                 new FastButton(buttonElement, function() {
                     var payload = {
-                        lineId: buttonElement.getAttribute('data-lineid'),
-                        lineName: buttonElement.getAttribute('data-linename'),
-                        direction1Id: buttonElement.getAttribute('data-direction1id'),
-                        direction1StopName: buttonElement.getAttribute('data-direction1stopname'),
-                        direction2Id: buttonElement.getAttribute('data-direction2id'),
-                        direction2StopName: buttonElement.getAttribute('data-direction2stopname')
+                        routeId: buttonElement.getAttribute('data-routeid')
                     };
                     webview.fireExternalEvent(constants.SHOW_TIMETABLE_EVENT, payload);
                 });

@@ -8,49 +8,25 @@
     <link rel="stylesheet" href="services4otm-place-details.css" type="text/css" media="screen"/>
 </head>
 <body class="otm-panel">
-    <div id="line-table-wrapper">
-        <table id="line-table">
+    <div id="route-table-wrapper">
+        <table id="route-table">
             <tr>
-                <th class="line-name">#</th>
-                <th>Line direction</th>
+                <th class="route-name">#</th>
+                <th>Route direction</th>
                 <th>&nbsp;</th>
             </tr>
         </table>
     </div>
 
-    <script id="tpl-line-table-row" type="text/template">
+    <script id="tpl-route-table-row" type="text/template">
         <tr>
-            <td class="line-name">
-                <span class="line-color-box" style="background-color: #<%=line.color %>;">&nbsp;</span>
-                <%=line.name %>
+            <td class="route-short-name">
+                <span class="route-color-box" style="background-color: #<%=route.color %>;">&nbsp;</span>
+                <%=route.shortName %>
             </td>
-            <td><%=directionById[line.direction1Id].stopName %></td>
+            <td><%=route.longName %></td>
             <td>
-                <button class="otm-button otm-button-middle timetable-btn"
-                        data-lineid="<%=line.id %>"
-                        data-linename="<%=line.name %>"
-                        data-direction1id="<%=line.direction1Id %>"
-                        data-direction1stopname="<%=directionById[line.direction1Id].stopName %>"
-                        data-direction2id="<%=line.direction2Id %>"
-                        data-direction2stopname="<%=directionById[line.direction2Id].stopName %>">
-                    <img src="./image/ic_btn_clock.png" alt="Timetable"/>
-                </button>
-            </td>
-        </tr>
-        <tr>
-            <td class="line-name">
-                <span class="line-color-box" style="background-color: #<%=line.color %>;">&nbsp;</span>
-                <%=line.name %>
-            </td>
-            <td><%=directionById[line.direction2Id].stopName %></td>
-            <td>
-                <button class="otm-button otm-button-middle timetable-btn"
-                        data-lineid="<%=line.id %>"
-                        data-linename="<%=line.name %>"
-                        data-direction1id="<%=line.direction2Id %>"
-                        data-direction1stopname="<%=directionById[line.direction2Id].stopName %>"
-                        data-direction2id="<%=line.direction1Id %>"
-                        data-direction2stopname="<%=directionById[line.direction1Id].stopName %>">
+                <button class="otm-button otm-button-middle timetable-btn" data-routeid="<%=route.id %>">
                     <img src="./image/ic_btn_clock.png" alt="Timetable"/>
                 </button>
             </td>

@@ -10,10 +10,10 @@ define([
     './Waypoint',
     './WaypointDrawingInfo',
     './Line',
-    './TimetablePeriod',
+    './Route',
     './Timetable',
     './WSError'
-], function($, _, Waypoint, WaypointDrawingInfo, Line, TimetablePeriod, Timetable, WSError) {
+], function($, _, Waypoint, WaypointDrawingInfo, Line, Route, Timetable, WSError) {
     'use strict';
 
     /**
@@ -45,81 +45,71 @@ define([
     var datastoreService = {
 
         /**
-         * Find stop waypoints with drawing information located in the given tiles.
+         * Find stop waypoints located in the given tiles.
          *
          * @param {Array.<String>} tileIds
-         * @param {function(error: WSError|undefined, stopsWithDrawingData: Array.<{waypoint: Waypoint, drawingInfo: WaypointDrawingInfo}>)} callback
+         * @param {function(error: WSError|undefined, stops: Array.<Waypoint>)} callback
          */
-        'findStopsWithDrawingDataByTileIds': function(tileIds, callback) {
-            var url = 'http://www.services4otm.com/datastore/publictransport/tile/stopsWithDrawingData?tileIds=' + JSON.stringify(tileIds) + '&callback=?';
+        'findStopsByTileIds': function(tileIds, callback) {
+            var url = 'http://mplouhinec.dyndns.org:9091/tiles/' + tileIds.join() + '/stops?callback=?';
             $.getJSON(url).done(function(result) {
-                if (!result.success) {
-                    return callback(new WSError(result.errorcode, result.errormessage), []);
+                if (result.errorMessage) {
+                    return callback(new WSError(result.httpStatus, result.errorMessage), []);
                 }
 
-                var stopsWithDrawingData = _.map(result.stopsWithDrawingData, function(stopWithDrawingData) {
-                    return {
-                        waypoint: addWaypointToCache(new Waypoint(stopWithDrawingData.waypoint)),
-                        drawingInfo: new WaypointDrawingInfo(stopWithDrawingData.drawingInfo)
-                    };
+                var stops = _.map(result, function(stop) {
+                    return addWaypointToCache(new Waypoint({
+                        id: stop.id,
+                        type: 'stop',
+                        latitude: stop.latitude,
+                        longitude: stop.longitude,
+                        stopName: stop.name
+                    }));
                 });
 
-                callback(undefined, stopsWithDrawingData);
+                callback(undefined, stops);
             });
         },
 
         /**
-         * Find the lines and their directions (waypoints) that go through the given waypoint.
+         * Find the routes that go through the given stop.
          *
-         * @param {String} waypointId
-         * @param {function(error: WSError|undefined, lines: Array.<Line>, directions: Array.<Waypoint>)} callback
+         * @param {String} stopId
+         * @param {function(error: WSError|undefined, routes: Array.<Route>)} callback
          */
-        'findLinesAndDirectionsByWaypoint': function(waypointId, callback) {
-            var encodedWaypointId = this._encodeId(waypointId);
-            var url = 'http://www.services4otm.com/datastore/publictransport/line/findLinesAndDirectionsByWaypoint/' + encodedWaypointId + '?callback=?';
+        'findRoutesByStopId': function(stopId, callback) {
+            var url = 'http://mplouhinec.dyndns.org:9091/stop/' + this._encodeId(stopId) + '/routes?callback=?';
             $.getJSON(url).done(function(result) {
-                if (!result.success) {
-                    return callback(new WSError(result.errorcode, result.errormessage), [], []);
+                if (result.errorMessage) {
+                    return callback(new WSError(result.httpStatus, result.errorMessage), []);
                 }
 
-                var lines = _.map(result.lines, function(line) {
-                    return new Line(line);
-                });
-                var directions = _.map(result.directions, function(direction) {
-                    return addWaypointToCache(new Waypoint(direction));
+                var routes = _.map(result, function(route) {
+                    return new Route(route);
                 });
 
-                callback(undefined, lines, directions);
+                callback(undefined, routes);
             });
         },
 
         /**
-         * Find the timetables for the given line and directions.
+         * Find the timetables for the given route.
          *
-         * @param {String} lineId
-         * @param {String} direction1Id
-         * @param {String} direction2Id
-         * @param {function(error: WSError|undefined, periods: Array.<TimetablePeriod>, timetables: Array.<Timetable>, stopNameById: Object.<String, String>)} callback
+         * @param {String} routeId
+         * @param {function(error: WSError|undefined, timetables: Array.<Timetable>)} callback
          */
-        'findTimetablesByLineAndDirections' : function(lineId, direction1Id, direction2Id, callback) {
-            var encodedLineId = this._encodeId(lineId);
-            var encodedDirection1Id = this._encodeId(direction1Id);
-            var encodedDirection2Id = this._encodeId(direction2Id);
-            var url = 'http://www.services4otm.com/datastore/publictransport/timetable/findByLinesAndDirections/' +
-                encodedLineId + '/' + encodedDirection1Id + '/' + encodedDirection2Id + '?callback=?';
+        'findTimetablesByRouteId' : function(routeId, callback) {
+            var url = 'http://mplouhinec.dyndns.org:9091/route/' + this._encodeId(routeId) + '/timetables?callback=?';
             $.getJSON(url).done(function(result) {
-                if (!result.success) {
-                    return callback(new WSError(result.errorcode, result.errormessage), [], []);
+                if (result.errorMessage) {
+                    return callback(new WSError(result.httpStatus, result.errorMessage), []);
                 }
 
-                var periods = _.map(result.periods, function(period) {
-                    return new TimetablePeriod(period);
-                });
-                var directions = _.map(result.timetables, function(timetable) {
+                var timetables = _.map(result, function(timetable) {
                     return new Timetable(timetable);
                 });
 
-                callback(undefined, periods, directions, result.stopNameById);
+                callback(undefined, timetables);
             });
         },
 

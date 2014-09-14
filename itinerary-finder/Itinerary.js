@@ -4,25 +4,46 @@
  * @author marc.plouhinec@gmail.com (Marc Plouhinec)
  */
 
-define(function() {
+define(['./ItineraryLeg'], function(ItineraryLeg) {
     'use strict';
 
     /**
      * Create a new Itinerary.
      *
-     * @param {{
-     *     steps: Array.<Place|Path>,
-     *     itineraryProvider: ItineraryProvider
-     * }} options
+     * @param options
      * @constructor
      */
     function Itinerary(options) {
         /**
-         * Itinerary steps (Place - Path - Place - Path - ... - Place).
+         * Duration of the itinerary in second.
          *
-         * @type {Array.<Place|Path>}
+         * @type {Number}
          */
-        this.steps = options.steps;
+        this.durationSecond = options.durationSecond;
+
+        /**
+         * Start date.
+         *
+         * @type {String}
+         */
+        this.startDateTime = options.startDateTime;
+
+        /**
+         * End date.
+         *
+         * @type {String}
+         */
+        this.endDateTime = options.endDateTime;
+
+        /**
+         * Itinerary legs.
+         *
+         * @type {Array.<ItineraryLeg>}
+         */
+        this.legs = [];
+        for (var i = 0; i < options.legs.length; i++) {
+            this.legs.push(new ItineraryLeg(options.legs[i]));
+        }
 
         /**
          * ItineraryProvider that provided this itinerary.

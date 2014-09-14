@@ -18,30 +18,19 @@ define([
          */
         'initWebView': function() {
             // Parse the sub web view parameters
-            var lineName = /** @type {String} */ webview.additionalParameters['linename'];
-            var direction1StopName = /** @type {String} */ webview.additionalParameters['direction1stopname'];
-            var direction2StopName = /** @type {String} */ webview.additionalParameters['direction2stopname'];
-            var periods = /** @type {Array.<TimetablePeriod>} */ JSON.parse(webview.additionalParameters['periods']);
+            var routeShortName = /** @type {String} */ webview.additionalParameters['route-shortname'];
+            var routeLongName = /** @type {String} */ webview.additionalParameters['route-longname'];
             var timetables = /** @type {Array.<Timetable>} */ JSON.parse(webview.additionalParameters['timetables']);
-            var stopNameById = /** @type {Object.<String, String>} */ JSON.parse(webview.additionalParameters['stopnamebyid']);
-            var waypointIdToHighlight = /** @type {String} */ webview.additionalParameters['waypointid-to-highlight'];
+            var stopIdToHighlight = /** @type {String} */ webview.additionalParameters['stopid-to-highlight'];
 
             // Build the page
-            document.getElementById('title-label').textContent = 'Line ' + lineName + ' - ' + direction1StopName + ' - ' + direction2StopName;
-            periods = _.sortBy(periods, function(period) {
-                return period.order;
-            });
+            document.getElementById('title-label').textContent = 'Route ' + routeShortName + ' - ' + routeLongName;
             var templateTimetable = _.template(document.getElementById('tpl-timetable').textContent);
             var content = '';
-            _.each(periods, function(period) {
-                var timetable = _.find(timetables, function(timetable) {
-                    return timetable.timetablePeriodId === period.id;
-                });
+            _.each(timetables, function (timetable) {
                 content += templateTimetable({
-                    period: period,
                     timetable: timetable,
-                    stopNameById: stopNameById,
-                    waypointIdToHighlight: waypointIdToHighlight
+                    stopIdToHighlight: stopIdToHighlight
                 });
             });
             content += '<div id="empty-element"></div>';

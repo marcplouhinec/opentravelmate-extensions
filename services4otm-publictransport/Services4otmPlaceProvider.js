@@ -5,6 +5,7 @@
  */
 
 define([
+    'underscore',
     '../core/widget/Widget',
     '../core/widget/webview/SubWebView',
     '../place-commons/PlaceProvider',
@@ -12,7 +13,7 @@ define([
     './datastore/datastoreService',
     './services4otm-place-details-subwebview/constants',
     './timetableView'
-], function(Widget, SubWebView, PlaceProvider, Place, datastoreService, placeDetailsSubWebViewConstants, timetableView) {
+], function(_, Widget, SubWebView, PlaceProvider, Place, datastoreService, placeDetailsSubWebViewConstants, timetableView) {
     'use strict';
 
     /**
@@ -97,18 +98,20 @@ define([
             var subWebView = /** @type {SubWebView} */ Widget.findById(subWebViewId);
 
             // Load line information to the sub web view
-            datastoreService.findLinesAndDirectionsByWaypoint(waypointId, function(error, lines, directions) {
+            var stopRoutes = [];
+            datastoreService.findRoutesByStopId(waypointId, function(error, routes) {
+                stopRoutes = routes;
                 subWebView.fireInternalEvent(placeDetailsSubWebViewConstants.PLACE_DATA_LOADED_EVENT, {
                     error: error,
-                    lines: lines,
-                    directions: directions
+                    routes: routes
                 });
             });
 
             // Show a timetable when the user click on a timetable button.
             subWebView.onInternalEvent(placeDetailsSubWebViewConstants.SHOW_TIMETABLE_EVENT, function(payload) {
-                datastoreService.findTimetablesByLineAndDirections(payload.lineId, payload.direction1Id, payload.direction2Id, function(error, periods, timetables, stopNameById) {
-                    timetableView.open(payload.lineName, payload.direction1StopName, payload.direction2StopName, periods, timetables, stopNameById, waypointId);
+                var route = _.find(stopRoutes, function (route) { return route.id === payload.routeId; });
+                datastoreService.findTimetablesByRouteId(payload.routeId, function(error, timetables) {
+                    timetableView.open(route, timetables, waypointId);
                 });
             });
         });

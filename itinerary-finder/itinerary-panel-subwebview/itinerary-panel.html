@@ -24,34 +24,32 @@
     <script id="tpl-itinerary-steps" type="text/template">
         <table id="itinerary-steps">
             <tr id="place-elements">
-                <% _.each(itinerary.steps, function (step) { %>
-                <% if (step.type === 'Place') { %>
-                <td colspan="2"><%=step.name %></td>
-                <% } %>
+                <% var placeNames = [itinerary.legs[0].startPlaceName].concat(_.pluck(itinerary.legs, 'endPlaceName')); %>
+                <% _.each(placeNames, function (placeName) { %>
+                <td colspan="2"><%=placeName %></td>
                 <% }); %>
             </tr>
             <tr id="path-lines">
                 <td></td>
-                <% _.each(itinerary.steps, function (step, index) { %>
-                <% if (step.type === 'Path') { %>
-                <td style="background-color: #<%=step.color %>;">
+                <% _.each(itinerary.legs, function (leg, index) { %>
+                <td style="background-color: #<%=leg.routeColor ? leg.routeColor : '1E90FF' %>;">
                     <div class="station-wrapper"><div class="station"></div></div>
                 </td>
-                <td style="background-color: #<%=step.color %>;">
-                    <% if (index >= itinerary.steps.length - 2) { %>
+                <td style="background-color: #<%=leg.routeColor ? leg.routeColor : '1E90FF' %>;">
+                    <% if (index >= itinerary.legs.length - 2) { %>
                     <div class="station-wrapper-right"><div class="station"></div></div>
                     <% } %>
                 </td>
-                <% } %>
                 <% }); %>
                 <td></td>
             </tr>
             <tr>
                 <td></td>
-                <% _.each(itinerary.steps, function (step) { %>
-                <% if (step.type === 'Path') { %>
-                <td colspan="2"><%=step.name %></td>
-                <% } %>
+                <% _.each(itinerary.legs, function (leg) { %>
+                <td colspan="2">
+                    <%=leg.routeShortName ? 'Line ' + leg.routeShortName : '&nbsp;' %>
+                    <span style="font-size: 12px;"><%=leg.headsign ? ' - ' + leg.headsign : '' %></span>
+                </td>
                 <% }); %>
                 <td></td>
             </tr>
