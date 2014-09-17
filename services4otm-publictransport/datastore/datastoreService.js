@@ -51,7 +51,7 @@ define([
          * @param {function(error: WSError|undefined, stops: Array.<Waypoint>)} callback
          */
         'findStopsByTileIds': function(tileIds, callback) {
-            var url = 'http://mplouhinec.dyndns.org:9091/tiles/' + tileIds.join() + '/stops?callback=?';
+            var url = 'http://ns55.evxonline.net/tiles/' + tileIds.join() + '/stops?callback=?';
             $.getJSON(url).done(function(result) {
                 if (result.errorMessage) {
                     return callback(new WSError(result.httpStatus, result.errorMessage), []);
@@ -78,7 +78,7 @@ define([
          * @param {function(error: WSError|undefined, routes: Array.<Route>)} callback
          */
         'findRoutesByStopId': function(stopId, callback) {
-            var url = 'http://mplouhinec.dyndns.org:9091/stop/' + this._encodeId(stopId) + '/routes?callback=?';
+            var url = 'http://ns55.evxonline.net/stop/' + this._encodeId(stopId) + '/routes?callback=?';
             $.getJSON(url).done(function(result) {
                 if (result.errorMessage) {
                     return callback(new WSError(result.httpStatus, result.errorMessage), []);
@@ -99,7 +99,7 @@ define([
          * @param {function(error: WSError|undefined, timetables: Array.<Timetable>)} callback
          */
         'findTimetablesByRouteId' : function(routeId, callback) {
-            var url = 'http://mplouhinec.dyndns.org:9091/route/' + this._encodeId(routeId) + '/timetables?callback=?';
+            var url = 'http://ns55.evxonline.net/route/' + this._encodeId(routeId) + '/timetables?callback=?';
             $.getJSON(url).done(function(result) {
                 if (result.errorMessage) {
                     return callback(new WSError(result.httpStatus, result.errorMessage), []);

@@ -138,11 +138,11 @@ define([
             // Create an overlay that displays public transport
             this._tileOverlay = new TileOverlay({
                 'zIndex': 0,
-                'tileUrlPattern': 'http://mplouhinec.dyndns.org:9091/tile/${zoom}_${x}_${y}.png'
+                'tileUrlPattern': 'http://ns55.evxonline.net/tile/${zoom}_${x}_${y}.png'
             });
             this._grayTileOverlay = new TileOverlay({
                 'zIndex': 1,
-                'tileUrlPattern': 'http://mplouhinec.dyndns.org:9091/tile/${zoom}_${x}_${y}.png',
+                'tileUrlPattern': 'http://ns55.evxonline.net/tile/${zoom}_${x}_${y}.png',
                 'enableGrayscaleFilter': true
             });
             this._map.addTileOverlay(this._tileOverlay);

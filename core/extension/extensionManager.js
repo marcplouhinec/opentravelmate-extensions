@@ -16,6 +16,7 @@ define(['underscore', './Extension'], function(_, Extension) {
     var DEFAULT_EXTENSIONS = [
         new Extension({id: 'map-tools', entryPoint: 'extensions/map-tools/entryPoint'}),
         new Extension({id: 'place-finder', entryPoint: 'extensions/place-finder/entryPoint'}),
+        new Extension({id: 'itinerary-finder', entryPoint: 'extensions/itinerary-finder/entryPoint'}),
         new Extension({id: 'google-place-provider', entryPoint: 'extensions/google-place-provider/entryPoint'}),
         new Extension({id: 'google-itinerary-provider', entryPoint: 'extensions/google-itinerary-provider/entryPoint'}),
         new Extension({id: 'services4otm-publictransport', entryPoint: 'extensions/services4otm-publictransport/entryPoint'})
