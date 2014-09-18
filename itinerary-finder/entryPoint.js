@@ -7,8 +7,9 @@
 define([
     '../core/widget/Widget',
     '../core/widget/menu/Menu',
-    '../core/widget/menu/MenuItem'
-], function(Widget, Menu, MenuItem) {
+    '../core/widget/menu/MenuItem',
+    './itineraryFinder'
+], function(Widget, Menu, MenuItem, itineraryFinder) {
     'use strict';
 
     /**
@@ -23,6 +24,12 @@ define([
         });
         Widget.findByIdAsync('main-menu', 10000, function (/** @type {Menu} */menu) {
             menu.addMenuItem(menuItem);
+
+            // Listen to the menu item click event
+            menuItem.onClick(function() {
+                // Show the itinerary finder web view.
+                itineraryFinder.open();
+            });
         });
 
     };

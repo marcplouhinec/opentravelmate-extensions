@@ -1,0 +1,71 @@
+html {
+    height: 100%;
+}
+
+body {
+    height: 100%;
+    overflow-y: hidden;
+    padding: 0;
+    margin: 0;
+}
+
+#titlebar {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    height: 64px;
+    border-bottom: 2px solid #0099cc;
+}
+
+#title-label {
+    position: absolute;
+    left: 8px;
+    top: 16px;
+    right: 64px;
+    bottom: 8px;
+    font-size: 24px;
+    color: #00bfff;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+#close-button {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    width: 44px;
+    height: 44px;
+}
+
+#content {
+    position: absolute;
+    top: 66px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    overflow-y: auto;
+}
+
+#search-criterion-panel {
+    border-bottom: 2px solid #0099cc;
+}
+
+#search-criterion-panel-table {
+    width: 100%;
+    border: solid 10px transparent;
+}
+
+.search-criteria-label {
+    width: 80px;
+    text-align: left;
+}
+
+.search-criteria-input-wrapper {
+    text-align: center;
+}
+
+.search-criteria-input {
+    width: 98%;
+}

@@ -8,14 +8,16 @@ define([
     'jquery',
     '../core/widget/Widget',
     '../core/widget/webview/webview',
+    '../core/widget/webview/SubWebView',
     '../core/widget/map/Point',
     '../core/widget/map/Dimension',
     '../core/widget/map/LatLng',
     '../core/widget/map/Marker',
     '../core/widget/map/UrlMarkerIcon',
     '../services4otm-publictransport/Services4otmPlaceProvider',
-    './itineraryPanel'
-], function($, Widget, webview, Point, Dimension, LatLng, Marker, UrlMarkerIcon, Services4otmPlaceProvider, itineraryPanel) {
+    './itineraryPanel',
+    './itinerary-finder-subwebview/constants'
+], function($, Widget, webview, SubWebView, Point, Dimension, LatLng, Marker, UrlMarkerIcon, Services4otmPlaceProvider, itineraryPanel, itineraryFinderWebViewConstants) {
     'use strict';
 
     var itineraryFinder = {
@@ -57,6 +59,12 @@ define([
          * @private
          */
         '_shownItinerary': null,
+
+        /**
+         * @type {HTMLDivElement}
+         * @private
+         */
+        '_subWebViewPlaceHolder': null,
 
         /**
          * Register the given itinerary provider.
@@ -147,6 +155,57 @@ define([
 
             this._startingPlace = null;
             this._destinationPlace = null;
+        },
+
+        /**
+         * Open the webview to allow a user to find itineraries.
+         */
+        'open': function() {
+            var self = this;
+
+            // Create the details SubWebView place holder
+            this._subWebViewPlaceHolder = /** @type {HTMLDivElement} */document.createElement('div');
+            this._subWebViewPlaceHolder.setAttribute('id', itineraryFinderWebViewConstants.SUBWEBVIEW_ID);
+            this._subWebViewPlaceHolder.style.position = 'absolute';
+            this._subWebViewPlaceHolder.style.left = '0px';
+            this._subWebViewPlaceHolder.style.top = '0px';
+            this._subWebViewPlaceHolder.style.width = '100%';
+            this._subWebViewPlaceHolder.style.height = '100%';
+            this._subWebViewPlaceHolder.setAttribute('data-otm-widget', 'SubWebView');
+            this._subWebViewPlaceHolder.setAttribute('data-otm-url', 'extensions/itinerary-finder/itinerary-finder-subwebview/itinerary-finder.html');
+            this._subWebViewPlaceHolder.setAttribute('data-otm-entrypoint', 'extensions/itinerary-finder/itinerary-finder-subwebview/entryPoint');
+            document.body.appendChild(this._subWebViewPlaceHolder);
+
+            // Register event handlers when the SubWebView is loaded
+            SubWebView.onCreate(itineraryFinderWebViewConstants.SUBWEBVIEW_ID, function() {
+                var subWebView = /** @type {SubWebView} */ Widget.findById(itineraryFinderWebViewConstants.SUBWEBVIEW_ID);
+                subWebView.onInternalEvent(itineraryFinderWebViewConstants.CLOSE_EVENT, function() {
+                    self._handleCloseEvent();
+                });
+            });
+
+            webview.layout();
+        },
+
+        /**
+         * Close the details panel.
+         */
+        'close': function() {
+            if (this._subWebViewPlaceHolder) {
+                document.body.removeChild(this._subWebViewPlaceHolder);
+                delete this._subWebViewPlaceHolder;
+                webview.layout();
+            }
+        },
+
+        /**
+         * Handle the CLOSE event.
+         *
+         * @private
+         */
+        '_handleCloseEvent': function() {
+            // Close the dialog box
+            this.close();
         },
 
         /**

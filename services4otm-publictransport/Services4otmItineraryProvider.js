@@ -55,7 +55,7 @@ define([
     Services4otmItineraryProvider.prototype.findItineraries = function(startingPlace, destinationPlace, callback) {
         var self = this;
 
-        var url = 'http://ns55.evxonline.net/itineraries' +
+        var url = 'http://www.opentravelmate.io/itineraries' +
             '/fromLat/' + startingPlace.latitude + '/fromLng/' + startingPlace.longitude +
             '/toLat/' + destinationPlace.latitude + '/toLng/' + destinationPlace.longitude + '/?callback=?';
         $.getJSON(url, function (response) {
