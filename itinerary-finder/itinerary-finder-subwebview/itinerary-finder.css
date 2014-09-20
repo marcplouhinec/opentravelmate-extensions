@@ -54,7 +54,7 @@ body {
 
 #search-criterion-panel-table {
     width: 100%;
-    border: solid 10px transparent;
+    border: 10px solid transparent;
 }
 
 .search-criteria-label {
@@ -63,9 +63,22 @@ body {
 }
 
 .search-criteria-input-wrapper {
-    text-align: center;
+    border-right: 10px solid transparent;
 }
 
 .search-criteria-input {
-    width: 98%;
+    width: 100%;
+}
+
+#search-button {
+    width: 100%;
+    height: 44px;
+    margin-top:10px;
+}
+#search-button-img {
+    display:inline;
+    width:auto;
+    margin: 0px;
+    height: 36px;
+    vertical-align:middle;
 }

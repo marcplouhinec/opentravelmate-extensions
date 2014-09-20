@@ -6,6 +6,13 @@
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no"/>
     <link rel="stylesheet" href="../../core/style/common.css" type="text/css" media="screen"/>
     <link rel="stylesheet" href="itinerary-finder.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="vendors/jquery-ui-1.11.1.custom/jquery-ui.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="vendors/jonthornton-jquery-timepicker-4d7609c/jquery.timepicker.css" type="text/css" media="screen"/>
+    <script type="application/javascript" src="vendors/modernizr-2.8.3-min.js"></script>
+    <script type="application/javascript" src="vendors/jquery-1.11.1.min.js"></script>
+    <script type="application/javascript" src="vendors/jquery-ui-1.11.1.custom/jquery-ui.min.js"></script>
+    <script type="application/javascript" src="vendors/jonthornton-jquery-timepicker-4d7609c/jquery.timepicker.min.js"></script>
+    <script type="application/javascript" src="vendors/moment-2.8.3.js"></script>
 </head>
 <body class="otm-panel">
     <div id="titlebar">
@@ -19,14 +26,31 @@
             <table id="search-criterion-panel-table">
                 <tr>
                     <th class="search-criteria-label">From</th>
-                    <td class="search-criteria-input-wrapper">
-                        <input type="text" class="otm-input-text search-criteria-input" />
+                    <td class="search-criteria-input-wrapper" colspan="2">
+                        <input type="text" class="otm-input-text search-criteria-input"/>
                     </td>
                 </tr>
                 <tr>
                     <th class="search-criteria-label">To</th>
+                    <td class="search-criteria-input-wrapper" colspan="2">
+                        <input type="text" class="otm-input-text search-criteria-input"/>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="search-criteria-label">Date</th>
                     <td class="search-criteria-input-wrapper">
-                        <input type="text" class="otm-input-text search-criteria-input" />
+                        <input id="itineraryDate" type="date" class="otm-input-text search-criteria-input" value="2014-01-01"/>
+                    </td>
+                    <td class="search-criteria-input-wrapper">
+                        <input id="itineraryTime" type="time" class="otm-input-text search-criteria-input" value="12:00"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="3">
+                        <button id="search-button" class="otm-panel otm-button">
+                            <img id="search-button-img" alt="Q" src="../image/ic_btn_find_itineraries.png"/>
+                            Search
+                        </button>
                     </td>
                 </tr>
             </table>
