@@ -8,7 +8,7 @@ define([
     'googleFastButton',
     '../../core/widget/webview/webview',
     './constants'
-], function(modernizr, FastButton, webview, constants) {
+], function(FastButton, webview, constants) {
     'use strict';
 
     var internalController = {
