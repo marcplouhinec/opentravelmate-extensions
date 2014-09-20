@@ -4,9 +4,7 @@
  * @author marc.plouhinec@gmail.com (Marc Plouhinec)
  */
 
-define('modernizr', [], window.Modernizr);
 define([
-    'modernizr',
     'googleFastButton',
     '../../core/widget/webview/webview',
     './constants'
@@ -23,17 +21,13 @@ define([
             $('#itineraryTime').val(moment().format('HH:mm'));
 
             // Activate the date picker
-            if (!modernizr.inputtypes.date) {
-                $('input[type=date]').datepicker({
-                    dateFormat: 'yy-mm-dd'
-                });
-            }
-            if (!modernizr.inputtypes.time) {
-                $('input[type=time]').timepicker({
-                    timeFormat: 'H:i',
-                    step: 10
-                });
-            }
+            $('#itineraryDate').datepicker({
+                dateFormat: 'yy-mm-dd'
+            });
+            $('#itineraryTime').timepicker({
+                timeFormat: 'H:i',
+                step: 10
+            });
 
 
             // Fire an external event when the close button is pressed
