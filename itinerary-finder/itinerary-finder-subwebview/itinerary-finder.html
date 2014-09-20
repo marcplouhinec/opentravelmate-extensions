@@ -17,7 +17,7 @@
             <div class="search-criteria-row">
                 <div class="search-criteria-label">From</div>
                 <div class="search-criteria-input-wrapper">
-                    <input type="text" class="otm-input-text search-criteria-input"/>
+                    <input type="text" class="otm-input-text search-criteria-input" value="My position"/>
                 </div>
             </div>
             <div class="search-criteria-row">
@@ -33,7 +33,7 @@
                     <input id="itineraryTime" type="text" class="otm-input-text" value="12:00" style="width: 70px; text-align: center;"/>
                 </div>
             </div>
-            <div class="search-criteria-row">
+            <div id="search-criteria-row-button">
                 <div id="search-button-wrapper">
                     <button id="search-button" class="otm-panel otm-button">
                         <img id="search-button-img" alt="Q" src="../image/ic_btn_find_itineraries.png"/>
@@ -41,6 +41,40 @@
                     </button>
                 </div>
             </div>
+        </div>
+
+        <div id="found-itineraries-panel">
+            <table id="found-itineraries-table">
+                <tr>
+                    <th class="itinerary-departure">Dep.</th>
+                    <th class="itinerary-arrival">Arr.</th>
+                    <th class="itinerary-legs">&nbsp;</th>
+                    <th class="itinerary-duration">Dur.</th>
+                    <th class="itinerary-choose">&nbsp</th>
+                </tr>
+                <tr>
+                    <td class="itinerary-departure">10:05</td>
+                    <td class="itinerary-arrival">13:15</td>
+                    <td class="itinerary-legs">W B</td>
+                    <td class="itinerary-duration">2:55</td>
+                    <td class="itinerary-choose">
+                        <button class="otm-button otm-button-middle">
+                            <img src="../image/ic_btn_choose_itinerary.png" alt="Choose"/>
+                        </button>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="itinerary-departure">10:20</td>
+                    <td class="itinerary-arrival">13:35</td>
+                    <td class="itinerary-legs">W B W</td>
+                    <td class="itinerary-duration">3:15</td>
+                    <td class="itinerary-choose">
+                        <button class="otm-button otm-button-middle">
+                            <img src="../image/ic_btn_choose_itinerary.png" alt="Choose"/>
+                        </button>
+                    </td>
+                </tr>
+            </table>
         </div>
     </div>
     <link rel="stylesheet" href="../../core/style/common.css" type="text/css" media="screen"/>
