@@ -22,14 +22,13 @@ define([
             tooltip: 'Find a place',
             iconUrl: 'extensions/place-finder/image/ic_btn_find_place.png'
         });
-        Widget.findByIdAsync('main-menu', 10000, function (/** @type {Menu} */menu) {
-            menu.addMenuItem(menuItem);
+        var menu = /** @type {Menu} */ Widget.findById('main-menu');
+        menu.addMenuItem(menuItem);
 
-            // Listen to the menu item click event
-            menuItem.onClick(function() {
-                // Show the place finder web view.
-                externalController.showWebView();
-            });
+        // Listen to the menu item click event
+        menuItem.onClick(function() {
+            // Show the place finder web view.
+            externalController.showWebView();
         });
 
         // Initialize the externalController

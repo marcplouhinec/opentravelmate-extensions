@@ -22,15 +22,13 @@ define([
             tooltip: 'Find itineraries',
             iconUrl: 'extensions/itinerary-finder/image/itinerary.png'
         });
-        Widget.findByIdAsync('main-menu', 10000, function (/** @type {Menu} */menu) {
-            menu.addMenuItem(menuItem);
+        var menu = /** @type {Menu} */ Widget.findById('main-menu');
+        menu.addMenuItem(menuItem);
 
-            // Listen to the menu item click event
-            menuItem.onClick(function() {
-                // Show the itinerary finder web view.
-                itineraryFinder.open();
-            });
+        // Listen to the menu item click event
+        menuItem.onClick(function() {
+            // Show the itinerary finder web view.
+            itineraryFinder.open();
         });
-
     };
 });

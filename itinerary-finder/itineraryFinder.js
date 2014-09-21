@@ -14,10 +14,10 @@ define([
     '../core/widget/map/LatLng',
     '../core/widget/map/Marker',
     '../core/widget/map/UrlMarkerIcon',
-    '../services4otm-publictransport/Services4otmPlaceProvider',
+    '../place-finder/placeFinder',
     './itineraryPanel',
     './itinerary-finder-subwebview/constants'
-], function($, Widget, webview, SubWebView, Point, Dimension, LatLng, Marker, UrlMarkerIcon, Services4otmPlaceProvider, itineraryPanel, itineraryFinderWebViewConstants) {
+], function($, Widget, webview, SubWebView, Point, Dimension, LatLng, Marker, UrlMarkerIcon, placeFinder, itineraryPanel, itineraryFinderWebViewConstants) {
     'use strict';
 
     var itineraryFinder = {
@@ -181,6 +181,16 @@ define([
                 var subWebView = /** @type {SubWebView} */ Widget.findById(itineraryFinderWebViewConstants.SUBWEBVIEW_ID);
                 subWebView.onInternalEvent(itineraryFinderWebViewConstants.CLOSE_EVENT, function() {
                     self._handleCloseEvent();
+                });
+                subWebView.onInternalEvent(itineraryFinderWebViewConstants.AUTO_COMPLETE_PLACE_EVENT, function(/** @type {{query: String}} */payload) {
+                    placeFinder.autoCompletePlaces(payload.query, function (suggestedPlaces) {
+                        for (var i = 0; i < suggestedPlaces.length; i++) {
+                            suggestedPlaces[i].additionalParameters['placeProviderName'] = suggestedPlaces[i].placeProvider.getName()
+                        }
+                        subWebView.fireInternalEvent(itineraryFinderWebViewConstants.AUTO_COMPLETE_PLACE_RESPONSE_EVENT, {
+                            suggestedPlaces: suggestedPlaces
+                        });
+                    });
                 });
             });
 

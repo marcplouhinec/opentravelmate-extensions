@@ -22,7 +22,23 @@ define(function() {
          * @const
          * @type {String}
          */
-        'CLOSE_EVENT': 'itinerary-finder-close-event'
+        'CLOSE_EVENT': 'itinerary-finder-close-event',
+
+        /**
+         * Event thrown when the user is typing the name of a place and we need to propose him some suggestions.
+         *
+         * @const
+         * @type {String}
+         */
+        'AUTO_COMPLETE_PLACE_EVENT': 'itinerary-finder-auto-complete-place-event',
+
+        /**
+         * Event thrown when some place have been found.
+         *
+         * @const
+         * @type {String}
+         */
+        'AUTO_COMPLETE_PLACE_RESPONSE_EVENT': 'itinerary-finder-auto-complete-place-response-event'
     };
 
     return constants;
