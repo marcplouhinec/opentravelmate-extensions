@@ -5,10 +5,22 @@
     <title>Open Travel Mate</title>
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no"/>
     <link rel="stylesheet" href="main.css" type="text/css" media="screen"/>
-    <link rel="stylesheet" href="../style/common.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="menu.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="../common/common.css" type="text/css" media="screen"/>
 </head>
 <body>
-	<div id="main-menu" data-otm-widget="Menu"></div>
+	<div id="main-menu" class="otm-panel otm-menu">
+        <div class="otm-menu-logo">
+            <img class="otm-menu-logo-img" src="image/ic_logo.png" alt="Open Travel Mate"/>
+        </div>
+        <div id="otm-menu-button-panel"></div>
+    </div>
 	<div id="map" data-otm-widget="Map"></div>
+
+    <script type="text/template" id="tpl-menu-item">
+        <button id="${id}" class="otm-button otm-menu-button" title="${tooltip}" style="height: ${size}px; width: ${size}px;">
+            <img alt="${title}" src="${iconUrl}"/>
+        </button>
+    </script>
 </body>
 </html>
