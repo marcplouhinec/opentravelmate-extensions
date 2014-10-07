@@ -33,7 +33,7 @@ define(['jquery', 'lodash'], function($, _) {
     /**
      * Controller for the menu.
      */
-    var mainController = {
+    var menuController = {
 
         /**
          * @private
@@ -41,10 +41,19 @@ define(['jquery', 'lodash'], function($, _) {
         '_menuItemTemplate': null,
 
         /**
-         * Initialization.
+         * @type {mainController}
+         * @private
          */
-        'init': function () {
+        '_mainController': null,
+
+        /**
+         * Initialization.
+         *
+         * @param {mainController} mainController
+         */
+        'init': function (mainController) {
             var self = this;
+            this._mainController = mainController;
             this._menuItemTemplate = _.template($('#tpl-menu-item').text());
 
             // Add the 'More' button
@@ -87,10 +96,10 @@ define(['jquery', 'lodash'], function($, _) {
          * @private
          */
         '_openMenu': function () {
-            // TODO
-            console.log('open menu');
+            // TODO: $('#' + this._mainController.SIDE_PANEL_CONTENT_ELEMENT_ID).html();
+            this._mainController.openSidePanel('Menu')
         }
     };
 
-    return mainController;
+    return menuController;
 });

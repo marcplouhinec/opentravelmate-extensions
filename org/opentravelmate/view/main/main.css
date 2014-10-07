@@ -10,10 +10,93 @@ body {
 	height: 60px;
 }
 
+
+/*********
+ MAP PANEL
+ *********/
+
 #map {
 	position: absolute;
 	left: 0;
 	top: 60px;
 	right: 0;
 	bottom: 0;
+}
+
+@media (min-width: 900px) {
+    .map-hidden-by-side-panel {
+        right: 360px !important;
+    }
+}
+@media (max-width: 899px) {
+    .map-hidden-by-side-panel {
+        display: none;
+    }
+}
+
+
+/**********
+ SIDE PANEL
+ **********/
+
+#side-panel {
+    display: none;
+    position: absolute;
+}
+
+@media (min-width: 900px) {
+    #side-panel {
+        top: 60px;
+        right: 0;
+        bottom: 0;
+        width: 360px;
+        border-top: 2px solid #0099cc;
+    }
+}
+@media (max-width: 899px) {
+    #side-panel {
+        left: 0;
+        top: 0;
+        right: 0;
+        bottom: 0;
+    }
+}
+
+#side-panel-titlebar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 64px;
+    border-bottom: 2px solid #0099cc;
+}
+
+#side-panel-title-label {
+    position: absolute;
+    left: 8px;
+    top: 16px;
+    right: 64px;
+    bottom: 8px;
+    font-size: 24px;
+    color: #00bfff;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+#side-panel-close-button {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    width: 44px;
+    height: 44px;
+}
+
+#side-panel-content {
+    position: absolute;
+    top: 66px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    overflow-y: auto;
 }
