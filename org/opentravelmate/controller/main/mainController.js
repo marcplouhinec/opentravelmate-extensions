@@ -6,9 +6,11 @@
 
 define([
     'jquery',
+    '../widget/webview/webview',
     './menuController',
-    '../widget/webview/webview'
-], function($, menuController, webview) {
+    './mapButtonsController',
+    '../../service/extensionService'
+], function($, webview, menuController, mapButtonsController, extensionService) {
     'use strict';
 
     /**
@@ -35,14 +37,15 @@ define([
                 self.closeSidePanel();
             });
 
-            // Layout the menu and map widgets
+            // Layout the default widgets
             menuController.init(this);
+            mapButtonsController.init();
+            // TODO find place
+            // TODO find itinerary
             webview.layout();
 
             // Start the extensions
-            //extensionManager.startExtensions();
-
-            console.log('hello2');
+            extensionService.startExtensions();
         },
 
         /**
