@@ -9,8 +9,9 @@ define([
     '../widget/webview/webview',
     './menuController',
     './mapButtonsController',
+    '../place/placeFinderController',
     '../../service/extensionService'
-], function($, webview, menuController, mapButtonsController, extensionService) {
+], function($, webview, menuController, mapButtonsController, placeFinderController, extensionService) {
     'use strict';
 
     /**
@@ -40,7 +41,7 @@ define([
             // Layout the default widgets
             menuController.init(this);
             mapButtonsController.init();
-            // TODO find place
+            placeFinderController.init(this);
             // TODO find itinerary
             webview.layout();
 
