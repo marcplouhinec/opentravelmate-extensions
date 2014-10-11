@@ -38,14 +38,15 @@ define(['../entity/geolocation/Position',
     var positionOptionsByCallbacksId = {};
 
     /**
-     * @type {Object.<string, Position>}
-     */
-    var currentBestPositionByCallbacksId = {};
-
-    /**
      * Provide geolocation information.
      */
     var geolocationService = {
+
+        /**
+         * @type {Position}
+         * @private
+         */
+        '_currentBestPosition': null,
 
         /**
          * Get the current device position.
@@ -145,12 +146,11 @@ define(['../entity/geolocation/Position',
                     timestamp: positionOptions.timestamp
                 });
 
-                var currentBestPosition = currentBestPositionByCallbacksId[callbacksId];
                 var options = positionOptionsByCallbacksId[callbacksId];
                 if (!options) { return; }
 
-                if (!currentBestPosition || this._isBetterPosition(position, currentBestPosition, options)) {
-                    currentBestPositionByCallbacksId[callbacksId] = position;
+                if (!this._currentBestPosition || this._isBetterPosition(position, this._currentBestPosition, options)) {
+                    this._currentBestPosition = position;
                     callbacks.successCallback(position);
 
                     // Stop watching if the accuracy is acceptable
@@ -171,7 +171,6 @@ define(['../entity/geolocation/Position',
             var callbacksId = 'callbacks-' + watchId;
             delete watchIdByCallbacksId[callbacksId];
             delete watchPositionCallbacksById[callbacksId];
-            delete currentBestPositionByCallbacksId[callbacksId];
             delete positionOptionsByCallbacksId[callbacksId];
 
             nativeGeolocation.clearWatch(callbacksId);

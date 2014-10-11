@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>Open Travel Mate</title>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no"/>
+    <link rel="stylesheet" href="../common/common.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="popup-menu.css" type="text/css" media="screen"/>
+</head>
+<body class="otm-panel">
+    <div id="titlebar">
+        <div id="title-icon-wrapper">
+            <img id="title-icon" src="" alt=""/>
+        </div>
+        <div id="title-label"></div>
+        <button id="close-button" class="otm-button otm-button-middle">
+            <img src="../common/image/ic_btn_close.png" alt="Close"/>
+        </button>
+    </div>
+
+    <div id="content"></div>
+
+    <script id="tpl-menu-item" type="text/template">
+        <div id="${id}" class="item">
+            <img class="item-icon" src="${iconUrl}"/>
+            <div class="item-label">${title}</div>
+        </div>
+    </script>
+</body>
+</html>

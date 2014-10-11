@@ -24,7 +24,7 @@ define([
          * @type {string}
          * @const
          */
-        'SIDE_PANEL_CONTENT_ELEMENT_ID': 'side-panel',
+        'SIDE_PANEL_CONTENT_ELEMENT_ID': 'side-panel-content',
 
         /**
          * Initialization.

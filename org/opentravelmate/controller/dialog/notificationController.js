@@ -42,7 +42,7 @@ define([
             }
 
             // Create the SubWebView place holder
-            var subWebViewPlaceHolderId = 'message-box-subwebview-' + nextSubWebViewPlaceHolderId++;
+            var subWebViewPlaceHolderId = 'notification-box-subwebview-' + nextSubWebViewPlaceHolderId++;
             var subWebViewPlaceHolder = /** @type {HTMLDivElement} */document.createElement('div');
             subWebViewPlaceHolder.setAttribute('id', subWebViewPlaceHolderId);
             subWebViewPlaceHolder.style.position = 'absolute';
@@ -51,7 +51,7 @@ define([
             subWebViewPlaceHolder.style.width = subWebViewDimension.width + 'px';
             subWebViewPlaceHolder.style.height = subWebViewDimension.height + 'px';
             subWebViewPlaceHolder.setAttribute('data-otm-widget', 'SubWebView');
-            subWebViewPlaceHolder.setAttribute('data-otm-url', 'extensions/org/opentravelmate/view/dialog/notification/notification.html');
+            subWebViewPlaceHolder.setAttribute('data-otm-url', 'extensions/org/opentravelmate/view/dialog/notification.html');
             subWebViewPlaceHolder.setAttribute('data-otm-entrypoint', 'extensions/org/opentravelmate/controller/dialog/subwebview/notificationEntryPoint');
             subWebViewPlaceHolder.setAttribute('data-otm-message', message);
             document.body.appendChild(subWebViewPlaceHolder);

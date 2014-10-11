@@ -21,8 +21,11 @@ define([
     '../../entity/geolocation/PositionError',
     '../../entity/geolocation/Position',
     '../dialog/DialogOptions',
-    '../dialog/notificationController'
-], function($, _, Widget, webview, MapButton, LatLng, Point, Dimension, UrlMarkerIcon, Marker, Map, geolocationService, PositionOptions, PositionError, Position, DialogOptions, notificationController) {
+    '../dialog/notificationController',
+    '../../entity/Place',
+    '../place/placeSelectionMenuController'
+], function($, _, Widget, webview, MapButton, LatLng, Point, Dimension, UrlMarkerIcon, Marker, Map, geolocationService,
+            PositionOptions, PositionError, Position, DialogOptions, notificationController, Place, placeSelectionMenuController) {
     'use strict';
 
     /**
@@ -120,6 +123,12 @@ define([
         '_currentPositionMarker': null,
 
         /**
+         * @private
+         * @type {Position}
+         */
+        '_currentPosition': null,
+
+        /**
          * Initialization.
          */
         'init': function () {
@@ -174,9 +183,22 @@ define([
                 });
                 self._map.onInfoWindowClick(function handleCurrentPositionInfoWindowClick(marker) {
                     if (self._currentPositionMarker && self._currentPositionMarker.id === marker.id) {
-                        // TODO
-                        console.log('TODO');
                         self._map.closeInfoWindow();
+
+                        // Open the place selection menu
+                        placeSelectionMenuController.showMenu(new Place({
+                            latitude: self._currentPosition.coords.latitude,
+                            longitude: self._currentPosition.coords.longitude,
+                            name: 'Current Position',
+                            additionalParameters: {
+                                altitude: self._currentPosition.coords.altitude,
+                                accuracy: self._currentPosition.coords.accuracy,
+                                altitudeAccuracy: self._currentPosition.coords.altitudeAccuracy,
+                                heading: self._currentPosition.coords.heading,
+                                speed: self._currentPosition.coords.speed,
+                                timestamp: self._currentPosition.timestamp
+                            }
+                        }));
                     }
                 });
             });
@@ -217,6 +239,8 @@ define([
          * @private
          */
         '_showCurrentPositionOnMap': function(position) {
+            this._currentPosition = position;
+
             // Create a map marker and move the map on it
             var map  = /** @Type {Map} */ Widget.findById('map');
             if (this._currentPositionMarker) {
