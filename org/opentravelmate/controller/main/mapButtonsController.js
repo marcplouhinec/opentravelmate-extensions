@@ -8,9 +8,21 @@ define([
     'jquery',
     'lodash',
     '../widget/Widget',
+    '../widget/webview/webview',
     '../widget/map/MapButton',
-    '../widget/map/Map'
-], function($, _, Widget, MapButton, Map) {
+    '../widget/map/LatLng',
+    '../widget/map/Point',
+    '../widget/map/Dimension',
+    '../widget/map/UrlMarkerIcon',
+    '../widget/map/Marker',
+    '../widget/map/Map',
+    '../../service/geolocationService',
+    '../../entity/geolocation/PositionOptions',
+    '../../entity/geolocation/PositionError',
+    '../../entity/geolocation/Position',
+    '../dialog/DialogOptions',
+    '../dialog/notificationController'
+], function($, _, Widget, webview, MapButton, LatLng, Point, Dimension, UrlMarkerIcon, Marker, Map, geolocationService, PositionOptions, PositionError, Position, DialogOptions, notificationController) {
     'use strict';
 
     /**
@@ -50,6 +62,30 @@ define([
     var ICON_URL_CURRENT_POSITION = 'extensions/org/opentravelmate/view/map/image/ic_btn_show_my_position.png';
 
     /**
+     * Maximum position watching time in milliseconds.
+     *
+     * @constant
+     * @type {number}
+     */
+    var MAX_WATCH_TIME = 60 * 1000;
+
+    /**
+     * Maximum position age in milliseconds.
+     *
+     * @constant
+     * @type {number}
+     */
+    var MAX_POSITION_AGE = 1000 * 60 * 2;
+
+    /**
+     * Acceptable accuracy in meters.
+     *
+     * @constant
+     * @type {number}
+     */
+    var ACCEPTABLE_ACCURACY = 100;
+
+    /**
      * Controller for the map buttons.
      */
     var mapButtonsController = {
@@ -76,6 +112,12 @@ define([
          * @type {MapButton}
          */
         '_currentPositionMapButton': null,
+
+        /**
+         * @private
+         * @type {Marker}
+         */
+        '_currentPositionMarker': null,
 
         /**
          * Initialization.
@@ -107,12 +149,43 @@ define([
                     iconUrl: ICON_URL_CURRENT_POSITION
                 });
                 map.addMapButton(self._currentPositionMapButton);
-                // TODO: register click handler
+                self._currentPositionMapButton.onClick(function handleCurrentPositionButtonClick() {
+                    var options = new PositionOptions({
+                        enableHighAccuracy: true,
+                        timeout: MAX_WATCH_TIME,
+                        maximumAge: MAX_POSITION_AGE,
+                        acceptableAccuracy: ACCEPTABLE_ACCURACY,
+                        maxWatchTime: MAX_WATCH_TIME
+                    });
+                    geolocationService.watchPosition(function handlePosition(position) {
+                        self._showCurrentPositionOnMap(position);
+                    }, function handleError(positionError) {
+                        var message = 'Unable to get your position: ' + positionError.code + '.';
+                        console.log(message + ' ' + positionError.message);
+                        notificationController.showMessage(message, 5000, new DialogOptions({}));
+                    }, options);
+                });
+
+                // Display information when the user click on the icon representing his position
+                self._map.onMarkerClick(function handleCurrentPositionMarkerClick(marker) {
+                    if (self._currentPositionMarker && self._currentPositionMarker.id === marker.id) {
+                        self._map.showInfoWindow(marker, 'Current position');
+                    }
+                });
+                self._map.onInfoWindowClick(function handleCurrentPositionInfoWindowClick(marker) {
+                    if (self._currentPositionMarker && self._currentPositionMarker.id === marker.id) {
+                        // TODO
+                        console.log('TODO');
+                        self._map.closeInfoWindow();
+                    }
+                });
             });
         },
 
         /**
          * Set the map mode to 'satellite'.
+         *
+         * @private
          */
         '_switchToSatelliteMapMode': function() {
             this._map.setMapType('HYBRID');
@@ -125,6 +198,8 @@ define([
 
         /**
          * Set the map mode to 'road'.
+         *
+         * @private
          */
         '_switchToRoadMapMode': function() {
             this._map.setMapType('ROADMAP');
@@ -133,6 +208,32 @@ define([
             this._satelliteMapButton.tooltip = TOOLTIP_ROADMAP_MODE;
             this._satelliteMapButton.iconUrl = ICON_URL_ROADMAP_MODE;
             this._map.updateMapButton(this._satelliteMapButton);
+        },
+
+        /**
+         * Show the current position on the map.
+         *
+         * @param {Position} position
+         * @private
+         */
+        '_showCurrentPositionOnMap': function(position) {
+            // Create a map marker and move the map on it
+            var map  = /** @Type {Map} */ Widget.findById('map');
+            if (this._currentPositionMarker) {
+                map.removeMarkers([this._currentPositionMarker]);
+            }
+            var latlng = new LatLng(position.coords.latitude, position.coords.longitude);
+            this._currentPositionMarker = new Marker({
+                position: latlng,
+                title: 'Current location',
+                icon: new UrlMarkerIcon({
+                    anchor: new Point(40 / 2, 40),
+                    size: new Dimension(40, 40),
+                    url: webview.baseUrl + 'extensions/org/opentravelmate/view/map/image/ic_user_location.png'
+                })
+            });
+            map.addMarkers([this._currentPositionMarker]);
+            map.panTo(latlng);
         }
     };
 

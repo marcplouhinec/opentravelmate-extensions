@@ -19,10 +19,8 @@ define(['lodash', '../entity/Extension'], function(_, Extension) {
 
     /**
      * Allow the user to setup extensions for the application.
-     *
-     * @author Marc Plouhinec
      */
-    var extensionManager = {
+    var extensionService = {
         /**
          * Start the extensions.
          */
@@ -39,5 +37,5 @@ define(['lodash', '../entity/Extension'], function(_, Extension) {
         }
     };
 
-    return extensionManager;
+    return extensionService;
 });
