@@ -1,5 +1,5 @@
 /**
- * Define the main view entry point.
+ * Define the main extension entry point.
  *
  * @author Marc Plouhinec
  */

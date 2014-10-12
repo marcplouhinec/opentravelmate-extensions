@@ -14,7 +14,7 @@ define(['lodash', '../entity/Extension'], function(_, Extension) {
      * @const
      */
     var DEFAULT_EXTENSIONS = [
-        // new Extension({id: 'com.opentravelmate', entryPoint: 'extensions/com/opentravelmate/entryPoint'})
+        new Extension({id: 'com.opentravelmate', entryPoint: 'extensions/com/opentravelmate/entrypoint'})
     ];
 
     /**

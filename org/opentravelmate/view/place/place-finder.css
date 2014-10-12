@@ -1,32 +1,76 @@
+body {
+    margin: 0;
+    padding: 0;
+}
+
 #place-query-wrapper {
     position: absolute;
     left: 5px;
     top: 10px;
-    right: 105px;
+    right: 60px;
 }
 
 #place-query {
     width: 100%;
 }
 
-#find-button {
-    position: absolute;
-    right: 50px;
-    top: 5px;
-    padding: 4px;
-}
-
-#close-button {
+#erase-button {
     position: absolute;
     right: 5px;
     top: 5px;
 }
 
+#erase-button img {
+    height: 25px; width: 25px; margin-left: 5px;
+}
+
+#find-button-wrapper {
+    position: absolute;
+    left: 5px;
+    right: 5px;
+    top: 50px;
+    height: 44px;
+}
+
+#find-button {
+    width: 100%;
+    height: 100%;
+    padding: 4px;
+}
+
+#find-button img {
+    display: inline;
+    width: auto;
+    margin: 0px;
+    height: 36px;
+    vertical-align: middle;
+}
+
+#place-finder-form {
+    height: 100px;
+    border-bottom: 2px solid #aaa;
+}
+
 #suggested-places {
     position: absolute;
-    top: 50px;
+    top: 105px;
     bottom: 0;
-    left: 0;
-    right: 0;
+    left: 5px;
+    right: 5px;
     overflow: auto;
+}
+
+#suggested-places-wrapper ul {
+    padding: 0;
+    margin: 0;
+}
+
+#suggested-places-wrapper li {
+    padding: 10px;
+    border-bottom: 1px solid #aaa;
+    cursor: pointer;
+}
+
+#suggested-places-wrapper li:hover {
+    background-color: #363735;
 }

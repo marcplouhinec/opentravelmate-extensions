@@ -1,3 +1,4 @@
+// Thanks to https://github.com/alexblack/google-fastbutton
 (function() {
   /** 
    * From: http://code.this.com/mobile/articles/fast_buttons.html

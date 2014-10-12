@@ -13,23 +13,25 @@
             <input id="place-query" class="otm-input-text" type="text" placeholder="Place, address, ..."/>
         </div>
 
-        <button id="find-button" class="otm-button otm-button-middle">
-            <img src="image/ic_btn_find_place.png" alt="Find"/>
+        <button id="erase-button" class="otm-button otm-button-middle">
+            <img src="image/ic_btn_erase.png" alt="Close"/>
         </button>
 
-        <button id="close-button" class="otm-button otm-button-middle">
-            <img src="../common/image/ic_btn_close.png" alt="Close"/>
-        </button>
+        <div id="find-button-wrapper">
+            <button id="find-button" class="otm-button">
+                <img src="image/ic_btn_find_place.png" alt=""/>
+                Search
+            </button>
+        </div>
     </div>
-    <div id="suggested-places">
-        <ul>
-            <li>Suggested place 1</li>
-            <li>Suggested place 2</li>
-            <li>Suggested place 3</li>
-            <li>Suggested place 4</li>
-            <li>Suggested place 5</li>
-            <li>Suggested place 6</li>
-            <li>Suggested place 7</li>
+    <div id="suggested-places-wrapper">
+        <ul id="suggested-places">
+            <li class="suggested-place" id="place1">Suggested place 1</li>
+            <li class="suggested-place" id="place2">Suggested place 2</li>
+            <li class="suggested-place" id="place3">Suggested place 3</li>
+            <li class="suggested-place" id="place4">Suggested place 4</li>
+            <li class="suggested-place" id="place5">Suggested place 5</li>
+            <li class="suggested-place" id="place6">Suggested place 6</li>
         </ul>
     </div>
 </body>

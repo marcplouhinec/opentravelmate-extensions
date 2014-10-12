@@ -1,3 +1,4 @@
+// Thanks to https://github.com/alexblack/google-fastbutton
 (function($) {
   $.event.special.fastClick = {
 		setup: function () {
