@@ -6,18 +6,25 @@
 
 define([
     'jquery',
+    '../widget/Widget',
     '../widget/webview/webview',
+    '../widget/map/LatLng',
+    '../widget/map/Marker',
+    '../widget/map/Map',
     '../main/menuController',
     '../../entity/Place',
     '../../service/placeProviderDirectoryService',
+    './placeSelectionMenuController',
     'jqueryGoogleFastButton'
-], function($, webview, menuController, Place, placeProviderDirectoryService) {
+], function($, Widget, webview, LatLng, Marker, Map, menuController, Place, placeProviderDirectoryService, placeSelectionMenuController) {
     'use strict';
 
     var PANEL_ID = 'place-finder-panel';
     var MENU_ITEM_TITLE = 'Find place';
     var MENU_ITEM_TOOLTIP = 'Find a place';
     var MENU_ITEM_ICONURL = 'extensions/org/opentravelmate/view/place/image/ic_btn_find_place.png';
+    var ENTER_KEYCODE = 13;
+    var MAX_INFOWINDOW_TITLE_LENGTH = 20;
 
     /**
      * Controller for the menu.
@@ -41,6 +48,24 @@ define([
          * @private
          */
         '_suggestedPlaces': [],
+
+        /**
+         * @type {Array.<Place>}
+         * @private
+         */
+        '_foundPlaces': [],
+
+        /**
+         * @type {Array.<Marker>}
+         * @private
+         */
+        '_placeMarkers': [],
+
+        /**
+         * @type {Object.<string, Place>}
+         * @private
+         */
+        '_placeByMarkerId': {},
 
         /**
          * Initialization.
@@ -67,18 +92,17 @@ define([
                 iframe.src = webview.baseUrl + 'extensions/org/opentravelmate/view/place/place-finder.html';
                 document.getElementById(mainController.SIDE_PANEL_CONTENT_ELEMENT_ID).appendChild(iframe);
 
-                var iframeInitialized = false;
                 $(iframe).load(function() {
-                    if (iframeInitialized) { return; }
-                    iframeInitialized = true;
                     var $iframeDoc = $(iframe.contentDocument);
 
                     // Show the place on the map if the user select it
                     $iframeDoc.find('#suggested-places').fastClick(function handlePlaceSelection(event) {
                         if (!event.target || !$(event.target).hasClass('suggested-place')) { return; }
                         var suggestedPlace = self._suggestedPlaces[Number($(event.target).attr('data-place-index'))];
-                        // TODO
-                        console.log(suggestedPlace.name);
+                        if (!suggestedPlace.provider) { return; }
+                        suggestedPlace.provider.getPlaceDetails(suggestedPlace, function handlePlaceWithDetails(placeWithDetails) {
+                            self._showFoundPlaces([placeWithDetails]);
+                        });
                     });
 
                     // Erase the place query when the user clicks on the erase button
@@ -87,15 +111,78 @@ define([
                     });
 
                     // Suggest some places when the user has written more than 3 characters
-                    $iframeDoc.find('#place-query').keyup(function() {
+                    $iframeDoc.find('#place-query').keyup(function handlePlaceQueryKeyUpEvent(event) {
                         var query = $(this).val();
-                        if (query && query.length > 3) { self._suggestPlaces(query); }
+                        if (!query || !query.length) { return; }
+                        if (event.keyCode === ENTER_KEYCODE) { self._findPlaces(query); }
+                        else if (query.length > 3) { self._suggestPlaces(query); }
                     });
 
                     // Show several places on a map if the user click on search or push ENTER
-                    // TODO
+                    $iframeDoc.find('#find-button').fastClick(function() {
+                        var query = $iframeDoc.find('#place-query').val();
+                        if (query && query.length > 0) { self._findPlaces(query); }
+                    });
                 });
-            })
+            });
+
+            Widget.findByIdAsync('map', 10000, function(/** @type {Map} */map) {
+
+                // Show an info window when the user clicks on a marker
+                map.onMarkerClick(function handlePlaceMarkerClick(marker) {
+                    var place = self._placeByMarkerId[marker.id];
+                    if (!place) { return; }
+
+                    var placeName = place.name;
+                    if (placeName.length > MAX_INFOWINDOW_TITLE_LENGTH) {
+                        placeName = placeName.substring(0, MAX_INFOWINDOW_TITLE_LENGTH) + '...';
+                    }
+                    map.showInfoWindow(marker, placeName);
+                });
+
+                // Open the place selection menu when the user click on the info window
+                map.onInfoWindowClick(function handlePlaceInfoWindowClick(marker) {
+                    var place = self._placeByMarkerId[marker.id];
+                    if (!place) { return; }
+
+                    placeSelectionMenuController.showMenu(place);
+                    map.closeInfoWindow();
+                });
+            });
+        },
+
+        /**
+         * Find the places corresponding to the given query.
+         *
+         * @param {string} query
+         * @private
+         */
+        '_findPlaces': function(query) {
+            var self = this;
+            this._currentQuery = query;
+            this._foundPlaces = [];
+            var $iframeDoc = $(document.getElementById(PANEL_ID).contentDocument);
+
+            /**
+             * @param {string} originalQuery
+             * @param {Array.<Place>} places
+             */
+            function handleFoundPlacesFromServices(originalQuery, places) {
+                if (self._currentQuery !== originalQuery) { return; }
+                self._foundPlaces = self._foundPlaces.concat(places);
+                self._showFoundPlaces(self._foundPlaces);
+
+                $iframeDoc.find('#searching-panel-mask').css('display', 'none');
+                $iframeDoc.find('#searching-panel').css('display', 'none');
+            }
+
+            $iframeDoc.find('#searching-panel-mask').css('display', 'block');
+            $iframeDoc.find('#searching-panel').css('display', 'block');
+            var placeProviderServices = placeProviderDirectoryService.getAllPlaceProviderServices();
+            for (var i = 0; i < placeProviderServices.length; i++) {
+                var placeProviderService = placeProviderServices[i];
+                placeProviderService.findPlaces(query, handleFoundPlacesFromServices);
+            }
         },
 
         /**
@@ -141,6 +228,53 @@ define([
 
             var $iframeDoc = $(document.getElementById(PANEL_ID).contentDocument);
             $iframeDoc.find('#suggested-places').html(suggestedPlacesHtml);
+        },
+
+        /**
+         * Show found places on the map.
+         *
+         * @param {Array.<Place>} places
+         * @private
+         */
+        '_showFoundPlaces': function(places) {
+            if (!places || !places.length) { return; }
+
+            // Clear the previous search
+            this._clearFoundPlaces();
+
+            // Create a marker per place
+            var map  = /** @Type {Map} */ Widget.findById('map');
+            this._placeMarkers = /** @Type {Array.<Marker>} */ [];
+            for (var i = 0; i < places.length; i++) {
+                var place = places[i];
+                var marker = new Marker({
+                    position: new LatLng(place.latitude, place.longitude),
+                    title: place.name
+                });
+                this._placeMarkers.push(marker);
+                this._placeByMarkerId[marker.id] = place;
+            }
+            map.addMarkers(this._placeMarkers);
+
+            // Move the map to the first place
+            map.panTo(new LatLng(places[0].latitude, places[0].longitude));
+
+            // Hide the panel on small screen
+            if (!this._mainController.isWideScreen()) {
+                this._mainController.closeSidePanel();
+            }
+        },
+
+        /**
+         * Remove the marker and places from the previous place search.
+         *
+         * @private
+         */
+        '_clearFoundPlaces': function() {
+            var map  = /** @Type {Map} */ Widget.findById('map');
+            map.removeMarkers(this._placeMarkers);
+            this._placeMarkers = [];
+            this._placeByMarkerId = {};
         }
     };
 

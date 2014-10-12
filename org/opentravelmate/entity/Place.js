@@ -14,6 +14,7 @@ define(function() {
      *     latitude: number,
      *     longitude: number,
      *     name: string,
+     *     provider: PlaceProviderService=
      *     additionalParameters: Object.<string, Object>=
      * }} options
      * @constructor
@@ -39,6 +40,13 @@ define(function() {
          * @type {string}
          */
         this.name = options.name;
+
+        /**
+         * Place name.
+         *
+         * @type {PlaceProviderService}
+         */
+        this.provider = options.provider;
 
         /**
          * Optional additional information.

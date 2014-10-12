@@ -24,5 +24,25 @@ define(['../entity/Place'], function(Place) {
         throw new Error('Unimplemented method.');
     };
 
+    /**
+     * Get more details about the given place.
+     *
+     * @param {Place} place
+     * @param {function(place: Place)} callback
+     */
+    PlaceProviderService.prototype.getPlaceDetails = function(place, callback) {
+        throw new Error('Unimplemented method.');
+    };
+
+    /**
+     * Find one or more places for the given query.
+     *
+     * @param {String} query
+     * @param {function(query: string, Array.<Place>)} callback
+     */
+    PlaceProviderService.prototype.findPlaces = function(query, callback) {
+        throw new Error('Unimplemented method.');
+    };
+
     return PlaceProviderService;
 });

@@ -69,6 +69,7 @@ define([
             $('#side-panel').css('display', 'none');
             $('#map').removeClass('map-hidden-by-side-panel');
             webview.layout();
+            $('#' + this.SIDE_PANEL_CONTENT_ELEMENT_ID).html('');
         },
 
         /**
@@ -85,6 +86,15 @@ define([
          */
         'closeFooterPanel': function () {
             // TODO
+        },
+
+        /**
+         * Tell if the screen is considered as wide (desktop, tablet) or not (smart-phone).
+         *
+         * @returns {boolean}
+         */
+        'isWideScreen': function() {
+            return $(window).width() >= 900;
         }
     };
 
