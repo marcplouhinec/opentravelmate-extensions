@@ -149,6 +149,16 @@ define([
     };
 
     /**
+     * Remove a button from the map top-right corner.
+     *
+     * @param {MapButton} mapButton
+     */
+    Map.prototype.removeMapButton = function(mapButton) {
+        this._mapButtonById[mapButton.id] = mapButton;
+        nativeMap.removeMapButton(this.id, JSON.stringify(mapButton));
+    };
+
+    /**
      * Fire the click event on the given map button.
      *
      * @param {Number} mapButtonId

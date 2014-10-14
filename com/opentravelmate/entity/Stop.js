@@ -38,9 +38,9 @@ define(function() {
         /**
          * Stop name.
          *
-         * @type {string=}
+         * @type {string}
          */
-        this.stopName = options.stopName;
+        this.name = options.name;
     }
 
     return Stop;

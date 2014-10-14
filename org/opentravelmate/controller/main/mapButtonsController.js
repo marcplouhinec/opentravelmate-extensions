@@ -28,46 +28,12 @@ define([
             PositionOptions, PositionError, Position, DialogOptions, notificationController, Place, placeSelectionMenuController) {
     'use strict';
 
-    /**
-     * @constant
-     * @type {string}
-     */
     var TOOLTIP_ROADMAP_MODE = 'Show satellite map';
-
-    /**
-     * @constant
-     * @type {string}
-     */
     var ICON_URL_ROADMAP_MODE = 'extensions/org/opentravelmate/view/map/image/ic_btn_satellite_map_mode.png';
-
-    /**
-     * @constant
-     * @type {string}
-     */
     var TOOLTIP_SATELLITE_MODE = 'Show road map';
-
-    /**
-     * @constant
-     * @type {string}
-     */
     var ICON_URL_SATELLITE_MODE = 'extensions/org/opentravelmate/view/map/image/ic_btn_roads_map_mode.png';
-
-    /**
-     * @constant
-     * @type {string}
-     */
     var TOOLTIP_CURRENT_POSITION = 'Show my position on the map';
-
-    /**
-     * @constant
-     * @type {string}
-     */
     var ICON_URL_CURRENT_POSITION = 'extensions/org/opentravelmate/view/map/image/ic_btn_show_my_position.png';
-
-    /**
-     * @constant
-     * @type {string}
-     */
     var ICON_URL_CURRENT_POSITION_BRIGHT = 'extensions/org/opentravelmate/view/map/image/ic_btn_show_my_position_bright.png';
 
     /**
