@@ -65,6 +65,12 @@ define([
     var ICON_URL_CURRENT_POSITION = 'extensions/org/opentravelmate/view/map/image/ic_btn_show_my_position.png';
 
     /**
+     * @constant
+     * @type {string}
+     */
+    var ICON_URL_CURRENT_POSITION_BRIGHT = 'extensions/org/opentravelmate/view/map/image/ic_btn_show_my_position_bright.png';
+
+    /**
      * Maximum position watching time in milliseconds.
      *
      * @constant
@@ -129,6 +135,12 @@ define([
         '_currentPosition': null,
 
         /**
+         * @private
+         * @type {boolean}
+         */
+        '_isCurrentPositionIconBlinking': false,
+
+        /**
          * Initialization.
          */
         'init': function () {
@@ -166,9 +178,12 @@ define([
                         acceptableAccuracy: ACCEPTABLE_ACCURACY,
                         maxWatchTime: MAX_WATCH_TIME
                     });
+                    self._setCurrentPositionIconBlinking(true);
                     geolocationService.watchPosition(function handlePosition(position) {
+                        self._setCurrentPositionIconBlinking(false);
                         self._showCurrentPositionOnMap(position);
                     }, function handleError(positionError) {
+                        self._setCurrentPositionIconBlinking(false);
                         var message = 'Unable to get your position: ' + positionError.code + '.';
                         console.log(message + ' ' + positionError.message);
                         notificationController.showMessage(message, 5000, new DialogOptions({}));
@@ -258,6 +273,37 @@ define([
             });
             map.addMarkers([this._currentPositionMarker]);
             map.panTo(latlng);
+        },
+
+        /**
+         * Make the current position icon blinking or not.
+         *
+         * @param {boolean} blinking true = blinking, false = not blinking
+         */
+        '_setCurrentPositionIconBlinking': function(blinking) {
+            if (this._isCurrentPositionIconBlinking === blinking) { return; }
+
+            // Handle the stop blinking action
+            if (!blinking) {
+                this._isCurrentPositionIconBlinking = false;
+
+                this._currentPositionMapButton.iconUrl = ICON_URL_CURRENT_POSITION;
+                this._map.updateMapButton(this._currentPositionMapButton);
+
+                return;
+            }
+
+            // Handle the start blinking action
+            this._isCurrentPositionIconBlinking = true;
+            var self = this;
+            function changeIconUrl() {
+                if (!self._isCurrentPositionIconBlinking) { return; }
+                self._currentPositionMapButton.iconUrl = self._currentPositionMapButton.iconUrl === ICON_URL_CURRENT_POSITION ?
+                    ICON_URL_CURRENT_POSITION_BRIGHT : ICON_URL_CURRENT_POSITION;
+                self._map.updateMapButton(self._currentPositionMapButton);
+                setTimeout(changeIconUrl, 500);
+            }
+            changeIconUrl();
         }
     };
 

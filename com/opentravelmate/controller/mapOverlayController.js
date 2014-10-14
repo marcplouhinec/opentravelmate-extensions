@@ -45,10 +45,10 @@ define([
                 self._map.addTileOverlay(self._tileOverlay);
 
                 // Load the markers
-                this._map.onTilesDisplayed(function handleTilesDisplayed(tileCoordinates) {
+                self._map.onTilesDisplayed(function handleTilesDisplayed(tileCoordinates) {
                     self._loadStopsInTiles(tileCoordinates);
                 });
-                this._map.onTilesReleased(function handleTilesReleased(tileCoordinates) {
+                self._map.onTilesReleased(function handleTilesReleased(tileCoordinates) {
                     self._removeStopsFromTiles(tileCoordinates);
                 });
             });
