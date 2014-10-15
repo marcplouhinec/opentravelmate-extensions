@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>Open Travel Mate</title>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no"/>
+    <link rel="stylesheet" href="../../../org/opentravelmate/view/common/common.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="stop-place-details.css" type="text/css" media="screen"/>
+</head>
+<body class="otm-panel">
+    <div id="route-table-wrapper">
+        <table id="route-table">
+            <tr>
+                <th class="route-short-name">#</th>
+                <th class="route-long-name">Route direction</th>
+                <th class="route-details">&nbsp;</th>
+            </tr>
+        </table>
+    </div>
+
+    <script id="tpl-route-table-row" type="text/template">
+        <tr>
+            <td class="route-short-name">
+                <span class="route-color-box" style="background-color: #<%=route.color %>;">&nbsp;</span>
+                <%=route.shortName %>
+            </td>
+            <td class="route-long-name"><%=route.longName %></td>
+            <td class="route-details">
+                <button class="otm-button otm-button-middle timetable-btn" data-routeid="<%=route.id %>">
+                    <img src="./image/ic_btn_clock.png" alt="Timetable"/>
+                </button>
+            </td>
+        </tr>
+    </script>
+</body>
+</html>
