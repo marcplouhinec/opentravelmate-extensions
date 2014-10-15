@@ -16,8 +16,13 @@ define([
     '../../../org/opentravelmate/controller/widget/map/Marker',
     '../../../org/opentravelmate/controller/widget/map/MapButton',
     '../../../org/opentravelmate/controller/widget/map/Map',
-    '../service/tileService'
-], function(_, Widget, webview, TileOverlay, Point, Dimension, LatLng, UrlMarkerIcon, Marker, MapButton, Map, tileService) {
+    '../../../org/opentravelmate/controller/widget/map/projectionUtils',
+    '../../../org/opentravelmate/entity/Place',
+    '../../../org/opentravelmate/controller/place/placeSelectionMenuController',
+    '../service/tileService',
+    '../service/StopPlaceProviderService'
+], function(_, Widget, webview, TileOverlay, Point, Dimension, LatLng, UrlMarkerIcon, Marker, MapButton, Map,
+            projectionUtils, Place, placeSelectionMenuController, tileService, TransportPlaceProviderService) {
     'use strict';
 
     var TOOLTIP_DOWNLOADING_BUTTON = 'Downloading map data...';
@@ -30,6 +35,12 @@ define([
      * Handle the map overlay.
      */
     var mapOverlayController = {
+
+        /**
+         * @type {TransportPlaceProviderService}
+         * @private
+         */
+        '_transportPlaceProviderService': null,
 
         /**
          * @type {Map}
@@ -81,10 +92,19 @@ define([
         '_stopByMarkerId': {},
 
         /**
-         * Initialize the controller.
+         * @type {Object.<string, Array.<Marker>>}
+         * @private
          */
-        'init': function() {
+        '_markersByTileId': {},
+
+        /**
+         * Initialize the controller.
+         *
+         * @param {TransportPlaceProviderService} transportPlaceProviderService
+         */
+        'init': function(transportPlaceProviderService) {
             var self = this;
+            this._transportPlaceProviderService = transportPlaceProviderService;
 
             Widget.findByIdAsync('map', 10000, function(/** @type {Map} */map) {
                 self._map = map;
@@ -150,13 +170,30 @@ define([
                         delete self._highlightedStopMarker;
                     }
                 });
+
+                // Handle the user's click on the info window
+                self._map.onInfoWindowClick(function(marker) {
+                    var stop = self._stopByMarkerId[marker.id];
+                    if (!stop) { return; }
+
+                    placeSelectionMenuController.showMenu(new Place({
+                        latitude: stop.latitude,
+                        longitude: stop.longitude,
+                        name: stop.name,
+                        provider: self._transportPlaceProviderService,
+                        additionalParameters: {
+                            stopId: stop.id
+                        }
+                    }));
+                    self._map.closeInfoWindow();
+                });
             });
         },
 
         /**
          * Load stops in the given tiles.
          *
-         * @param {Array.<{zoom: Number, x: Number, y: number}>} tileCoordinates
+         * @param {Array.<{zoom: number, x: number, y: number}>} tileCoordinates
          */
         '_loadStopsInTiles': function(tileCoordinates) {
             if (!tileCoordinates || !tileCoordinates.length) { return; }
@@ -182,10 +219,9 @@ define([
                 });
 
                 // Save the marker locally
-                //_.each(markers, function(marker) {
-                //    self._addToMarkersByTileId(marker, zoom);
-                //});
-                // TODO
+                _.each(markers, function(marker) {
+                    self._addToMarkersByTileId(marker, zoom);
+                });
 
                 // Show the markers on the map
                 self._map.addMarkers(markers);
@@ -195,10 +231,46 @@ define([
         /**
          * Release the stops from the given tiles.
          *
-         * @param {Array.<{zoom: Number, x: Number, y: number}>} tileCoordinates
+         * @param {Array.<{zoom: number, x: number, y: number}>} tileCoordinates
          */
         '_removeStopsFromTiles': function(tileCoordinates) {
-            // TODO
+            var self = this;
+
+            // Remove the markers from the tiles
+            _.each(tileCoordinates, function(tileCoordinate) {
+                var tileId = tileCoordinate.zoom + '_' + tileCoordinate.x + '_' + tileCoordinate.y;
+                var storedMarkers = self._markersByTileId[tileId];
+                if (storedMarkers) {
+                    self._map.removeMarkers(storedMarkers);
+
+                    _.each(storedMarkers, function(marker) {
+                        var stop = self._stopByMarkerId[marker.id];
+                        if (stop) {
+                            delete self._stopByMarkerId[marker.id];
+                        }
+                    });
+                }
+            });
+        },
+
+        /**
+         * Add a marker to _markersByTileId.
+         *
+         * @param {Marker} marker
+         * @param {number} zoom
+         * @private
+         */
+        _addToMarkersByTileId: function(marker, zoom) {
+            var tileX = Math.floor(projectionUtils.lngToTileX(zoom, marker.position.lng));
+            var tileY = Math.floor(projectionUtils.latToTileY(zoom, marker.position.lat));
+            var tileId = zoom + '_' + tileX + '_' + tileY;
+
+            var storedMarkers = this._markersByTileId[tileId];
+            if (!storedMarkers) {
+                storedMarkers = [];
+                this._markersByTileId[tileId] = storedMarkers;
+            }
+            storedMarkers.push(marker);
         },
 
         /**

@@ -7,8 +7,11 @@
 define([
     '../../org/opentravelmate/service/placeProviderDirectoryService',
     './service/GooglePlaceProviderService',
+    './service/StopPlaceProviderService',
+    './controller/googlePlaceDetailsController',
+    './controller/stopPlaceDetailsController',
     './controller/mapOverlayController'
-], function(placeProviderDirectoryService, GooglePlaceProviderService, mapOverlayController) {
+], function(placeProviderDirectoryService, GooglePlaceProviderService, StopPlaceProviderService, googlePlaceDetailsController, stopPlaceDetailsController, mapOverlayController) {
     'use strict';
 
     /**
@@ -16,9 +19,11 @@ define([
      */
     return function commercialEntryPoint() {
         // Register place and itinerary providers
-        placeProviderDirectoryService.addPlaceProviderService(new GooglePlaceProviderService());
+        var googlePlaceProviderService = new GooglePlaceProviderService(googlePlaceDetailsController);
+        placeProviderDirectoryService.addPlaceProviderService(googlePlaceProviderService);
 
         // Initialize the controllers
-        mapOverlayController.init();
+        googlePlaceDetailsController.init(googlePlaceProviderService);
+        mapOverlayController.init(new StopPlaceProviderService(stopPlaceDetailsController));
     };
 });

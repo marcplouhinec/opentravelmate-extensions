@@ -37,10 +37,19 @@ define(['../entity/Place'], function(Place) {
     /**
      * Find one or more places for the given query.
      *
-     * @param {String} query
+     * @param {string} query
      * @param {function(query: string, Array.<Place>)} callback
      */
     PlaceProviderService.prototype.findPlaces = function(query, callback) {
+        throw new Error('Unimplemented method.');
+    };
+
+    /**
+     * Provide a controller that can display details about a Place in the side panel (optional).
+     *
+     * @return {{showPlaceDetails: function(place: Place)}} controller or null if no controller exist.
+     */
+    PlaceProviderService.prototype.getPlaceDetailsController = function() {
         throw new Error('Unimplemented method.');
     };
 

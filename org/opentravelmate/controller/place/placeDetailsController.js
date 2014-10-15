@@ -20,20 +20,24 @@ define(['jquery', '../../entity/Place', '../widget/webview/webview'], function($
             var mainController = require('extensions/org/opentravelmate/controller/main/mainController');
             mainController.openSidePanel(place.name);
 
-            // Display basic information about the place
-            var iframe = /** @type {HTMLIFrameElement} */document.createElement('iframe');
-            iframe.style.position = 'absolute';
-            iframe.style.width = '100%';
-            iframe.style.height = '100%';
-            iframe.style.border = 'none';
-            iframe.src = webview.baseUrl + 'extensions/org/opentravelmate/view/place/place-details.html';
-            document.getElementById(mainController.SIDE_PANEL_CONTENT_ELEMENT_ID).appendChild(iframe);
+            if (place.provider && place.provider.getPlaceDetailsController()) {
+                // Display information about the place with the given controller
+                place.provider.getPlaceDetailsController().showPlaceDetails(place);
+            } else {
+                // Display basic information about the place
+                var iframe = /** @type {HTMLIFrameElement} */document.createElement('iframe');
+                iframe.style.position = 'absolute';
+                iframe.style.width = '100%';
+                iframe.style.height = '100%';
+                iframe.style.border = 'none';
+                iframe.src = webview.baseUrl + 'extensions/org/opentravelmate/view/place/place-details.html';
+                document.getElementById(mainController.SIDE_PANEL_CONTENT_ELEMENT_ID).appendChild(iframe);
 
-            $(iframe).load(function() {
-                iframe.contentDocument.getElementById('latitude').textContent = '' + place.latitude;
-                iframe.contentDocument.getElementById('longitude').textContent = '' + place.longitude;
-            });
-
+                $(iframe).load(function () {
+                    iframe.contentDocument.getElementById('latitude').textContent = '' + place.latitude;
+                    iframe.contentDocument.getElementById('longitude').textContent = '' + place.longitude;
+                });
+            }
         }
 
     };

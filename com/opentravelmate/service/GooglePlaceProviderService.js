@@ -32,8 +32,10 @@ define([
      *
      * @constructor
      * @implements {PlaceProviderService}
+     * @param {googlePlaceDetailsController} googlePlaceDetailsController
      */
-    function GooglePlaceProviderService() {
+    function GooglePlaceProviderService(googlePlaceDetailsController) {
+        this.googlePlaceDetailsController = googlePlaceDetailsController;
     }
 
     /**
@@ -123,6 +125,15 @@ define([
             }
             callback(query, places);
         });
+    };
+
+    /**
+     * Provide a controller that can display details about a Place in the side panel (optional).
+     *
+     * @return {{showPlaceDetails: function(place: Place)}} controller or null if no controller exist.
+     */
+    GooglePlaceProviderService.prototype.getPlaceDetailsController = function() {
+        return this.googlePlaceDetailsController;
     };
 
     return GooglePlaceProviderService;
