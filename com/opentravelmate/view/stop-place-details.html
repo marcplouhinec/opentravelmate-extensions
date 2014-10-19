@@ -8,29 +8,61 @@
     <link rel="stylesheet" href="stop-place-details.css" type="text/css" media="screen"/>
 </head>
 <body class="otm-panel">
-    <div id="route-table-wrapper">
-        <table id="route-table">
-            <tr>
-                <th class="route-short-name">#</th>
-                <th class="route-long-name">Route direction</th>
-                <th class="route-details">&nbsp;</th>
-            </tr>
-        </table>
+    <ul id="routes"></ul>
+    <div id="timetable-panel">
+        <div id="timetable-panel-header">
+            <div id="timetable-panel-header-label">Timetables</div>
+            <button type="button" id="close-timetable-panel-btn" class="otm-button otm-button-middle">
+                <img alt="Close" src="../../../org/opentravelmate/view/common/image/ic_btn_close.png"/>
+            </button>
+        </div>
+        <div id="timetable-panel-body">
+            <div id="timetable-panel-body-content"></div>
+            <div id="scroll-marker"></div>
+        </div>
     </div>
 
     <script id="tpl-route-table-row" type="text/template">
-        <tr>
-            <td class="route-short-name">
-                <span class="route-color-box" style="background-color: #<%=route.color %>;">&nbsp;</span>
-                <%=route.shortName %>
-            </td>
-            <td class="route-long-name"><%=route.longName %></td>
-            <td class="route-details">
-                <button class="otm-button otm-button-middle timetable-btn" data-routeid="<%=route.id %>">
-                    <img src="./image/ic_btn_clock.png" alt="Timetable"/>
-                </button>
-            </td>
-        </tr>
+        <li class="route" data-routeid="<%=route.id %>">
+            <span class="route-color-box" style="background-color: #<%=route.color %>;">&nbsp;</span> <%=route.shortName %><br/>
+            <%=route.longName %>
+        </li>
+    </script>
+    <script id="tpl-timetable" type="text/template">
+        <table class="timetable">
+            <% for (var i = 0; i < timetable.rows.length; i++) { %>
+            <% if (i === 0) { %>
+            <tr class="header-row">
+                <td colspan="<%=timetable.rows[i].times.length %>">
+                    <%=timetable.headSign %> - <%=timetable.calendar.name %>
+                </td>
+            </tr>
+            <% } %>
+            <tr class="stop-row <%=stopIdToHighlight === timetable.rows[i].stopId ? 'highlight' : '' %>">
+                <% for (var j = 0; j < timetable.rows[i].times.length; j++) { %>
+                <td class="<%=(j % 2 === 0 ? 'column_even' : 'column_odd') %>">
+                    <% if (j === 0) { %>
+                    <div class="stop-name"><%=timetable.rows[i].stopName %></div>
+                    <% } %>
+                    &nbsp;
+                </td>
+                <% } %>
+            </tr>
+            <tr class="times-row <%=stopIdToHighlight === timetable.rows[i].stopId ? 'highlight' : '' %>">
+                <% for (var j = 0; j < timetable.rows[i].times.length; j++) { %>
+                <td class="<%=(j % 2 === 0 ? 'column_even' : 'column_odd') %>">
+                    <%
+                    var time = timetable.rows[i].times[j];
+                    if (time) {
+                    time = time.substring(0, time.length - 3);
+                    }
+                    %>
+                    <%=time %>
+                </td>
+                <% } %>
+            </tr>
+            <% } %>
+        </table>
     </script>
 </body>
 </html>

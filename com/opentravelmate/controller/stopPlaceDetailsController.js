@@ -11,8 +11,10 @@ define([
     '../../../org/opentravelmate/controller/widget/webview/webview',
     '../../../org/opentravelmate/controller/dialog/DialogOptions',
     '../../../org/opentravelmate/controller/dialog/notificationController',
-    '../service/stopService'
-], function($, _, Place, webview, DialogOptions, notificationController, stopService) {
+    '../service/stopService',
+    '../service/routeService',
+    'jqueryGoogleFastButton'
+], function($, _, Place, webview, DialogOptions, notificationController, stopService, routeService) {
 
     /**
      * Show the details of a stop.
@@ -26,6 +28,7 @@ define([
          */
         'showPlaceDetails': function(place) {
             var self = this;
+            var stopId = /** @type {string} */place.additionalParameters['stopId'];
             var mainController = require('extensions/org/opentravelmate/controller/main/mainController');
             mainController.openSidePanel(place.name);
 
@@ -41,17 +44,45 @@ define([
             var stopRoutes = [];
             var iframeLoaded = false;
             $(iframe).load(function () {
+                var $iframeDocument = $(iframe.contentDocument);
                 if (stopRoutes.length) {
-                    self._showRoutes(stopRoutes, $(iframe.contentDocument));
+                    self._showRoutes(stopRoutes, $iframeDocument);
                 }
                 iframeLoaded = true;
+                var $scrollMarkerElement = $iframeDocument.find('#scroll-marker');
+                var scrollMarkerElementXPosition = 0;
+
+                // Show the timetable of a route if the user clicks on it
+                $iframeDocument.find('ul#routes').fastClick(function handleRouteClick(event) {
+                    if (!event.target || !$(event.target).hasClass('route')) { return; }
+                    var routeId = $(event.target).attr('data-routeid');
+                    self._showTimetable(routeId, stopId, $iframeDocument);
+
+                    scrollMarkerElementXPosition = 0;
+                });
+
+                // Hide the timetable panel if the user clicks on the close button
+                $iframeDocument.find('#close-timetable-panel-btn').fastClick(function handleCloseTimetablePanelClick(event) {
+                    self._closeTimetablePanel($iframeDocument);
+                });
+
+                // Move the stop names when the page is scrolled horizontally
+                $iframeDocument.find('#timetable-panel-body').scroll(function() {
+                    var pageX = $scrollMarkerElement.offset().left;
+                    if (pageX !== scrollMarkerElementXPosition) {
+                        scrollMarkerElementXPosition = pageX;
+
+                        $iframeDocument.find('.stop-name').each(function() {
+                            $(this).css('left', (2 - pageX) + 'px');
+                        });
+                    }
+                });
             });
 
             // Load the routes that goes through this stop
-            var stopId = /** @type {string} */place.additionalParameters['stopId'];
             stopService.findRoutesByStopId(stopId, function(error, routes) {
                 if (error) {
-                    notificationController.showMessage('Error: unable to find information about this stop', 5000, new DialogOptions({}))
+                    notificationController.showMessage('Error: unable to find information about this stop', 5000, new DialogOptions({}));
                 } else {
                     stopRoutes = routes;
                     if (iframeLoaded) {
@@ -69,7 +100,7 @@ define([
          */
         '_showRoutes': function(routes, $iframeDocument) {
             var templateRouteTableRow = _.template($iframeDocument.find('#tpl-route-table-row').text());
-            var $routeTable = $iframeDocument.find('#route-table');
+            var $routeList = $iframeDocument.find('#routes');
 
             // Sort the lines by their short names
             var routeWithLongestShortNameLength = _.max(routes, function(route) { return route.shortName ? route.shortName.length : 0; });
@@ -80,10 +111,75 @@ define([
                 var padding = paddingLength == 0 ? '' : new Array(paddingLength + 1).join(' ');
                 return padding + route.shortName;
             });
+            var routesHtml = '';
             _.each(sortedRoutes, function(route) {
-                $routeTable.append(templateRouteTableRow({
-                    route: route
-                }));
+                routesHtml += templateRouteTableRow({ route: route });
+            });
+            $routeList.html(routesHtml);
+        },
+
+        /**
+         * Show the timetable for the given route ID.
+         *
+         * @param {string} routeId
+         * @param {string} stopId
+         * @param $iframeDocument
+         */
+        '_showTimetable': function(routeId, stopId, $iframeDocument) {
+            // Hide all routes but the selected one
+            var $routeLiElement = null;
+            $iframeDocument.find('li.route').each(function() {
+                var currentRouteId = $(this).attr('data-routeid');
+                if (currentRouteId !== routeId) {
+                    $(this).hide();
+                } else {
+                    $routeLiElement = $(this);
+                }
+            });
+
+            // Show the timetable panel
+            var $timetablePanelElement = $iframeDocument.find('#timetable-panel');
+            var $timetablePanelBodyContentElement = $iframeDocument.find('#timetable-panel-body-content');
+            $timetablePanelElement.css('top', $iframeDocument.find('ul#routes').height() + 'px');
+            $timetablePanelBodyContentElement.html('');
+            $timetablePanelElement.show();
+
+            // Load the timetables
+            routeService.findTimetablesByRouteId(routeId, function(error, timetables) {
+                if (error) {
+                    notificationController.showMessage('Error: unable to find information about this stop', 5000, new DialogOptions({}));
+                    return;
+                }
+
+                var templateTimetable = _.template($iframeDocument.find('#tpl-timetable').text());
+                var timetablePanelBodyContent = '';
+                _.each(timetables, function (timetable) {
+                    timetablePanelBodyContent += templateTimetable({
+                        timetable: timetable,
+                        stopIdToHighlight: stopId
+                    });
+                });
+                $timetablePanelBodyContentElement.html(timetablePanelBodyContent);
+            });
+        },
+
+        /**
+         * Close the timetable panel.
+         *
+         * @param $iframeDocument
+         */
+        '_closeTimetablePanel': function($iframeDocument) {
+            // Just before hiding it, reset the scroll position of the timetable panel body
+            var $timetablePanelBodyElement = $iframeDocument.find('#timetable-panel-body');
+            $timetablePanelBodyElement.scrollLeft(0);
+            $timetablePanelBodyElement.scrollTop(0);
+
+            // Hide the timetable panel
+            $iframeDocument.find('#timetable-panel').hide();
+
+            // Show all routes
+            $iframeDocument.find('li.route').each(function() {
+                $(this).show();
             });
         }
 

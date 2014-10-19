@@ -3,26 +3,25 @@ body {
     margin: 0;
 }
 
-#route-table-wrapper {
-    overflow: auto;
-    position: absolute;
-    top: 8px;
-    bottom: 8px;
-    left: 8px;
-    right: 8px;
+/**
+ * Routes
+ */
+
+ul#routes {
+    padding: 0;
+    margin: 0;
 }
 
-#route-table {
-    width: 100%;
-    border-collapse: collapse;
-    table-layout: fixed;
+ul#routes li {
+    padding: 10px;
+    border-bottom: 1px solid #aaa;
+    cursor: pointer;
 }
 
-.route-short-name {
-    text-align: left;
-    width: 55px;
-    word-wrap: break-word;
+ul#routes li:hover {
+    background-color: #363735;
 }
+
 .route-color-box {
     position: relative;
     display: inline-block;
@@ -32,23 +31,81 @@ body {
     top: 3px;
 }
 
-.route-long-name {
-    word-wrap: break-word;
+
+/**
+ * Timetables
+ */
+
+#timetable-panel {
+    display: none;
+    position: absolute;
+    width: 100%;
+    bottom: 0;
 }
 
-.route-details {
-    width: 42px;
+#timetable-panel-header {
+    height: 50px;
+    border-bottom:
+    1px solid #00BFFF;
 }
 
-#route-table th {
-    padding-bottom: 8px;
-}
-#route-table td {
+#timetable-panel-header-label {
+    float: left;
     padding-top: 10px;
-    padding-bottom: 10px;
-    border-top: 1px solid #777;
+    padding-left: 10px;
+    font-size: 22px;
 }
 
-.timetable-btn {
+button#close-timetable-panel-btn {
+    display: block;
     float: right;
+    margin-top: 5px;
+    margin-right: 10px;
+}
+
+#timetable-panel-body {
+    position: absolute;
+    width: 100%;
+    top: 50px;
+    bottom: 0;
+    overflow: auto;
+}
+
+
+#timetable-panel-body td {
+    padding: 0 2px 0 2px;
+}
+
+#timetable-panel-body .header-row td {
+    font-size: 20px;
+    background-color: rgba(255, 255, 255, 0.4);
+    padding: 13px;
+}
+
+#timetable-panel-body table {
+    border-collapse: collapse;
+}
+#timetable-panel-body tr.stop-row {
+    font-size: 14px;
+}
+#timetable-panel-body tr.times {
+    font-size: 18px;
+}
+#timetable-panel-body tr.stop-row td {
+    padding-top: 5px;
+}
+#timetable-panel-body .column_even {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+#timetable-panel-body .stop-name {
+    position: absolute;
+    left: 2px;
+    width: 300px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+#timetable-panel-body .highlight {
+    background-color: #0099cc;
 }
