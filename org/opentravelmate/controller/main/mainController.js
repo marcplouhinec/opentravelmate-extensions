@@ -10,7 +10,8 @@ define([
     './menuController',
     './mapButtonsController',
     '../place/placeFinderController',
-    '../../service/extensionService'
+    '../../service/extensionService',
+    'jqueryGoogleFastButton'
 ], function($, webview, menuController, mapButtonsController, placeFinderController, extensionService) {
     'use strict';
 
@@ -47,6 +48,20 @@ define([
 
             // Start the extensions
             extensionService.startExtensions();
+
+            // Handle side panel maximizing / minimizing
+            if (this.isWideScreen()) {
+                var $sidePanelMaximizeButton = $('#side-panel-maximize-button');
+                var $sidePanelMinimizeButton = $('#side-panel-minimize-button');
+                $sidePanelMaximizeButton.show();
+
+                $sidePanelMaximizeButton.fastClick(function handleMaximizeSidePanelEvent() {
+                    self._setSidePanelMaximized(true);
+                });
+                $sidePanelMinimizeButton.fastClick(function handleMinimizeSidePanelEvent() {
+                    self._setSidePanelMaximized(false);
+                });
+            }
         },
 
         /**
@@ -66,10 +81,39 @@ define([
          * Close the panel located on the side of the map.
          */
         'closeSidePanel': function () {
+            this._setSidePanelMaximized(false);
             $('#side-panel').css('display', 'none');
             $('#map').removeClass('map-hidden-by-side-panel');
             webview.layout();
             $('#' + this.SIDE_PANEL_CONTENT_ELEMENT_ID).html('');
+        },
+
+        /**
+         * Maximize or minimize the side panel.
+         *
+         * @param {boolean} maximized
+         */
+        '_setSidePanelMaximized': function(maximized) {
+            var $sidePanel = $('#side-panel');
+            var $map = $('#map');
+            var $sidePanelMaximizeButton = $('#side-panel-maximize-button');
+            var $sidePanelMinimizeButton = $('#side-panel-minimize-button');
+
+            if (maximized) {
+                if ($sidePanel.hasClass('side-panel-fullscreen')) { return; }
+                $sidePanel.addClass('side-panel-fullscreen');
+                $map.hide();
+                $sidePanelMaximizeButton.hide();
+                $sidePanelMinimizeButton.show();
+                webview.layout();
+            } else {
+                if (!$sidePanel.hasClass('side-panel-fullscreen')) { return; }
+                $sidePanel.removeClass('side-panel-fullscreen');
+                $map.show();
+                $sidePanelMinimizeButton.hide();
+                $sidePanelMaximizeButton.show();
+                webview.layout();
+            }
         },
 
         /**

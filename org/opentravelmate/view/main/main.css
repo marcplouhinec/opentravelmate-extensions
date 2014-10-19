@@ -62,6 +62,14 @@ body {
     }
 }
 
+.side-panel-fullscreen {
+    left: 0 !important;
+    top: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: auto !important;;
+}
+
 #side-panel-titlebar {
     position: absolute;
     top: 0;
@@ -73,9 +81,9 @@ body {
 
 #side-panel-title-label {
     position: absolute;
-    left: 8px;
+    left: 5px;
     top: 16px;
-    right: 64px;
+    right: 103px;
     bottom: 8px;
     font-size: 24px;
     color: #00bfff;
@@ -86,10 +94,25 @@ body {
 
 #side-panel-close-button {
     position: absolute;
-    right: 10px;
+    right: 5px;
     top: 10px;
     width: 44px;
     height: 44px;
+}
+
+#side-panel-maximize-button, #side-panel-minimize-button {
+    display: none;
+    position: absolute;
+    right: 54px;
+    top: 10px;
+    width: 44px;
+    height: 44px;
+}
+
+#side-panel-maximize-button img, #side-panel-minimize-button img {
+    width: 30px;
+    height: 30px;
+    margin-left: 5px;
 }
 
 #side-panel-content {

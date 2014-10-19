@@ -131,7 +131,7 @@ define([
          */
         '_showTimetable': function(routeId, stopId, $iframeDocument) {
             var self = this;
-            
+
             // Hide all routes but the selected one
             var $routeLiElement = null;
             $iframeDocument.find('li.route').each(function() {
