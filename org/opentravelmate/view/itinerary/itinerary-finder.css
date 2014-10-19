@@ -1,0 +1,37 @@
+
+.search-criteria-row {
+    position: relative;
+    min-height: 40px;
+    margin-bottom: 5px;
+}
+
+.search-criteria-label {
+    position: absolute;
+    width: 80px;
+    left: 4px;
+    top: 7px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.search-criteria-input-wrapper {
+    position: absolute;
+    left: 90px;
+    right: 60px;
+    top: 4px;
+}
+
+.search-criteria-input-wrapper input {
+    width: 100%;
+}
+
+.erase-button {
+    position: absolute;
+    right: 5px;
+}
+
+.erase-button img {
+    height: 25px !important;
+    width: 25px !important;
+    margin-left: 5px !important;
+}

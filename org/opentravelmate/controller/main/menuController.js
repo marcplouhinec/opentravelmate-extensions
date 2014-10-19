@@ -84,7 +84,15 @@ define(['jquery', 'lodash'], function($, _) {
                 iconUrl: iconUrl,
                 size: $buttonPanel.height()
             });
-            $buttonPanel.append(menuItemContent);
+
+            // Make sure the first button (the 'More' one) must always be on the right
+            var $existingButtons = $buttonPanel.children('button');
+            if ($existingButtons.length <= 1) {
+                $buttonPanel.append(menuItemContent);
+            } else {
+                var $firstExistingButton = $existingButtons.first();
+                $(menuItemContent).insertAfter($firstExistingButton);
+            }
 
             // Register the listener
             $('#' + buttonId).bind('touchstart click', clickListener);

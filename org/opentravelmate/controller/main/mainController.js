@@ -10,9 +10,10 @@ define([
     './menuController',
     './mapButtonsController',
     '../place/placeFinderController',
+    '../itinerary/itineraryFinderController',
     '../../service/extensionService',
     'jqueryGoogleFastButton'
-], function($, webview, menuController, mapButtonsController, placeFinderController, extensionService) {
+], function($, webview, menuController, mapButtonsController, placeFinderController, itineraryFinderController, extensionService) {
     'use strict';
 
     /**
@@ -43,7 +44,7 @@ define([
             menuController.init(this);
             mapButtonsController.init();
             placeFinderController.init(this);
-            // TODO find itinerary
+            itineraryFinderController.init(this);
             webview.layout();
 
             // Start the extensions
