@@ -107,6 +107,12 @@ define([
         '_isCurrentPositionIconBlinking': false,
 
         /**
+         * @private
+         * @type {Object.<string, boolean>}
+         */
+        '_clickedMarkerIdSet' : {},
+
+        /**
          * Initialization.
          */
         'init': function () {
@@ -173,10 +179,11 @@ define([
                 self._map.onMarkerClick(function handleCurrentPositionMarkerClick(marker) {
                     if (self._currentPositionMarker && self._currentPositionMarker.id === marker.id) {
                         self._map.showInfoWindow(marker, 'Current position');
+                        self._clickedMarkerIdSet[marker.id] = true;
                     }
                 });
                 self._map.onInfoWindowClick(function handleCurrentPositionInfoWindowClick(marker) {
-                    if (self._currentPositionMarker && self._currentPositionMarker.id === marker.id) {
+                    if (self._clickedMarkerIdSet[marker.id]) {
                         self._map.closeInfoWindow();
 
                         // Open the place selection menu
