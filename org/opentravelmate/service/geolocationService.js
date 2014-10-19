@@ -92,8 +92,11 @@ define(['../entity/geolocation/Position',
 
         /**
          * Follow the device position.
+         * Note: according to the options, the watch operation can stop automatically. The successCallback has an extra
+         * parameter 'hasMore' that contains 'true' if the callback will be called again and 'false' when no more calls
+         * will occur for the current watchId.
          *
-         * @param {function(position: Position)} successCallback
+         * @param {function(position: Position, hasMore: boolean)} successCallback
          * @param {function(positionError: PositionError)} errorCallback
          * @param {PositionOptions} options
          * @return {number} watchId
@@ -117,6 +120,16 @@ define(['../entity/geolocation/Position',
                     // Check if the watching has not been cleared already
                     if (watchIdByCallbacksId[callbacksId]) {
                         self.clearWatch(watchId);
+
+                        // Call the successCallback to tell that there is no more calls for this watchId
+                        if (self._currentBestPosition) {
+                            successCallback(self._currentBestPosition, false);
+                        } else {
+                            errorCallback(new PositionError({
+                                code: PositionError.TIMEOUT,
+                                message: 'Unable to provide a position in less than ' + (options.maxWatchTime / 1000) + ' seconds'
+                            }));
+                        }
                     }
                 }, options.maxWatchTime);
             }
@@ -151,11 +164,16 @@ define(['../entity/geolocation/Position',
 
                 if (!this._currentBestPosition || this._isBetterPosition(position, this._currentBestPosition, options)) {
                     this._currentBestPosition = position;
-                    callbacks.successCallback(position);
+
+                    // Check if the accuracy is acceptable
+                    var watchId = watchIdByCallbacksId[callbacksId];
+                    var isAccuracyAcceptable = watchId && options.acceptableAccuracy > 0 && position.coords.accuracy <= options.acceptableAccuracy;
+
+                    // Call the success callback
+                    callbacks.successCallback(position, !isAccuracyAcceptable);
 
                     // Stop watching if the accuracy is acceptable
-                    var watchId = watchIdByCallbacksId[callbacksId];
-                    if (watchId && options.acceptableAccuracy > 0 && position.coords.accuracy <= options.acceptableAccuracy) {
+                    if (isAccuracyAcceptable) {
                         this.clearWatch(watchId);
                     }
                 }

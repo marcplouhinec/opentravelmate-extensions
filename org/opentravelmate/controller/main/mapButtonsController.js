@@ -145,12 +145,25 @@ define([
                         maxWatchTime: MAX_WATCH_TIME
                     });
                     self._setCurrentPositionIconBlinking(true);
-                    geolocationService.watchPosition(function handlePosition(position) {
-                        self._setCurrentPositionIconBlinking(false);
+                    geolocationService.watchPosition(function handlePosition(position, hasMore) {
+                        if (!hasMore) {
+                            self._setCurrentPositionIconBlinking(false);
+                        }
                         self._showCurrentPositionOnMap(position);
                     }, function handleError(positionError) {
                         self._setCurrentPositionIconBlinking(false);
-                        var message = 'Unable to get your position: ' + positionError.code + '.';
+                        var message = 'Error: unable to get your position.';
+                        switch (positionError.code) {
+                            case PositionError.PERMISSION_DENIED:
+                                message = 'Error: unable to get your position: PERMISSION_DENIED.';
+                                break;
+                            case PositionError.POSITION_UNAVAILABLE:
+                                message = 'Error: unable to get your position: POSITION_UNAVAILABLE.';
+                                break;
+                            case PositionError.TIMEOUT:
+                                message = 'Error: unable to get your position: TIMEOUT.';
+                                break;
+                        }
                         console.log(message + ' ' + positionError.message);
                         notificationController.showMessage(message, 5000, new DialogOptions({}));
                     }, options);

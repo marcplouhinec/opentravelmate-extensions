@@ -17,29 +17,29 @@ define(function() {
      * @constructor
      */
     function PositionError(options) {
-        /**
-         * @type {number}
-         * @constant
-         */
-        this.PERMISSION_DENIED = 1;
-
-        /**
-         * @type {number}
-         * @constant
-         */
-        this.POSITION_UNAVAILABLE = 2;
-
-        /**
-         * @type {number}
-         * @constant
-         */
-        this.TIMEOUT = 3;
-
         /** @type {number} */
         this.code = options.code;
         /** @type {string} */
         this.message = options.message;
     }
+
+    /**
+     * @type {number}
+     * @constant
+     */
+    PositionError.PERMISSION_DENIED = 1;
+
+    /**
+     * @type {number}
+     * @constant
+     */
+    PositionError.POSITION_UNAVAILABLE = 2;
+
+    /**
+     * @type {number}
+     * @constant
+     */
+    PositionError.TIMEOUT = 3;
 
     return PositionError;
 });
