@@ -45,8 +45,10 @@ define([
             var iframeLoaded = false;
             $(iframe).load(function () {
                 var $iframeDocument = $(iframe.contentDocument);
+                self._setLoadingPanelVisible(true, $iframeDocument);
                 if (stopRoutes.length) {
                     self._showRoutes(stopRoutes, $iframeDocument);
+                    self._setLoadingPanelVisible(false, $iframeDocument);
                 }
                 iframeLoaded = true;
                 var $scrollMarkerElement = $iframeDocument.find('#scroll-marker');
@@ -86,7 +88,9 @@ define([
                 } else {
                     stopRoutes = routes;
                     if (iframeLoaded) {
-                        self._showRoutes(stopRoutes, $(iframe.contentDocument));
+                        var $iframeDocument = $(iframe.contentDocument);
+                        self._showRoutes(stopRoutes, $iframeDocument);
+                        self._setLoadingPanelVisible(false, $iframeDocument);
                     }
                 }
             });
@@ -126,6 +130,8 @@ define([
          * @param $iframeDocument
          */
         '_showTimetable': function(routeId, stopId, $iframeDocument) {
+            var self = this;
+            
             // Hide all routes but the selected one
             var $routeLiElement = null;
             $iframeDocument.find('li.route').each(function() {
@@ -145,7 +151,9 @@ define([
             $timetablePanelElement.show();
 
             // Load the timetables
+            this._setLoadingPanelVisible(true, $iframeDocument);
             routeService.findTimetablesByRouteId(routeId, function(error, timetables) {
+                self._setLoadingPanelVisible(false, $iframeDocument);
                 if (error) {
                     notificationController.showMessage('Error: unable to find information about this stop', 5000, new DialogOptions({}));
                     return;
@@ -181,6 +189,22 @@ define([
             $iframeDocument.find('li.route').each(function() {
                 $(this).show();
             });
+        },
+
+        /**
+         * Show or hide the loading panel.
+         *
+         * @param {boolean} visible
+         * @param $iframeDocument
+         */
+        '_setLoadingPanelVisible': function(visible, $iframeDocument) {
+            if (visible) {
+                $iframeDocument.find('#loading-panel-mask').show();
+                $iframeDocument.find('#loading-panel').show();
+            } else {
+                $iframeDocument.find('#loading-panel-mask').hide();
+                $iframeDocument.find('#loading-panel').hide();
+            }
         }
 
     };

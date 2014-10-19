@@ -109,3 +109,50 @@ button#close-timetable-panel-btn {
 #timetable-panel-body .highlight {
     background-color: #0099cc;
 }
+
+
+/**
+ * Loading
+ */
+
+#loading-panel-mask {
+    display: none;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    opacity: 0.5;
+    background-color: #aaa;
+}
+
+#loading-panel {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+}
+
+#loading-panel-content {
+    position: absolute;
+    top: -70px;
+    left: -70px;
+    width: 140px;
+    height: 140px;
+    background-color: #4B4C49;
+    border-radius: 10px;
+}
+
+#loading-panel-content img {
+    width: 70px;
+    height: 70px;
+    margin-top: 20px;
+    margin-left: 35px;
+    opacity: 1;
+}
+
+#loading-label {
+    width: 100%;
+    text-align: center;
+    margin-top: 7px;
+}
