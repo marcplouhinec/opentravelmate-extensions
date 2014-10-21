@@ -6,12 +6,14 @@
 
 define([
     'jquery',
+    'lodash',
+    'moment',
     '../widget/webview/webview',
     '../main/menuController',
     '../../entity/Place',
     '../../service/placeProviderDirectoryService',
     'jqueryGoogleFastButton'
-], function($, webview, menuController, Place, placeProviderDirectoryService) {
+], function($, _, moment, webview, menuController, Place, placeProviderDirectoryService) {
     'use strict';
 
     var PANEL_ID = 'itinerary-finder-panel';
@@ -63,8 +65,44 @@ define([
                 $(iframe).load(function() {
                     var $iframeDocument = $(iframe.contentDocument);
 
+                    // Initialize the place criterion
                     self._initializePlaceCriteria('origin-place', $iframeDocument);
                     self._initializePlaceCriteria('destination-place', $iframeDocument);
+
+                    // Initialize the date and time criterion
+                    var $dateTimeButtons = $iframeDocument.find('#itinerary-datetime-wrapper > button');
+                    var $itineraryYear = $iframeDocument.find('#itinerary-year');
+                    var $itineraryMonth = $iframeDocument.find('#itinerary-month');
+                    var $itineraryDay = $iframeDocument.find('#itinerary-day');
+                    var $itineraryTime = $iframeDocument.find('#itinerary-time');
+                    $itineraryYear.text(moment().format('YYYY'));
+                    $itineraryMonth.text(moment().format('MM'));
+                    $itineraryDay.text(moment().format('DD'));
+                    $itineraryTime.text(moment().format('HH:mm'));
+                    $itineraryYear.fastClick(function() {
+                        $dateTimeButtons.removeClass('active');
+                        $(this).addClass('active');
+                        var year = Number($(this).text());
+                        self._openDateTimeSelect(_.range(year - 3, year + 4), year, null);
+                    });
+                    $itineraryMonth.fastClick(function() {
+                        $dateTimeButtons.removeClass('active');
+                        $(this).addClass('active');
+                        var month = Number($(this).text());
+                        self._openDateTimeSelect(_.range(1, 13), month, null);
+                    });
+                    $itineraryDay.fastClick(function() {
+                        $dateTimeButtons.removeClass('active');
+                        $(this).addClass('active');
+                        var day = Number($(this).text());
+                        self._openDateTimeSelect(_.range(1, 32), day, null);
+                    });
+                    $itineraryTime.fastClick(function() {
+                        $dateTimeButtons.removeClass('active');
+                        $(this).addClass('active');
+                        var time = Number($(this).text());
+                        //TODO self._openDateTimeSelect(_.range(1, 32), day, null);
+                    });
                 });
             });
         },
@@ -163,6 +201,29 @@ define([
             var $iframeDocument = $(document.getElementById(PANEL_ID).contentDocument);
             $iframeDocument.find('#' + elementId + '-suggestions-wrapper > ul').show();
             $iframeDocument.find('#' + elementId + '-suggestions').html(suggestedPlacesHtml);
+        },
+
+        /**
+         * Open the date time selection.
+         *
+         * @param {Array.<string>} values
+         * @param {string} currentValue
+         * @param {function(selectedValue: string)} callback
+         */
+        '_openDateTimeSelect': function(values, currentValue, callback) {
+            var selectContentHtml = '';
+            var indexCurrentValue = 0;
+            for (var i = 0; i < values.length; i++) {
+                var value = values[i];
+                if (value === currentValue) {
+                    indexCurrentValue = i;
+                }
+                selectContentHtml += '<li' + (value === currentValue ? ' class="active">' : '>') + value + '</li>';
+            }
+            var $iframeDocument = $(document.getElementById(PANEL_ID).contentDocument);
+            $iframeDocument.find('#datetime-select').html(selectContentHtml);
+            $iframeDocument.find('#datetime-select-wrapper').show();
+            $iframeDocument.find('#datetime-select-wrapper').animate({ scrollTop: 45 * (indexCurrentValue - 1) }, 150);
         }
     };
 

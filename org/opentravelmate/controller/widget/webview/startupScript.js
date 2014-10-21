@@ -10,6 +10,7 @@ requirejs.config({
     paths: {
         'jquery': 'extensions/vendors/jquery-1.11.1.min',
         'lodash': 'extensions/vendors/lodash.compat.min',
+        'moment': 'extensions/vendors/moment',
         'async': 'extensions/vendors/async',
         'googleFastButton': 'extensions/vendors/google.fastbutton',
         'jqueryGoogleFastButton': 'extensions/vendors/jquery.google.fastbutton',
@@ -30,6 +31,9 @@ requirejs.config({
         },
         'lodash': {
             exports: '_'
+        },
+        'moment': {
+            exports: 'moment'
         }
     },
     waitSeconds: 0

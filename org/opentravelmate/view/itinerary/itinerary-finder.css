@@ -45,18 +45,33 @@ body {
     margin-left: 5px !important;
 }
 
-#itinerary-date-wrapper {
-    right: 100px;
-}
-
-#itinerary-time-wrapper {
-    right: 15px;
-    left: auto;
+#itinerary-year {
+    position: absolute;
+    left: 90px;
     width: 70px;
+    text-align: center;
+}
+#itinerary-month {
+    position: absolute;
+    left: 165px;
+    width: 35px;
+    text-align: center;
+}
+#itinerary-day {
+    position: absolute;
+    left: 205px;
+    width: 35px;
+    text-align: center;
+}
+#itinerary-time {
+    position: absolute;
+    left: 260px;
+    width: 75px;
+    text-align: center;
 }
 
-#itinerary-date, #itinerary-time {
-    text-align: center;
+#itinerary-year.active, #itinerary-month.active, #itinerary-day.active, #itinerary-time.active {
+    background-color: #0099cc;
 }
 
 
@@ -109,5 +124,36 @@ body {
 }
 
 .suggested-places-wrapper li:hover {
+    background-color: #363735;
+}
+
+/**
+ * Date time selection
+ */
+
+#datetime-select-wrapper {
+    display: none;
+    height: 200px;
+    overflow-y: auto;
+    border: 1px solid #aaa;
+    margin-bottom: 5px;
+}
+
+#datetime-select-wrapper ul {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+
+#datetime-select-wrapper li {
+    padding: 10px;
+    border-bottom: 1px solid #aaa;
+    cursor: pointer;
+    text-align: center;
+}
+#datetime-select-wrapper li.active {
+    background-color: #0099cc;
+}
+#datetime-select-wrapper li:hover {
     background-color: #363735;
 }

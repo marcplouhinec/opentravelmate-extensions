@@ -33,14 +33,15 @@
         <div id="destination-place-suggestions-wrapper" class="suggested-places-wrapper">
             <ul id="destination-place-suggestions" class="suggested-places"></ul>
         </div>
-        <div class="search-criteria-row">
-            <label for="itinerary-date" class="search-criteria-label">Date</label>
-            <div id="itinerary-date-wrapper" class="search-criteria-input-wrapper">
-                <input id="itinerary-date" type="text" class="otm-input-text search-criteria-input" value="2014-01-01"/>
-            </div>
-            <div id="itinerary-time-wrapper" class="search-criteria-input-wrapper">
-                <input id="itinerary-time" type="text" class="otm-input-text search-criteria-input" value="12:00"/>
-            </div>
+        <div id="itinerary-datetime-wrapper" class="search-criteria-row">
+            <label class="search-criteria-label">Date</label>
+            <button id="itinerary-year" class="otm-button otm-button-middle">2014</button>
+            <button id="itinerary-month" class="otm-button otm-button-middle">01</button>
+            <button id="itinerary-day" class="otm-button otm-button-middle">01</button>
+            <button id="itinerary-time" class="otm-button otm-button-middle">12:00</button>
+        </div>
+        <div id="datetime-select-wrapper">
+            <ul id="datetime-select"></ul>
         </div>
 
         <div class="search-criteria-row">
