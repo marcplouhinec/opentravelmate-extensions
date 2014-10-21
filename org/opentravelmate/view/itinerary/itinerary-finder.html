@@ -10,21 +10,43 @@
 <body class="otm-panel">
     <div id="search-criterion-panel">
         <div class="search-criteria-row">
-            <label for="position-from" class="search-criteria-label">From</label>
+            <label for="origin-place" class="search-criteria-label">From</label>
             <div class="search-criteria-input-wrapper">
-                <input id="position-from" type="text" class="otm-input-text search-criteria-input" value="My position"/>
+                <input id="origin-place" type="text" class="otm-input-text search-criteria-input" placeholder="Current position"/>
             </div>
-            <button id="erase-position-from-button" class="otm-button otm-button-middle erase-button">
+            <button id="origin-place-erase-button" class="otm-button otm-button-middle erase-button">
                 <img src="../common/image/ic_btn_erase.png" alt="Erase"/>
             </button>
         </div>
+        <div id="origin-place-suggestions-wrapper" class="suggested-places-wrapper">
+            <ul id="origin-place-suggestions" class="suggested-places"></ul>
+        </div>
         <div class="search-criteria-row">
-            <label for="position-to" class="search-criteria-label">To</label>
+            <label for="destination-place" class="search-criteria-label">To</label>
             <div class="search-criteria-input-wrapper">
-                <input id="position-to" type="text" class="otm-input-text search-criteria-input"/>
+                <input id="destination-place" type="text" class="otm-input-text search-criteria-input"/>
             </div>
-            <button id="erase-position-to-button" class="otm-button otm-button-middle erase-button">
+            <button id="destination-place-erase-button" class="otm-button otm-button-middle erase-button">
                 <img src="../common/image/ic_btn_erase.png" alt="Erase"/>
+            </button>
+        </div>
+        <div id="destination-place-suggestions-wrapper" class="suggested-places-wrapper">
+            <ul id="destination-place-suggestions" class="suggested-places"></ul>
+        </div>
+        <div class="search-criteria-row">
+            <label for="itinerary-date" class="search-criteria-label">Date</label>
+            <div id="itinerary-date-wrapper" class="search-criteria-input-wrapper">
+                <input id="itinerary-date" type="text" class="otm-input-text search-criteria-input" value="2014-01-01"/>
+            </div>
+            <div id="itinerary-time-wrapper" class="search-criteria-input-wrapper">
+                <input id="itinerary-time" type="text" class="otm-input-text search-criteria-input" value="12:00"/>
+            </div>
+        </div>
+
+        <div class="search-criteria-row">
+            <button id="find-button" class="otm-button">
+                <img src="../common/image/ic_btn_find.png" alt=""/>
+                Search
             </button>
         </div>
     </div>

@@ -22,7 +22,7 @@ define([
     var PANEL_ID = 'place-finder-panel';
     var MENU_ITEM_TITLE = 'Find place';
     var MENU_ITEM_TOOLTIP = 'Find a place';
-    var MENU_ITEM_ICONURL = 'extensions/org/opentravelmate/view/place/image/ic_btn_find_place.png';
+    var MENU_ITEM_ICONURL = 'extensions/org/opentravelmate/view/common/image/ic_btn_find.png';
     var ENTER_KEYCODE = 13;
     var MAX_INFOWINDOW_TITLE_LENGTH = 20;
 
