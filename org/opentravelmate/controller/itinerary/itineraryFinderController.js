@@ -21,6 +21,30 @@ define([
     var MENU_ITEM_TOOLTIP = 'Find an itinerary';
     var MENU_ITEM_ICONURL = 'extensions/org/opentravelmate/view/itinerary/image/itinerary.png';
 
+    var YEAR_SUGGESTIONS = /** @type {Array.<string>} */[];
+    var MONTH_SUGGESTIONS = /** @type {Array.<string>} */[];
+    var DAY_SUGGESTIONS = /** @type {Array.<string>} */[];
+    var TIME_SUGGESTIONS = /** @type {Array.<string>} */[];
+    (function() {
+        var currentYear = moment().year();
+        for (var y = currentYear - 5; y < currentYear + 6; y++) {
+            YEAR_SUGGESTIONS.push(String(y));
+        }
+        for (var mo = 1; mo < 13; mo++) {
+            MONTH_SUGGESTIONS.push(mo < 10 ? '0' + mo : String(mo));
+        }
+        for (var d = 1; d < 32; d++) {
+            DAY_SUGGESTIONS.push(d < 10 ? '0' + d : String(d));
+        }
+        for (var h = 0; h < 24; h++) {
+            for (var m = 0; m < 60; m += 10) {
+                var hour = h < 10 ? '0' + h : String(h);
+                var minute = m < 10 ? '0' + m : String(m);
+                TIME_SUGGESTIONS.push(hour + ':' + minute);
+            }
+        }
+    })();
+
     /**
      * Controller for the menu.
      */
@@ -69,39 +93,81 @@ define([
                     self._initializePlaceCriteria('origin-place', $iframeDocument);
                     self._initializePlaceCriteria('destination-place', $iframeDocument);
 
+                    //
                     // Initialize the date and time criterion
+                    //
+                    var $datetimeSelectWrapper = $iframeDocument.find('#datetime-select-wrapper');
                     var $dateTimeButtons = $iframeDocument.find('#itinerary-datetime-wrapper > button');
                     var $itineraryYear = $iframeDocument.find('#itinerary-year');
                     var $itineraryMonth = $iframeDocument.find('#itinerary-month');
                     var $itineraryDay = $iframeDocument.find('#itinerary-day');
                     var $itineraryTime = $iframeDocument.find('#itinerary-time');
+
+                    // Set the current date and time
                     $itineraryYear.text(moment().format('YYYY'));
                     $itineraryMonth.text(moment().format('MM'));
                     $itineraryDay.text(moment().format('DD'));
                     $itineraryTime.text(moment().format('HH:mm'));
-                    $itineraryYear.fastClick(function() {
+
+                    // Handle date time change
+                    $dateTimeButtons.fastClick(function handleDateTimeClick() {
+                        var $dateTimeElement = $(this);
+                        var year = $itineraryYear.text();
+                        var month = $itineraryMonth.text();
+                        var day = $itineraryDay.text();
+                        var time = $itineraryTime.text();
+
+                        // Highlight the selected element
                         $dateTimeButtons.removeClass('active');
                         $(this).addClass('active');
-                        var year = Number($(this).text());
-                        self._openDateTimeSelect(_.range(year - 3, year + 4), year, null);
+
+                        // Show the date time selection panel when the user click on a date time button
+                        var dateTimeElementId = $dateTimeElement.attr('id');
+                        switch (dateTimeElementId) {
+                            case 'itinerary-year':
+                                self._openDateTimeSelect(YEAR_SUGGESTIONS, year);
+                                break;
+                            case 'itinerary-month':
+                                self._openDateTimeSelect(MONTH_SUGGESTIONS, month);
+                                break;
+                            case 'itinerary-day':
+                                self._openDateTimeSelect(DAY_SUGGESTIONS, day);
+                                break;
+                            case 'itinerary-time':
+                                var dateTime = moment(time, 'HH:mm');
+                                var hours = dateTime.hours();
+                                var minutes = dateTime.minutes();
+                                var roundedDateTime = (hours < 10 ? '0' + hours : hours) + ':' + (minutes === 0 ? '00' : Math.floor(minutes / 10) * 10);
+                                self._openDateTimeSelect(TIME_SUGGESTIONS, roundedDateTime);
+                                break;
+                        }
                     });
-                    $itineraryMonth.fastClick(function() {
+
+                    // Handle the user click on the date time selection panel
+                    $iframeDocument.find('#datetime-select').fastClick(function handleDateTimeSelection(event) {
+                        // Find the date time element type and the value
+                        var $activeButton = $iframeDocument.find('#itinerary-datetime-wrapper > button.active');
+                        var dateTimeElementId = $activeButton.attr('id');
+                        var dateTimeElementValue = $(event.target).text();
+
+                        // Update the button value
+                        if (dateTimeElementId === 'itinerary-time') {
+                            $itineraryTime.text(dateTimeElementValue);
+                        } else {
+                            var year = dateTimeElementId === 'itinerary-year' ? dateTimeElementValue : $itineraryYear.text();
+                            var month = dateTimeElementId === 'itinerary-month' ? dateTimeElementValue : $itineraryMonth.text();
+                            var day = dateTimeElementId === 'itinerary-day' ? dateTimeElementValue : $itineraryDay.text();
+                            var dateTime = moment(year + '-' + month + '-' + day, 'YYYY-MM-DD');
+                            var monthAsNumber = dateTime.month() + 1;
+                            var dayAsNumber = dateTime.date();
+                            $itineraryYear.text(dateTime.year());
+                            $itineraryMonth.text(monthAsNumber < 10 ? '0' + monthAsNumber : monthAsNumber);
+                            $itineraryDay.text(dayAsNumber < 10 ? '0' + dayAsNumber : dayAsNumber);
+                        }
+
+                        // Hide the selection panel and un-highlight the selected button
+                        $datetimeSelectWrapper.hide();
                         $dateTimeButtons.removeClass('active');
-                        $(this).addClass('active');
-                        var month = Number($(this).text());
-                        self._openDateTimeSelect(_.range(1, 13), month, null);
-                    });
-                    $itineraryDay.fastClick(function() {
-                        $dateTimeButtons.removeClass('active');
-                        $(this).addClass('active');
-                        var day = Number($(this).text());
-                        self._openDateTimeSelect(_.range(1, 32), day, null);
-                    });
-                    $itineraryTime.fastClick(function() {
-                        $dateTimeButtons.removeClass('active');
-                        $(this).addClass('active');
-                        var time = Number($(this).text());
-                        //TODO self._openDateTimeSelect(_.range(1, 32), day, null);
                     });
                 });
             });
@@ -208,9 +274,8 @@ define([
          *
          * @param {Array.<string>} values
          * @param {string} currentValue
-         * @param {function(selectedValue: string)} callback
          */
-        '_openDateTimeSelect': function(values, currentValue, callback) {
+        '_openDateTimeSelect': function(values, currentValue) {
             var selectContentHtml = '';
             var indexCurrentValue = 0;
             for (var i = 0; i < values.length; i++) {
@@ -221,9 +286,11 @@ define([
                 selectContentHtml += '<li' + (value === currentValue ? ' class="active">' : '>') + value + '</li>';
             }
             var $iframeDocument = $(document.getElementById(PANEL_ID).contentDocument);
-            $iframeDocument.find('#datetime-select').html(selectContentHtml);
-            $iframeDocument.find('#datetime-select-wrapper').show();
-            $iframeDocument.find('#datetime-select-wrapper').animate({ scrollTop: 45 * (indexCurrentValue - 1) }, 150);
+            var $datetimeSelect = $iframeDocument.find('#datetime-select');
+            var $datetimeSelectWrapper = $iframeDocument.find('#datetime-select-wrapper');
+            $datetimeSelect.html(selectContentHtml);
+            $datetimeSelectWrapper.show();
+            $datetimeSelectWrapper.animate({ scrollTop: 45 * (indexCurrentValue - 1) }, 150);
         }
     };
 
