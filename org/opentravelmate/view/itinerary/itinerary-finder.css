@@ -157,3 +157,89 @@ body {
 #datetime-select-wrapper li:hover {
     background-color: #363735;
 }
+
+
+/**
+ * Searching panel
+ */
+
+#searching-panel-mask {
+    display: none;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    opacity: 0.5;
+    background-color: #aaa;
+}
+
+#searching-panel {
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+}
+
+#searching-panel-content {
+    position: absolute;
+    top: -70px;
+    left: -70px;
+    width: 140px;
+    height: 140px;
+    background-color: #4B4C49;
+    border-radius: 10px;
+}
+
+#searching-panel-content img {
+    width: 70px;
+    height: 70px;
+    margin-top: 20px;
+    margin-left: 35px;
+    opacity: 1;
+}
+
+#searching-label {
+    width: 100%;
+    text-align: center;
+    margin-top: 7px;
+}
+
+/**
+ * Found itineraries panel
+ */
+
+#found-itineraries-panel {
+    display: none;
+}
+
+#found-itineraries-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#found-itineraries-table th, #found-itineraries-table td {
+    height: 44px;
+    border-bottom: 1px solid #aaa;
+}
+
+#found-itineraries-table tr.itinerary-info {
+    cursor: pointer;
+}
+
+#found-itineraries-table tr.itinerary-info:hover {
+    background-color: #363735;
+}
+
+.itinerary-departure, .itinerary-arrival, .itinerary-duration {
+    width: 60px;
+    text-align: center;
+}
+.itinerary-legs {
+    text-align: center;
+}
+.itinerary-leg-img {
+    height: 32px;
+    width: auto;
+    margin-top: 4px;
+}

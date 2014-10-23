@@ -51,5 +51,39 @@
             </button>
         </div>
     </div>
+
+    <div id="found-itineraries-panel">
+        <table id="found-itineraries-table">
+            <thead>
+                <tr>
+                    <th class="itinerary-departure">Dep.</th>
+                    <th class="itinerary-arrival">Arr.</th>
+                    <th class="itinerary-legs">&nbsp;</th>
+                    <th class="itinerary-duration">Dur.</th>
+                </tr>
+            </thead>
+            <tbody id="found-itineraries-table-body"></tbody>
+        </table>
+    </div>
+
+    <div id="searching-panel-mask"></div>
+    <div id="searching-panel">
+        <div id="searching-panel-content">
+            <img src="../common/image/waiting.gif" />
+            <div id="searching-label">Searching...</div>
+        </div>
+    </div>
+    <script id="tpl-itinerary-info" type="text/template">
+        <tr class="itinerary-info">
+            <td class="itinerary-departure">${departureTime}</td>
+            <td class="itinerary-arrival">${arrivalTime}</td>
+            <td class="itinerary-legs">
+                <% _.forEach(legs, function(leg) { %>
+                <img class="itinerary-leg-img" alt="${leg.type}" src="image/${leg.type}.min.png" title="${leg.title}"/>
+                <% }); %>
+            </td>
+            <td class="itinerary-duration">${duration}</td>
+        </tr>
+    </script>
 </body>
 </html>

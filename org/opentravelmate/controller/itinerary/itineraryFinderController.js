@@ -10,10 +10,18 @@ define([
     'moment',
     '../widget/webview/webview',
     '../main/menuController',
+    '../dialog/DialogOptions',
+    '../dialog/notificationController',
     '../../entity/Place',
     '../../service/placeProviderDirectoryService',
+    '../../entity/geolocation/PositionOptions',
+    '../../entity/geolocation/PositionError',
+    '../../service/geolocationService',
+    '../../entity/itinerary/Itinerary',
+    '../../service/itineraryProviderDirectoryService',
     'jqueryGoogleFastButton'
-], function($, _, moment, webview, menuController, Place, placeProviderDirectoryService) {
+], function($, _, moment, webview, menuController, DialogOptions, notificationController, Place, placeProviderDirectoryService,
+            PositionOptions, PositionError, geolocationService, Itinerary, itineraryProviderDirectoryService) {
     'use strict';
 
     var PANEL_ID = 'itinerary-finder-panel';
@@ -45,6 +53,10 @@ define([
         }
     })();
 
+    var CURRENT_POSITION_MAX_WATCH_TIME = 10 * 1000;
+    var CURRENT_POSITION_MAX_POSITION_AGE = 1000 * 60 * 2;
+    var CURRENT_POSITION_ACCEPTABLE_ACCURACY = 100;
+
     /**
      * Controller for the menu.
      */
@@ -61,6 +73,24 @@ define([
          * @type {Object.<string, Array.<Place>>}
          */
         '_suggestedPlacesByElementId': {},
+
+        /**
+         * @private
+         * @type {Place}
+         */
+        '_originPlace': null,
+
+        /**
+         * @private
+         * @type {Place}
+         */
+        '_destinationPlace': null,
+
+        /**
+         * @private
+         * @type {Array.<Itinerary>}
+         */
+        '_foundItineraries': [],
 
         /**
          * Initialization.
@@ -169,6 +199,11 @@ define([
                         $datetimeSelectWrapper.hide();
                         $dateTimeButtons.removeClass('active');
                     });
+
+                    // Handle the user click on the search button
+                    $iframeDocument.find('#find-button').fastClick(function handleFindItineraryClick(event) {
+                        self._findItineraries();
+                    });
                 });
             });
         },
@@ -214,10 +249,20 @@ define([
                 if (!event.target || !$(event.target).hasClass('suggested-place')) { return; }
                 var suggestedPlace = self._suggestedPlacesByElementId[elementId][Number($(event.target).attr('data-place-index'))];
                 if (!suggestedPlace.provider) { return; }
-                $placeInputElement.val(suggestedPlace.name);
-                /*suggestedPlace.provider.getPlaceDetails(suggestedPlace, function handlePlaceWithDetails(placeWithDetails) {
-                    self._showFoundPlaces([placeWithDetails]);
-                });*/
+
+                $iframeDocument.find('#searching-panel-mask').show();
+                $iframeDocument.find('#searching-panel').show();
+                suggestedPlace.provider.getPlaceDetails(suggestedPlace, function handlePlaceWithDetails(placeWithDetails) {
+                    $iframeDocument.find('#searching-panel-mask').hide();
+                    $iframeDocument.find('#searching-panel').hide();
+                    $placeInputElement.val(suggestedPlace.name);
+
+                    if (elementId === 'origin-place') {
+                        self._originPlace = placeWithDetails;
+                    } else {
+                        self._destinationPlace = placeWithDetails;
+                    }
+                });
             });
         },
 
@@ -291,6 +336,138 @@ define([
             $datetimeSelect.html(selectContentHtml);
             $datetimeSelectWrapper.show();
             $datetimeSelectWrapper.animate({ scrollTop: 45 * (indexCurrentValue - 1) }, 150);
+        },
+
+        /**
+         * Method called when the user has clicked on the search button.
+         */
+        '_findItineraries': function() {
+            var self = this;
+
+            // Show an error if the destination place is empty
+            if (!this._destinationPlace) {
+                notificationController.showMessage('Please select a destination.', 2000, new DialogOptions({
+                    height: 100
+                }));
+                return;
+            }
+
+            // If no origin is set, take the current position
+            if (!this._originPlace) {
+                this._findCurrentPlace(function handleFoundCurrentPlace(currentPlace) {
+                    self._originPlace = currentPlace;
+                    self._findItineraries();
+                });
+                return;
+            }
+
+            // Get the itinerary time
+            var $iframeDocument = $(document.getElementById(PANEL_ID).contentDocument);
+            var year = $iframeDocument.find('#itinerary-year').text();
+            var month = $iframeDocument.find('#itinerary-month').text();
+            var day = $iframeDocument.find('#itinerary-day').text();
+            var time = $iframeDocument.find('#itinerary-time').text();
+            var dateTime = moment(year + '-' + month + '-' + day + ' ' + time, 'YYYY-MM-DD HH:mm').format();
+
+            // Show the itineraries
+            $iframeDocument.find('#searching-panel-mask').show();
+            $iframeDocument.find('#searching-panel').show();
+            this._foundItineraries = [];
+            var itineraryProviderServices = itineraryProviderDirectoryService.getAllItineraryProviderServices();
+            var nbItineraryProviderServicesToWait = itineraryProviderServices.length;
+            function handleFoundItineraries(itineraries) {
+                nbItineraryProviderServicesToWait--;
+                self._foundItineraries = self._foundItineraries.concat(itineraries);
+
+                if (nbItineraryProviderServicesToWait === 0) {
+                    $iframeDocument.find('#searching-panel-mask').hide();
+                    $iframeDocument.find('#searching-panel').hide();
+                    self._showFoundItineraries();
+                }
+            }
+            for (var i = 0; i < itineraryProviderServices.length; i++) {
+                var itineraryProviderService = itineraryProviderServices[i];
+                itineraryProviderService.findItineraries(this._originPlace, this._destinationPlace, dateTime, true, handleFoundItineraries);
+            }
+        },
+
+        /**
+         * Find the current position and convert it into a Place.
+         *
+         * @param {function(place: Place)} callback
+         */
+        '_findCurrentPlace': function(callback) {
+            var self = this;
+            var options = new PositionOptions({
+                enableHighAccuracy: true,
+                timeout: CURRENT_POSITION_MAX_WATCH_TIME,
+                maximumAge: CURRENT_POSITION_MAX_POSITION_AGE,
+                acceptableAccuracy: CURRENT_POSITION_ACCEPTABLE_ACCURACY,
+                maxWatchTime: CURRENT_POSITION_MAX_WATCH_TIME
+            });
+            var $iframeDocument = $(document.getElementById(PANEL_ID).contentDocument);
+            $iframeDocument.find('#searching-panel-mask').show();
+            $iframeDocument.find('#searching-panel').show();
+            geolocationService.watchPosition(function handlePosition(position, hasMore) {
+                if (!hasMore) {
+                    $iframeDocument.find('#searching-panel-mask').hide();
+                    $iframeDocument.find('#searching-panel').hide();
+                    callback(new Place({
+                        latitude: position.coords.latitude,
+                        longitude: position.coords.longitude,
+                        name: 'Current Position',
+                        additionalParameters: {
+                            altitude: position.coords.altitude,
+                            accuracy: position.coords.accuracy,
+                            altitudeAccuracy: position.coords.altitudeAccuracy,
+                            heading: position.coords.heading,
+                            speed: position.coords.speed,
+                            timestamp: position.timestamp
+                        }
+                    }));
+                }
+            }, function handleError(positionError) {
+                $iframeDocument.find('#searching-panel-mask').hide();
+                $iframeDocument.find('#searching-panel').hide();
+                var message = 'Error: unable to get your position.';
+                switch (positionError.code) {
+                    case PositionError.PERMISSION_DENIED:
+                        message = 'Error: unable to get your position: PERMISSION_DENIED.';
+                        break;
+                    case PositionError.POSITION_UNAVAILABLE:
+                        message = 'Error: unable to get your position: POSITION_UNAVAILABLE.';
+                        break;
+                    case PositionError.TIMEOUT:
+                        message = 'Error: unable to get your position: TIMEOUT.';
+                        break;
+                }
+                console.log(message + ' ' + positionError.message);
+                notificationController.showMessage(message, 5000, new DialogOptions({}));
+            }, options);
+        },
+
+        /**
+         * Show the found itineraries.
+         */
+        '_showFoundItineraries': function() {
+            var $iframeDocument = $(document.getElementById(PANEL_ID).contentDocument);
+            var templateItineraryInfo = _.template($iframeDocument.find('#tpl-itinerary-info').text());
+            var foundItinerariesHtml = '';
+
+            for (var i = 0; i < this._foundItineraries.length; i++) {
+                var foundItinerary = this._foundItineraries[i];
+                foundItinerariesHtml += templateItineraryInfo({
+                    departureTime: moment(foundItinerary.startDateTime).format('HH:mm'),
+                    arrivalTime: moment(foundItinerary.endDateTime).format('HH:mm'),
+                    legs: _.map(foundItinerary.legs, function(leg) {
+                        return { type: leg.routeType === 0 ? 'walk' : 'bus', title: leg.routeShortName };
+                    }),
+                    duration: moment.duration(foundItinerary.durationSecond, 'seconds').minutes() + 'min'
+                });
+            }
+
+            $iframeDocument.find('#found-itineraries-panel').show();
+            $iframeDocument.find('#found-itineraries-table-body').html(foundItinerariesHtml);
         }
     };
 
