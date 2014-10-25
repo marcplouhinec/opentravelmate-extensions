@@ -61,19 +61,29 @@ define([
             // Start the extensions
             extensionService.startExtensions();
 
-            // Handle side panel maximizing / minimizing
+            // Handle side panel fullscreen / restoring
             if (this.isWideScreen()) {
                 var $sidePanelFullscreenButton = $('#side-panel-fullscreen-button');
                 var $sidePanelRestoreSizeButton = $('#side-panel-restore-size-button');
                 $sidePanelFullscreenButton.show();
 
-                $sidePanelFullscreenButton.fastClick(function handleMaximizeSidePanelEvent() {
+                $sidePanelFullscreenButton.fastClick(function handleFullscreenSidePanelEvent() {
                     self._setSidePanelFullscreen(true);
                 });
-                $sidePanelRestoreSizeButton.fastClick(function handleMinimizeSidePanelEvent() {
+                $sidePanelRestoreSizeButton.fastClick(function handleRestoreSizeSidePanelEvent() {
                     self._setSidePanelFullscreen(false);
                 });
             }
+
+            // Handle side panel maximizing / minimizing
+            var $sidePanelMaximizeButton = $('#side-panel-maximize-button');
+            var $sidePanelMinimizeButton = $('#side-panel-minimize-button');
+            $sidePanelMaximizeButton.fastClick(function handleMaximizeSidePanelEvent() {
+                self.setSidePanelMaximized(true);
+            });
+            $sidePanelMinimizeButton.fastClick(function handleMinimizeSidePanelEvent() {
+                self.setSidePanelMaximized(false);
+            });
 
             // Handle footer panel maximizing / minimizing
             var $footerPanelMaximizeButton = $('#footer-panel-maximize-button');
@@ -93,6 +103,7 @@ define([
          * @param {string} title
          */
         'openSidePanel': function (title) {
+            this.setSidePanelMaximized(true);
             $('#side-panel-title-label').text(title);
             $('#side-panel').show();
             $('#central-panel').addClass('central-panel-hidden-by-side-panel');
@@ -104,6 +115,7 @@ define([
          */
         'closeSidePanel': function () {
             this._setSidePanelFullscreen(false);
+            this.setSidePanelMaximized(true);
             $('#side-panel').hide();
             $('#central-panel').removeClass('central-panel-hidden-by-side-panel');
             webview.layout();
@@ -115,7 +127,7 @@ define([
          *
          * @param {boolean} fullscreen
          */
-        "_setSidePanelFullscreen": function(fullscreen) {
+        '_setSidePanelFullscreen': function(fullscreen) {
             var $sidePanel = $('#side-panel');
             var $centralPanel = $('#central-panel');
             var $sidePanelFullscreenButton = $('#side-panel-fullscreen-button');
@@ -133,6 +145,35 @@ define([
                 $centralPanel.show();
                 $sidePanelRestoreSizeButton.hide();
                 $sidePanelFullscreenButton.show();
+            }
+            webview.layout();
+        },
+
+        /**
+         * Maximize or minimize the side panel.
+         *
+         * @param {boolean} maximized
+         */
+        'setSidePanelMaximized': function(maximized) {
+            var $sidePanel = $('#side-panel');
+            var $centralPanel = $('#central-panel');
+            var $sidePanelMaximizeButton = $('#side-panel-maximize-button');
+            var $sidePanelMinimizeButton = $('#side-panel-minimize-button');
+
+            if (maximized) {
+                if (!$sidePanel.hasClass('side-panel-minimized')) { return; }
+                $sidePanel.removeClass('side-panel-minimized');
+                $centralPanel.removeClass('central-panel-hidden-by-minimized-side-panel');
+                $centralPanel.addClass('central-panel-hidden-by-side-panel');
+                $sidePanelMaximizeButton.hide();
+                $sidePanelMinimizeButton.show();
+            } else {
+                if ($sidePanel.hasClass('side-panel-minimized')) { return; }
+                $sidePanel.addClass('side-panel-minimized');
+                $centralPanel.addClass('central-panel-hidden-by-minimized-side-panel');
+                $centralPanel.removeClass('central-panel-hidden-by-side-panel');
+                $sidePanelMinimizeButton.hide();
+                $sidePanelMaximizeButton.show();
             }
             webview.layout();
         },

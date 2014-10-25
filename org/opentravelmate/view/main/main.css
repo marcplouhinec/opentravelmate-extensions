@@ -34,6 +34,10 @@ body {
     }
 }
 
+.central-panel-hidden-by-minimized-side-panel {
+    right: 50px !important;
+}
+
 #map {
     position: absolute;
     top: 0;
@@ -78,29 +82,21 @@ body {
     }
 }
 
-.side-panel-fullscreen {
-    left: 0 !important;
-    top: 0 !important;
-    right: 0 !important;
-    bottom: 0 !important;
-    width: auto !important;
-}
-
 #side-panel-titlebar {
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
-    height: 64px;
+    height: 58px;
     border-bottom: 2px solid #0099cc;
 }
 
 #side-panel-title-label {
     position: absolute;
     left: 5px;
-    top: 16px;
-    right: 103px;
-    bottom: 8px;
+    top: 13px;
+    right: 140px;
+    bottom: 10px;
     font-size: 24px;
     color: #00bfff;
     text-overflow: ellipsis;
@@ -112,34 +108,77 @@ body {
     position: absolute;
     right: 5px;
     top: 10px;
-    width: 44px;
-    height: 44px;
 }
 
 #side-panel-fullscreen-button, #side-panel-restore-size-button {
     display: none;
     position: absolute;
-    right: 54px;
+    right: 50px;
     top: 10px;
-    width: 44px;
-    height: 44px;
 }
 
 #side-panel-fullscreen-button img, #side-panel-restore-size-button img {
-    width: 30px;
-    height: 30px;
+    width: 26px;
+    height: 26px;
     margin-left: 5px;
+}
+
+#side-panel-minimize-button, #side-panel-maximize-button {
+    position: absolute;
+    top: 10px;
+}
+@media (min-width: 900px) {
+    #side-panel-minimize-button, #side-panel-maximize-button {
+        right: 95px;
+    }
+}
+@media (max-width: 899px) {
+    #side-panel-minimize-button, #side-panel-maximize-button {
+        right: 50px;
+    }
+}
+#side-panel-maximize-button {
+    display: none;
 }
 
 #side-panel-content {
     position: absolute;
-    top: 66px;
+    top: 60px;
     bottom: 0;
     left: 0;
     right: 0;
     overflow-y: auto;
 }
 
+/* Special modes */
+
+.side-panel-fullscreen {
+    left: 0 !important;
+    top: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: auto !important;
+}
+
+.side-panel-minimized {
+    top: 60px !important;
+    left: auto !important;
+    width: 50px !important;
+    border-top: none !important;
+}
+.side-panel-minimized #side-panel-content,
+.side-panel-minimized #side-panel-close-button,
+.side-panel-minimized #side-panel-fullscreen-button,
+.side-panel-minimized #side-panel-restore-size-button,
+.side-panel-minimized #side-panel-title-label {
+    display: none !important;
+}
+.side-panel-minimized #side-panel-maximize-button {
+    right: 5px !important;
+}
+.side-panel-minimized #side-panel-titlebar {
+    border-bottom: none !important;
+}
 
 /************
  FOOTER PANEL

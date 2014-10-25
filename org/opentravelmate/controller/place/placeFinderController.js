@@ -259,9 +259,9 @@ define([
             // Move the map to the first place
             map.panTo(new LatLng(places[0].latitude, places[0].longitude));
 
-            // Hide the panel on small screen
+            // Minimize the panel on small screen
             if (!this._mainController.isWideScreen()) {
-                this._mainController.closeSidePanel();
+                this._mainController.setSidePanelMaximized(false);
             }
         },
 

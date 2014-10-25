@@ -218,6 +218,11 @@ define([
 
                         // Show the details
                         itineraryDetailsController.showItineraryDetails(itinerary);
+
+                        // Minimize the panel on small screen
+                        if (!mainController.isWideScreen()) {
+                            mainController.setSidePanelMaximized(false);
+                        }
                     });
                 });
             });
