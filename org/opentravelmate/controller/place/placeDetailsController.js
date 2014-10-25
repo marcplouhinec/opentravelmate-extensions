@@ -12,7 +12,7 @@ define(['jquery', '../../entity/Place', '../widget/webview/webview'], function($
     var placeDetailsController = {
 
         /**
-         * Show the menu for the given place.
+         * Show the details of the given place.
          *
          * @param {Place} place
          */

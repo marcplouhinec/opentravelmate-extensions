@@ -19,9 +19,10 @@ define([
     '../../service/geolocationService',
     '../../entity/itinerary/Itinerary',
     '../../service/itineraryProviderDirectoryService',
+    './itineraryDetailsController',
     'jqueryGoogleFastButton'
 ], function($, _, moment, webview, menuController, DialogOptions, notificationController, Place, placeProviderDirectoryService,
-            PositionOptions, PositionError, geolocationService, Itinerary, itineraryProviderDirectoryService) {
+            PositionOptions, PositionError, geolocationService, Itinerary, itineraryProviderDirectoryService, itineraryDetailsController) {
     'use strict';
 
     var PANEL_ID = 'itinerary-finder-panel';
@@ -201,8 +202,22 @@ define([
                     });
 
                     // Handle the user click on the search button
-                    $iframeDocument.find('#find-button').fastClick(function handleFindItineraryClick(event) {
+                    $iframeDocument.find('#find-button').fastClick(function handleFindItineraryClick() {
                         self._findItineraries();
+                    });
+
+                    // Handle user click on an itinerary
+                    $iframeDocument.find('#found-itineraries-table-body').fastClick(function handleItineraryClick(event) {
+                        // Find the clicked itinerary
+                        var $itineraryElement = $(event.target);
+                        while (!$itineraryElement.hasClass('itinerary-info')) {
+                            $itineraryElement = $itineraryElement.parent();
+                        }
+                        var itineraryIndex = Number($itineraryElement.attr('data-itinerary-index'));
+                        var itinerary = self._foundItineraries[itineraryIndex];
+
+                        // Show the details
+                        itineraryDetailsController.showItineraryDetails(itinerary);
                     });
                 });
             });
@@ -457,6 +472,7 @@ define([
             for (var i = 0; i < this._foundItineraries.length; i++) {
                 var foundItinerary = this._foundItineraries[i];
                 foundItinerariesHtml += templateItineraryInfo({
+                    itineraryIndex: i,
                     departureTime: moment(foundItinerary.startDateTime).format('HH:mm'),
                     arrivalTime: moment(foundItinerary.endDateTime).format('HH:mm'),
                     legs: _.map(foundItinerary.legs, function(leg) {

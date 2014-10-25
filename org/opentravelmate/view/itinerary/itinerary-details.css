@@ -1,0 +1,53 @@
+html {
+    height: 100%;
+}
+
+body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+#itinerary-details {
+    width: 100%;
+    height: 100%;
+    background-color: white;
+    color: black;
+    overflow: auto;
+}
+
+#itinerary-details table {
+    border-collapse: collapse;
+    height: 100%;
+}
+
+#itinerary-details tr#place-elements td {
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-bottom: 5px;
+}
+
+#itinerary-details tr#path-lines {
+    height: 8px;
+}
+
+#itinerary-details td {
+    text-align: center;
+}
+
+#itinerary-details .station-wrapper {
+    position: relative;
+}
+#itinerary-details .station-wrapper-right {
+    position: relative;
+    float:right;
+}
+#itinerary-details .station {
+    position: absolute;
+    left: -8px;
+    top: -8px;
+    width: 16px;
+    height: 16px;
+    border-radius: 16px;
+    background-color: black;
+}

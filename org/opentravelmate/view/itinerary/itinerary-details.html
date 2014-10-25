@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>Open Travel Mate</title>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no"/>
+    <link rel="stylesheet" href="../common/common.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="itinerary-details.css" type="text/css" media="screen"/>
+</head>
+<body class="otm-panel">
+    <div id="itinerary-details"></div>
+    <script id="tpl-itinerary-steps" type="text/template">
+        <table id="itinerary-steps">
+            <tr id="place-elements">
+                <% var placeNames = [itinerary.legs[0].startPlaceName].concat(_.pluck(itinerary.legs, 'endPlaceName')); %>
+                <% _.each(placeNames, function (placeName) { %>
+                <td colspan="2"><%=placeName %></td>
+                <% }); %>
+            </tr>
+            <tr id="path-lines">
+                <td></td>
+                <% _.each(itinerary.legs, function (leg, index) { %>
+                <td style="background-color: #<%=leg.routeColor ? leg.routeColor : '1E90FF' %>;">
+                    <div class="station-wrapper"><div class="station"></div></div>
+                </td>
+                <td style="background-color: #<%=leg.routeColor ? leg.routeColor : '1E90FF' %>;">
+                    <% if (index >= itinerary.legs.length - 2) { %>
+                    <div class="station-wrapper-right"><div class="station"></div></div>
+                    <% } %>
+                </td>
+                <% }); %>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <% _.each(itinerary.legs, function (leg) { %>
+                <td colspan="2">
+                    <%=leg.routeShortName ? 'Line ' + leg.routeShortName : '&nbsp;' %>
+                    <span style="font-size: 12px;"><%=leg.headsign ? ' - ' + leg.headsign : '' %></span>
+                </td>
+                <% }); %>
+                <td></td>
+            </tr>
+        </table>
+    </script>
+</body>
+</html>
