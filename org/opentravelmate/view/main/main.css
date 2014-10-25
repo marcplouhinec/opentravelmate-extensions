@@ -116,7 +116,7 @@ body {
     height: 44px;
 }
 
-#side-panel-maximize-button, #side-panel-minimize-button {
+#side-panel-fullscreen-button, #side-panel-restore-size-button {
     display: none;
     position: absolute;
     right: 54px;
@@ -125,7 +125,7 @@ body {
     height: 44px;
 }
 
-#side-panel-maximize-button img, #side-panel-minimize-button img {
+#side-panel-fullscreen-button img, #side-panel-restore-size-button img {
     width: 30px;
     height: 30px;
     margin-left: 5px;

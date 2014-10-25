@@ -63,15 +63,15 @@ define([
 
             // Handle side panel maximizing / minimizing
             if (this.isWideScreen()) {
-                var $sidePanelMaximizeButton = $('#side-panel-maximize-button');
-                var $sidePanelMinimizeButton = $('#side-panel-minimize-button');
-                $sidePanelMaximizeButton.show();
+                var $sidePanelFullscreenButton = $('#side-panel-fullscreen-button');
+                var $sidePanelRestoreSizeButton = $('#side-panel-restore-size-button');
+                $sidePanelFullscreenButton.show();
 
-                $sidePanelMaximizeButton.fastClick(function handleMaximizeSidePanelEvent() {
-                    self._setSidePanelMaximized(true);
+                $sidePanelFullscreenButton.fastClick(function handleMaximizeSidePanelEvent() {
+                    self._setSidePanelFullscreen(true);
                 });
-                $sidePanelMinimizeButton.fastClick(function handleMinimizeSidePanelEvent() {
-                    self._setSidePanelMaximized(false);
+                $sidePanelRestoreSizeButton.fastClick(function handleMinimizeSidePanelEvent() {
+                    self._setSidePanelFullscreen(false);
                 });
             }
 
@@ -103,7 +103,7 @@ define([
          * Close the panel located on the side of the map.
          */
         'closeSidePanel': function () {
-            this._setSidePanelMaximized(false);
+            this._setSidePanelFullscreen(false);
             $('#side-panel').hide();
             $('#central-panel').removeClass('central-panel-hidden-by-side-panel');
             webview.layout();
@@ -111,28 +111,28 @@ define([
         },
 
         /**
-         * Maximize or minimize the side panel.
+         * Change the side panel size.
          *
-         * @param {boolean} maximized
+         * @param {boolean} fullscreen
          */
-        '_setSidePanelMaximized': function(maximized) {
+        "_setSidePanelFullscreen": function(fullscreen) {
             var $sidePanel = $('#side-panel');
             var $centralPanel = $('#central-panel');
-            var $sidePanelMaximizeButton = $('#side-panel-maximize-button');
-            var $sidePanelMinimizeButton = $('#side-panel-minimize-button');
+            var $sidePanelFullscreenButton = $('#side-panel-fullscreen-button');
+            var $sidePanelRestoreSizeButton = $('#side-panel-restore-size-button');
 
-            if (maximized) {
+            if (fullscreen) {
                 if ($sidePanel.hasClass('side-panel-fullscreen')) { return; }
                 $sidePanel.addClass('side-panel-fullscreen');
                 $centralPanel.hide();
-                $sidePanelMaximizeButton.hide();
-                $sidePanelMinimizeButton.show();
+                $sidePanelFullscreenButton.hide();
+                $sidePanelRestoreSizeButton.show();
             } else {
                 if (!$sidePanel.hasClass('side-panel-fullscreen')) { return; }
                 $sidePanel.removeClass('side-panel-fullscreen');
                 $centralPanel.show();
-                $sidePanelMinimizeButton.hide();
-                $sidePanelMaximizeButton.show();
+                $sidePanelRestoreSizeButton.hide();
+                $sidePanelFullscreenButton.show();
             }
             webview.layout();
         },
