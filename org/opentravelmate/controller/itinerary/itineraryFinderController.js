@@ -53,9 +53,9 @@ define([
         }
     })();
 
-    var CURRENT_POSITION_MAX_WATCH_TIME = 10 * 1000;
+    var CURRENT_POSITION_MAX_WATCH_TIME = 20 * 1000;
     var CURRENT_POSITION_MAX_POSITION_AGE = 1000 * 60 * 2;
-    var CURRENT_POSITION_ACCEPTABLE_ACCURACY = 100;
+    var CURRENT_POSITION_ACCEPTABLE_ACCURACY = 200;
 
     /**
      * Controller for the menu.

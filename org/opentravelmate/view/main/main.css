@@ -11,27 +11,43 @@ body {
 }
 
 
-/*********
- MAP PANEL
- *********/
+/*************
+ CENTRAL PANEL
+ *************/
 
-#map {
-	position: absolute;
-	left: 0;
-	top: 60px;
-	right: 0;
-	bottom: 0;
+#central-panel {
+    position: absolute;
+    left: 0;
+    top: 60px;
+    right: 0;
+    bottom: 0;
 }
 
 @media (min-width: 900px) {
-    .map-hidden-by-side-panel {
+    .central-panel-hidden-by-side-panel {
         right: 360px !important;
     }
 }
 @media (max-width: 899px) {
-    .map-hidden-by-side-panel {
-        display: none;
+    .central-panel-hidden-by-side-panel {
+        display: none !important;
     }
+}
+
+#map {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+.map-hidden-by-footer-panel {
+    bottom: 160px !important;
+}
+
+.map-hidden-by-minimized-footer-panel {
+    bottom: 50px !important;
 }
 
 
@@ -67,7 +83,7 @@ body {
     top: 0 !important;
     right: 0 !important;
     bottom: 0 !important;
-    width: auto !important;;
+    width: auto !important;
 }
 
 #side-panel-titlebar {
@@ -118,6 +134,67 @@ body {
 #side-panel-content {
     position: absolute;
     top: 66px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    overflow-y: auto;
+}
+
+
+/************
+ FOOTER PANEL
+ ************/
+
+#footer-panel {
+    display: none;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 160px;
+}
+
+#footer-panel-titlebar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+}
+
+#footer-panel-titlebar, .footer-panel-minimized {
+    height: 50px !important;
+}
+
+#footer-panel-title-label {
+    position: absolute;
+    top: 8px;
+    left: 5px;
+    font-size: 24px;
+    right: 103px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+#footer-panel-close-button {
+    position: absolute;
+    right: 5px;
+    top: 5px;
+}
+
+#footer-panel-maximize-button, #footer-panel-minimize-button {
+    position: absolute;
+    right: 50px;
+    top: 5px;
+}
+
+#footer-panel-maximize-button {
+    display: none;
+}
+
+#footer-panel-content {
+    position: absolute;
+    top: 50px;
     bottom: 0;
     left: 0;
     right: 0;

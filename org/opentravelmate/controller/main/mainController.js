@@ -30,14 +30,25 @@ define([
         'SIDE_PANEL_CONTENT_ELEMENT_ID': 'side-panel-content',
 
         /**
+         * HTML element ID of the footer panel content.
+         *
+         * @type {string}
+         * @const
+         */
+        'FOOTER_PANEL_CONTENT_ELEMENT_ID': 'footer-panel-content',
+
+        /**
          * Initialization.
          */
         'init': function () {
             var self = this;
 
             // Register panel close event listeners
-            $('#side-panel-close-button').bind('touchstart click', function handleCloseSidePanelEvent(){
+            $('#side-panel-close-button').fastClick(function handleCloseSidePanelEvent(){
                 self.closeSidePanel();
+            });
+            $('#footer-panel-close-button').fastClick(function handleCloseSidePanelEvent(){
+                self.closeFooterPanel();
             });
 
             // Layout the default widgets
@@ -63,6 +74,16 @@ define([
                     self._setSidePanelMaximized(false);
                 });
             }
+
+            // Handle footer panel maximizing / minimizing
+            var $footerPanelMaximizeButton = $('#footer-panel-maximize-button');
+            var $footerPanelMinimizeButton = $('#footer-panel-minimize-button');
+            $footerPanelMaximizeButton.fastClick(function handleMaximizeFooterPanelEvent() {
+                self._setFooterPanelMaximized(true);
+            });
+            $footerPanelMinimizeButton.fastClick(function handleMinimizeFooterPanelEvent() {
+                self._setFooterPanelMaximized(false);
+            });
         },
 
         /**
@@ -73,8 +94,8 @@ define([
          */
         'openSidePanel': function (title) {
             $('#side-panel-title-label').text(title);
-            $('#side-panel').css('display', 'block');
-            $('#map').addClass('map-hidden-by-side-panel');
+            $('#side-panel').show();
+            $('#central-panel').addClass('central-panel-hidden-by-side-panel');
             webview.layout();
         },
 
@@ -83,8 +104,8 @@ define([
          */
         'closeSidePanel': function () {
             this._setSidePanelMaximized(false);
-            $('#side-panel').css('display', 'none');
-            $('#map').removeClass('map-hidden-by-side-panel');
+            $('#side-panel').hide();
+            $('#central-panel').removeClass('central-panel-hidden-by-side-panel');
             webview.layout();
             $('#' + this.SIDE_PANEL_CONTENT_ELEMENT_ID).html('');
         },
@@ -96,25 +117,24 @@ define([
          */
         '_setSidePanelMaximized': function(maximized) {
             var $sidePanel = $('#side-panel');
-            var $map = $('#map');
+            var $centralPanel = $('#central-panel');
             var $sidePanelMaximizeButton = $('#side-panel-maximize-button');
             var $sidePanelMinimizeButton = $('#side-panel-minimize-button');
 
             if (maximized) {
                 if ($sidePanel.hasClass('side-panel-fullscreen')) { return; }
                 $sidePanel.addClass('side-panel-fullscreen');
-                $map.hide();
+                $centralPanel.hide();
                 $sidePanelMaximizeButton.hide();
                 $sidePanelMinimizeButton.show();
-                webview.layout();
             } else {
                 if (!$sidePanel.hasClass('side-panel-fullscreen')) { return; }
                 $sidePanel.removeClass('side-panel-fullscreen');
-                $map.show();
+                $centralPanel.show();
                 $sidePanelMinimizeButton.hide();
                 $sidePanelMaximizeButton.show();
-                webview.layout();
             }
+            webview.layout();
         },
 
         /**
@@ -123,14 +143,54 @@ define([
          * @param {string} title
          */
         'openFooterPanel': function (title) {
-            // TODO
+            $('#footer-panel-title-label').text(title);
+            $('#map').addClass('map-hidden-by-footer-panel');
+            $('#footer-panel').show();
+            webview.layout();
         },
 
         /**
          * Close the panel located below the map.
          */
         'closeFooterPanel': function () {
-            // TODO
+            this._setFooterPanelMaximized(true);
+            $('#footer-panel').hide();
+            $('#map').removeClass('map-hidden-by-footer-panel');
+            webview.layout();
+            $('#' + this.FOOTER_PANEL_CONTENT_ELEMENT_ID).html('');
+        },
+
+        /**
+         * Maximize or minimize the footer panel.
+         *
+         * @param {boolean} maximized
+         */
+        '_setFooterPanelMaximized': function(maximized) {
+            var $footerPanel = $('#footer-panel');
+            var $map = $('#map');
+            var $footerPanelMaximizeButton = $('#footer-panel-maximize-button');
+            var $footerPanelMinimizeButton = $('#footer-panel-minimize-button');
+
+            if (maximized) {
+                if (!$footerPanel.hasClass('footer-panel-minimized')) { return; }
+                $footerPanel.removeClass('footer-panel-minimized');
+
+                $map.removeClass('map-hidden-by-minimized-footer-panel');
+                $map.addClass('map-hidden-by-footer-panel');
+
+                $footerPanelMaximizeButton.hide();
+                $footerPanelMinimizeButton.show();
+            } else {
+                if ($footerPanel.hasClass('footer-panel-minimized')) { return; }
+                $footerPanel.addClass('footer-panel-minimized');
+
+                $map.addClass('map-hidden-by-minimized-footer-panel');
+                $map.removeClass('map-hidden-by-footer-panel');
+
+                $footerPanelMinimizeButton.hide();
+                $footerPanelMaximizeButton.show();
+            }
+            webview.layout();
         },
 
         /**
