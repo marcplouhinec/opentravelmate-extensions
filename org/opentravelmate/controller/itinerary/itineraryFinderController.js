@@ -207,7 +207,8 @@ define([
                     });
 
                     // Handle user click on an itinerary
-                    $iframeDocument.find('#found-itineraries-table-body').fastClick(function handleItineraryClick(event) {
+                    var $foundItinerariesTableBody = $iframeDocument.find('#found-itineraries-table-body');
+                    $foundItinerariesTableBody.fastClick(function handleItineraryClick(event) {
                         // Find the clicked itinerary
                         var $itineraryElement = $(event.target);
                         while (!$itineraryElement.hasClass('itinerary-info')) {
@@ -215,6 +216,10 @@ define([
                         }
                         var itineraryIndex = Number($itineraryElement.attr('data-itinerary-index'));
                         var itinerary = self._foundItineraries[itineraryIndex];
+
+                        // Highlight the selected itinerary
+                        $foundItinerariesTableBody.find('.highlighted-itinerary').removeClass('highlighted-itinerary');
+                        $itineraryElement.addClass('highlighted-itinerary');
 
                         // Show the details
                         itineraryDetailsController.showItineraryDetails(itinerary);
