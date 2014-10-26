@@ -9,8 +9,9 @@ define([
     '../dialog/PopupMenuItem',
     '../dialog/DialogOptions',
     '../dialog/popupMenuController',
-    './placeDetailsController'
-], function(Place, PopupMenuItem, DialogOptions, popupMenuController, placeDetailsController) {
+    './placeDetailsController',
+    '../itinerary/itineraryFinderController'
+], function(Place, PopupMenuItem, DialogOptions, popupMenuController, placeDetailsController, itineraryFinderController) {
 
     /**
      * @const
@@ -44,10 +45,10 @@ define([
 
                 switch (menuItemId) {
                     case 'GO_THERE':
-                        // TODO
+                        itineraryFinderController.openItineraryFinder(null, place);
                         break;
                     case 'FROM_THERE':
-                        // TODO
+                        itineraryFinderController.openItineraryFinder(place, null);
                         break;
                     case 'MORE_INFORMATION':
                         placeDetailsController.showPlaceDetails(place);

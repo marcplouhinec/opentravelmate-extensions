@@ -64,6 +64,13 @@ define([
      * Controller for the menu.
      */
     var itineraryFinderController = {
+
+        /**
+         * @private
+         * @type {mainController}
+         */
+        '_mainController': null,
+
         /**
          * @private
          * @type {Object.<string, string>}
@@ -107,139 +114,164 @@ define([
          */
         'init': function (mainController) {
             var self = this;
+            this._mainController = mainController;
 
             // Create a menu item
             menuController.addMenuItem(MENU_ITEM_TITLE, MENU_ITEM_TOOLTIP, webview.baseUrl + MENU_ITEM_ICONURL, function handleMenuItemSelection() {
-                if (document.getElementById(PANEL_ID)) { return; }
+                self.openItineraryFinder();
+            });
+        },
 
-                // Show a form for the user to find an itinerary
-                mainController.openSidePanel(MENU_ITEM_TOOLTIP, function handleSidePanelClosedEvent() {
-                    self._clearItineraryDetails();
+        /**
+         * Open the itinerary finder with an optional origin place or an optional destination place.
+         *
+         * @param {Place=} originPlace
+         * @param {Place=} destinationPlace
+         */
+        'openItineraryFinder': function(originPlace, destinationPlace) {
+            var self = this;
+            if (originPlace) { this._originPlace = originPlace; }
+            if (destinationPlace) { this._destinationPlace = destinationPlace; }
+
+            // Check if the panel is not already opened
+            if (document.getElementById(PANEL_ID)) {
+                var $iframeDocument = $(document.getElementById(PANEL_ID).contentDocument);
+
+                // Show the origin or destination place if provided
+                if (originPlace) { $iframeDocument.find('#origin-place').val(originPlace.name); }
+                if (destinationPlace) { $iframeDocument.find('#destination-place').val(destinationPlace.name); }
+
+                // Do not re-initialize the panel
+                return;
+            }
+
+            // Show a form for the user to find an itinerary
+            this._mainController.openSidePanel(MENU_ITEM_TOOLTIP, function handleSidePanelClosedEvent() {
+                self._clearItineraryDetails();
+            });
+
+            var iframe = /** @type {HTMLIFrameElement} */document.createElement('iframe');
+            iframe.setAttribute('id', PANEL_ID);
+            iframe.style.position = 'absolute';
+            iframe.style.width = '100%';
+            iframe.style.height = '100%';
+            iframe.style.border = 'none';
+            iframe.src = webview.baseUrl + 'extensions/org/opentravelmate/view/itinerary/itinerary-finder.html';
+            document.getElementById(this._mainController.SIDE_PANEL_CONTENT_ELEMENT_ID).appendChild(iframe);
+
+            $(iframe).load(function() {
+                var $iframeDocument = $(iframe.contentDocument);
+
+                // Initialize the place criterion
+                self._initializePlaceCriteria('origin-place', $iframeDocument);
+                self._initializePlaceCriteria('destination-place', $iframeDocument);
+
+                //
+                // Initialize the date and time criterion
+                //
+                var $datetimeSelectWrapper = $iframeDocument.find('#datetime-select-wrapper');
+                var $dateTimeButtons = $iframeDocument.find('#itinerary-datetime-wrapper > button');
+                var $itineraryYear = $iframeDocument.find('#itinerary-year');
+                var $itineraryMonth = $iframeDocument.find('#itinerary-month');
+                var $itineraryDay = $iframeDocument.find('#itinerary-day');
+                var $itineraryTime = $iframeDocument.find('#itinerary-time');
+
+                // Set the current date and time
+                $itineraryYear.text(moment().format('YYYY'));
+                $itineraryMonth.text(moment().format('MM'));
+                $itineraryDay.text(moment().format('DD'));
+                $itineraryTime.text(moment().format('HH:mm'));
+
+                // Handle date time change
+                $dateTimeButtons.fastClick(function handleDateTimeClick() {
+                    var $dateTimeElement = $(this);
+                    var year = $itineraryYear.text();
+                    var month = $itineraryMonth.text();
+                    var day = $itineraryDay.text();
+                    var time = $itineraryTime.text();
+
+                    // Highlight the selected element
+                    $dateTimeButtons.removeClass('active');
+                    $(this).addClass('active');
+
+                    // Show the date time selection panel when the user click on a date time button
+                    var dateTimeElementId = $dateTimeElement.attr('id');
+                    switch (dateTimeElementId) {
+                        case 'itinerary-year':
+                            self._openDateTimeSelect(YEAR_SUGGESTIONS, year);
+                            break;
+                        case 'itinerary-month':
+                            self._openDateTimeSelect(MONTH_SUGGESTIONS, month);
+                            break;
+                        case 'itinerary-day':
+                            self._openDateTimeSelect(DAY_SUGGESTIONS, day);
+                            break;
+                        case 'itinerary-time':
+                            var dateTime = moment(time, 'HH:mm');
+                            var hours = dateTime.hours();
+                            var minutes = dateTime.minutes();
+                            var roundedDateTime = (hours < 10 ? '0' + hours : hours) + ':' + (minutes === 0 ? '00' : Math.floor(minutes / 10) * 10);
+                            self._openDateTimeSelect(TIME_SUGGESTIONS, roundedDateTime);
+                            break;
+                    }
                 });
 
-                var iframe = /** @type {HTMLIFrameElement} */document.createElement('iframe');
-                iframe.setAttribute('id', PANEL_ID);
-                iframe.style.position = 'absolute';
-                iframe.style.width = '100%';
-                iframe.style.height = '100%';
-                iframe.style.border = 'none';
-                iframe.src = webview.baseUrl + 'extensions/org/opentravelmate/view/itinerary/itinerary-finder.html';
-                document.getElementById(mainController.SIDE_PANEL_CONTENT_ELEMENT_ID).appendChild(iframe);
+                // Handle the user click on the date time selection panel
+                $iframeDocument.find('#datetime-select').fastClick(function handleDateTimeSelection(event) {
+                    // Find the date time element type and the value
+                    var $activeButton = $iframeDocument.find('#itinerary-datetime-wrapper > button.active');
+                    var dateTimeElementId = $activeButton.attr('id');
+                    var dateTimeElementValue = $(event.target).text();
 
-                $(iframe).load(function() {
-                    var $iframeDocument = $(iframe.contentDocument);
+                    // Update the button value
+                    if (dateTimeElementId === 'itinerary-time') {
+                        $itineraryTime.text(dateTimeElementValue);
+                    } else {
+                        var year = dateTimeElementId === 'itinerary-year' ? dateTimeElementValue : $itineraryYear.text();
+                        var month = dateTimeElementId === 'itinerary-month' ? dateTimeElementValue : $itineraryMonth.text();
+                        var day = dateTimeElementId === 'itinerary-day' ? dateTimeElementValue : $itineraryDay.text();
+                        var dateTime = moment(year + '-' + month + '-' + day, 'YYYY-MM-DD');
+                        var monthAsNumber = dateTime.month() + 1;
+                        var dayAsNumber = dateTime.date();
+                        $itineraryYear.text(dateTime.year());
+                        $itineraryMonth.text(monthAsNumber < 10 ? '0' + monthAsNumber : monthAsNumber);
+                        $itineraryDay.text(dayAsNumber < 10 ? '0' + dayAsNumber : dayAsNumber);
+                    }
 
-                    // Initialize the place criterion
-                    self._initializePlaceCriteria('origin-place', $iframeDocument);
-                    self._initializePlaceCriteria('destination-place', $iframeDocument);
+                    // Hide the selection panel and un-highlight the selected button
+                    $datetimeSelectWrapper.hide();
+                    $dateTimeButtons.removeClass('active');
+                });
 
-                    //
-                    // Initialize the date and time criterion
-                    //
-                    var $datetimeSelectWrapper = $iframeDocument.find('#datetime-select-wrapper');
-                    var $dateTimeButtons = $iframeDocument.find('#itinerary-datetime-wrapper > button');
-                    var $itineraryYear = $iframeDocument.find('#itinerary-year');
-                    var $itineraryMonth = $iframeDocument.find('#itinerary-month');
-                    var $itineraryDay = $iframeDocument.find('#itinerary-day');
-                    var $itineraryTime = $iframeDocument.find('#itinerary-time');
+                // Handle the user click on the search button
+                $iframeDocument.find('#find-button').fastClick(function handleFindItineraryClick() {
+                    self._findItineraries();
+                });
 
-                    // Set the current date and time
-                    $itineraryYear.text(moment().format('YYYY'));
-                    $itineraryMonth.text(moment().format('MM'));
-                    $itineraryDay.text(moment().format('DD'));
-                    $itineraryTime.text(moment().format('HH:mm'));
+                // Handle user click on an itinerary
+                var $foundItinerariesTableBody = $iframeDocument.find('#found-itineraries-table-body');
+                $foundItinerariesTableBody.fastClick(function handleItineraryClick(event) {
+                    // Find the clicked itinerary
+                    var $itineraryElement = $(event.target);
+                    while (!$itineraryElement.hasClass('itinerary-info')) {
+                        $itineraryElement = $itineraryElement.parent();
+                    }
+                    var itineraryIndex = Number($itineraryElement.attr('data-itinerary-index'));
+                    var itinerary = self._foundItineraries[itineraryIndex];
+                    self._selectedItinerary = itinerary;
 
-                    // Handle date time change
-                    $dateTimeButtons.fastClick(function handleDateTimeClick() {
-                        var $dateTimeElement = $(this);
-                        var year = $itineraryYear.text();
-                        var month = $itineraryMonth.text();
-                        var day = $itineraryDay.text();
-                        var time = $itineraryTime.text();
+                    // Highlight the selected itinerary
+                    $foundItinerariesTableBody.find('.highlighted-itinerary').removeClass('highlighted-itinerary');
+                    $itineraryElement.addClass('highlighted-itinerary');
 
-                        // Highlight the selected element
-                        $dateTimeButtons.removeClass('active');
-                        $(this).addClass('active');
+                    // Show the details
+                    itineraryDetailsController.showItineraryDetails(itinerary);
+                    mapItineraryController.showItinerary(itinerary);
 
-                        // Show the date time selection panel when the user click on a date time button
-                        var dateTimeElementId = $dateTimeElement.attr('id');
-                        switch (dateTimeElementId) {
-                            case 'itinerary-year':
-                                self._openDateTimeSelect(YEAR_SUGGESTIONS, year);
-                                break;
-                            case 'itinerary-month':
-                                self._openDateTimeSelect(MONTH_SUGGESTIONS, month);
-                                break;
-                            case 'itinerary-day':
-                                self._openDateTimeSelect(DAY_SUGGESTIONS, day);
-                                break;
-                            case 'itinerary-time':
-                                var dateTime = moment(time, 'HH:mm');
-                                var hours = dateTime.hours();
-                                var minutes = dateTime.minutes();
-                                var roundedDateTime = (hours < 10 ? '0' + hours : hours) + ':' + (minutes === 0 ? '00' : Math.floor(minutes / 10) * 10);
-                                self._openDateTimeSelect(TIME_SUGGESTIONS, roundedDateTime);
-                                break;
-                        }
-                    });
-
-                    // Handle the user click on the date time selection panel
-                    $iframeDocument.find('#datetime-select').fastClick(function handleDateTimeSelection(event) {
-                        // Find the date time element type and the value
-                        var $activeButton = $iframeDocument.find('#itinerary-datetime-wrapper > button.active');
-                        var dateTimeElementId = $activeButton.attr('id');
-                        var dateTimeElementValue = $(event.target).text();
-
-                        // Update the button value
-                        if (dateTimeElementId === 'itinerary-time') {
-                            $itineraryTime.text(dateTimeElementValue);
-                        } else {
-                            var year = dateTimeElementId === 'itinerary-year' ? dateTimeElementValue : $itineraryYear.text();
-                            var month = dateTimeElementId === 'itinerary-month' ? dateTimeElementValue : $itineraryMonth.text();
-                            var day = dateTimeElementId === 'itinerary-day' ? dateTimeElementValue : $itineraryDay.text();
-                            var dateTime = moment(year + '-' + month + '-' + day, 'YYYY-MM-DD');
-                            var monthAsNumber = dateTime.month() + 1;
-                            var dayAsNumber = dateTime.date();
-                            $itineraryYear.text(dateTime.year());
-                            $itineraryMonth.text(monthAsNumber < 10 ? '0' + monthAsNumber : monthAsNumber);
-                            $itineraryDay.text(dayAsNumber < 10 ? '0' + dayAsNumber : dayAsNumber);
-                        }
-
-                        // Hide the selection panel and un-highlight the selected button
-                        $datetimeSelectWrapper.hide();
-                        $dateTimeButtons.removeClass('active');
-                    });
-
-                    // Handle the user click on the search button
-                    $iframeDocument.find('#find-button').fastClick(function handleFindItineraryClick() {
-                        self._findItineraries();
-                    });
-
-                    // Handle user click on an itinerary
-                    var $foundItinerariesTableBody = $iframeDocument.find('#found-itineraries-table-body');
-                    $foundItinerariesTableBody.fastClick(function handleItineraryClick(event) {
-                        // Find the clicked itinerary
-                        var $itineraryElement = $(event.target);
-                        while (!$itineraryElement.hasClass('itinerary-info')) {
-                            $itineraryElement = $itineraryElement.parent();
-                        }
-                        var itineraryIndex = Number($itineraryElement.attr('data-itinerary-index'));
-                        var itinerary = self._foundItineraries[itineraryIndex];
-                        self._selectedItinerary = itinerary;
-
-                        // Highlight the selected itinerary
-                        $foundItinerariesTableBody.find('.highlighted-itinerary').removeClass('highlighted-itinerary');
-                        $itineraryElement.addClass('highlighted-itinerary');
-
-                        // Show the details
-                        itineraryDetailsController.showItineraryDetails(itinerary);
-                        mapItineraryController.showItinerary(itinerary);
-
-                        // Minimize the panel on small screen
-                        if (!mainController.isWideScreen()) {
-                            mainController.setSidePanelMaximized(false);
-                        }
-                    });
+                    // Minimize the panel on small screen
+                    if (!self._mainController.isWideScreen()) {
+                        self._mainController.setSidePanelMaximized(false);
+                    }
                 });
             });
         },
@@ -256,6 +288,13 @@ define([
             var $suggestionsWrapperElement = $iframeDocument.find('#' + elementId + '-suggestions-wrapper');
             var $suggestionsWrapperUlElement = $iframeDocument.find('#' + elementId + '-suggestions-wrapper > ul');
             var $eraseButton = $iframeDocument.find('#' + elementId + '-erase-button');
+
+            // If available, show the place name
+            if (elementId === 'origin-place' && this._originPlace) {
+                $placeInputElement.val(this._originPlace.name);
+            } else if (elementId === 'destination-place' && this._destinationPlace) {
+                $placeInputElement.val(this._destinationPlace.name);
+            }
 
             // Erase the content if the 'Erase' button is clicked
             $eraseButton.fastClick(function handleEraseButtonClick() {
