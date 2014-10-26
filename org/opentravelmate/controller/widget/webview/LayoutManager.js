@@ -10,9 +10,8 @@ define([
     '../../widget/Widget',
     '../../widget/LayoutParams',
     '../../widget/webview/SubWebView',
-    '../../widget/map/Map',
-    '../../widget/menu/Menu'
-], function($, _, Widget, LayoutParams, SubWebView, Map, Menu) {
+    '../../widget/map/Map'
+], function($, _, Widget, LayoutParams, SubWebView, Map) {
     'use strict';
 
     /**
@@ -135,11 +134,6 @@ define([
                 var childMap = new Map({ id: layoutParams.id });
                 childMap.buildView(layoutParams);
                 this._childViews.push(childMap);
-                break;
-            case 'Menu':
-                var childMenu = new Menu({ id: layoutParams.id, baseUrl: this._baseUrl });
-                childMenu.buildView(layoutParams);
-                this._childViews.push(childMenu);
                 break;
             default:
                 console.log('Unknown widget type: ' + widgetType);

@@ -15,7 +15,6 @@ requirejs.config({
         'googleFastButton': 'extensions/vendors/google.fastbutton',
         'jqueryGoogleFastButton': 'extensions/vendors/jquery.google.fastbutton',
         'nativeWebView': 'native/widget/webview/nativeWebView',
-        'nativeMenu': 'native/widget/menu/nativeMenu',
         'nativeMap': 'native/widget/map/nativeMap',
         'nativeGeolocation': 'native/geolocation/nativeGeolocation'
     },
