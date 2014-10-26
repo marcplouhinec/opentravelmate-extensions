@@ -44,6 +44,14 @@ define(['jquery', '../../entity/itinerary/Itinerary', '../widget/webview/webview
                 $itineraryStepsTable.css('width', naturalTableWidth + 'px');
                 $itineraryDetails.css('width', 'auto');
             });
+        },
+
+        /**
+         * Clear the details of the shown itinerary.
+         */
+        'clearItineraryDetails': function() {
+            var mainController = require('extensions/org/opentravelmate/controller/main/mainController');
+            mainController.closeFooterPanel();
         }
 
     };

@@ -64,7 +64,6 @@ define([
      * Controller for the menu.
      */
     var itineraryFinderController = {
-
         /**
          * @private
          * @type {Object.<string, string>}
@@ -96,6 +95,12 @@ define([
         '_foundItineraries': [],
 
         /**
+         * @private
+         * @type {Itinerary}
+         */
+        '_selectedItinerary': null,
+
+        /**
          * Initialization.
          *
          * @param {mainController} mainController
@@ -108,7 +113,9 @@ define([
                 if (document.getElementById(PANEL_ID)) { return; }
 
                 // Show a form for the user to find an itinerary
-                mainController.openSidePanel(MENU_ITEM_TOOLTIP);
+                mainController.openSidePanel(MENU_ITEM_TOOLTIP, function handleSidePanelClosedEvent() {
+                    self._clearItineraryDetails();
+                });
 
                 var iframe = /** @type {HTMLIFrameElement} */document.createElement('iframe');
                 iframe.setAttribute('id', PANEL_ID);
@@ -218,6 +225,7 @@ define([
                         }
                         var itineraryIndex = Number($itineraryElement.attr('data-itinerary-index'));
                         var itinerary = self._foundItineraries[itineraryIndex];
+                        self._selectedItinerary = itinerary;
 
                         // Highlight the selected itinerary
                         $foundItinerariesTableBody.find('.highlighted-itinerary').removeClass('highlighted-itinerary');
@@ -497,6 +505,17 @@ define([
 
             $iframeDocument.find('#found-itineraries-panel').show();
             $iframeDocument.find('#found-itineraries-table-body').html(foundItinerariesHtml);
+        },
+
+        /**
+         * Clear the details of the selected itinerary.
+         */
+        '_clearItineraryDetails': function() {
+            if (!this._selectedItinerary) { return; }
+            this._selectedItinerary = null;
+
+            itineraryDetailsController.clearItineraryDetails();
+            mapItineraryController.clearItinerary();
         }
     };
 

@@ -40,6 +40,18 @@ define([
         'FOOTER_PANEL_CONTENT_ELEMENT_ID': 'footer-panel-content',
 
         /**
+         * @private
+         * @type {boolean}
+         */
+        '_sidePanelOpened': false,
+
+        /**
+         * @private
+         * @type {function}
+         */
+        '_sidePanelCloseListener': null,
+
+        /**
          * Initialization.
          */
         'init': function () {
@@ -104,8 +116,13 @@ define([
          * Note: on a small screen, the side panel takes all the screen.
          *
          * @param {string} title
+         * @param {function=} closeListener Optional listener called when the side panel is closed.
          */
-        'openSidePanel': function (title) {
+        'openSidePanel': function (title, closeListener) {
+            this.closeSidePanel();
+
+            this._sidePanelOpened = true;
+            this._sidePanelCloseListener = closeListener;
             this.setSidePanelMaximized(true);
             $('#side-panel-title-label').text(title);
             $('#side-panel').show();
@@ -117,6 +134,14 @@ define([
          * Close the panel located on the side of the map.
          */
         'closeSidePanel': function () {
+            if (!this._sidePanelOpened) { return; }
+            this._sidePanelOpened = false;
+
+            if (this._sidePanelCloseListener) {
+                this._sidePanelCloseListener();
+                this._sidePanelCloseListener = null;
+            }
+
             this._setSidePanelFullscreen(false);
             this.setSidePanelMaximized(true);
             $('#side-panel').hide();
