@@ -27,5 +27,23 @@ define(['../entity/Place', '../entity/itinerary/Itinerary'], function(Place, Iti
         throw new Error('Unimplemented method.');
     };
 
+    /**
+     * Function called when the details of an itinerary are shown.
+     *
+     * @param {Itinerary} itinerary
+     */
+    ItineraryProviderService.prototype.onItineraryDetailsShown = function(itinerary) {
+        throw new Error('Unimplemented method.');
+    };
+
+    /**
+     * Function called when the details of an itinerary are not shown anymore.
+     *
+     * @param {Itinerary} itinerary
+     */
+    ItineraryProviderService.prototype.onItineraryDetailsCleared = function(itinerary) {
+        throw new Error('Unimplemented method.');
+    };
+
     return ItineraryProviderService;
 });

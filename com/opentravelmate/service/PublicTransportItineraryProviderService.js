@@ -11,8 +11,9 @@ define([
     '../../../org/opentravelmate/service/ItineraryProviderService',
     '../../../org/opentravelmate/controller/dialog/DialogOptions',
     '../../../org/opentravelmate/controller/dialog/notificationController',
-    './itineraryService'
-], function(Place, GeoPoint, Itinerary, ItineraryProviderService, DialogOptions, notificationController, itineraryService) {
+    './itineraryService',
+    '../controller/mapOverlayController'
+], function(Place, GeoPoint, Itinerary, ItineraryProviderService, DialogOptions, notificationController, itineraryService, mapOverlayController) {
 
 
     /**
@@ -34,6 +35,8 @@ define([
      * @param {function(Array.<Itinerary>)} callback
      */
     PublicTransportItineraryProviderService.prototype.findItineraries = function(originPlace, destinationPlace, dateTime, isDepartureTime, callback) {
+        var self = this;
+
         var originPoint = new GeoPoint({
             latitude: originPlace.latitude,
             longitude: originPlace.longitude
@@ -48,8 +51,29 @@ define([
                 notificationController.showMessage('Error: unable to find itineraries. Please retry later.', 5000, new DialogOptions({}));
                 return;
             }
+            for (var i = 0; i < itineraries.length; i++) {
+                itineraries[i].provider = self;
+            }
             callback(itineraries);
         });
+    };
+
+    /**
+     * Function called when the details of an itinerary are shown.
+     *
+     * @param {Itinerary} itinerary
+     */
+    PublicTransportItineraryProviderService.prototype.onItineraryDetailsShown = function(itinerary) {
+        mapOverlayController.setGrayTileOverlayVisible(true);
+    };
+
+    /**
+     * Function called when the details of an itinerary are not shown anymore.
+     *
+     * @param {Itinerary} itinerary
+     */
+    PublicTransportItineraryProviderService.prototype.onItineraryDetailsCleared = function(itinerary) {
+        mapOverlayController.setGrayTileOverlayVisible(false);
     };
 
 

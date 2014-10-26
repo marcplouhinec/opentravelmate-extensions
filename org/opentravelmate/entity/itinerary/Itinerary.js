@@ -44,6 +44,13 @@ define(['./ItineraryLeg'], function(ItineraryLeg) {
         for (var i = 0; i < options.legs.length; i++) {
             this.legs.push(new ItineraryLeg(options.legs[i]));
         }
+
+        /**
+         * Itinerary provider.
+         *
+         * @type {ItineraryProviderService}
+         */
+        this.provider = options.provider;
     }
 
     return Itinerary;

@@ -42,7 +42,7 @@ define(function() {
         this.name = options.name;
 
         /**
-         * Place name.
+         * Place provider.
          *
          * @type {PlaceProviderService}
          */

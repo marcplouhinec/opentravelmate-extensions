@@ -41,6 +41,12 @@ define([
 
         /**
          * @private
+         * @type {Itinerary}
+         */
+        '_itinerary': [],
+
+        /**
+         * @private
          * @type {Array.<Polyline>}
          */
         '_itineraryPolylines': [],
@@ -76,6 +82,7 @@ define([
         'showItinerary': function(itinerary) {
             var self = this;
             this.clearItinerary();
+            this._itinerary = itinerary;
 
             // Show the itinerary paths
             this._itineraryPolylines = [];
@@ -110,12 +117,22 @@ define([
                 .flatten(true)
                 .value();
             this._map.addMarkers(this._itineraryWaypointMarkers);
+
+            // Call the itinerary provider listener
+            if (itinerary.provider) {
+                itinerary.provider.onItineraryDetailsShown(itinerary);
+            }
         },
 
         /**
          * Remove a displayed itinerary if any.
          */
         'clearItinerary': function() {
+            // Call the itinerary provider listener
+            if (this._itinerary && this._itinerary.provider) {
+                this._itinerary.provider.onItineraryDetailsCleared(this._itinerary);
+            }
+
             // Remove the itinerary stops
             if (this._itineraryWaypointMarkers) {
                 this._map.removeMarkers(this._itineraryWaypointMarkers);

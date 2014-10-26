@@ -55,6 +55,12 @@ define([
         '_tileOverlay': null,
 
         /**
+         * @type {TileOverlay}
+         * @private
+         */
+        '_grayTileOverlay': undefined,
+
+        /**
          * @type {UrlMarkerIcon}
          * @private
          */
@@ -132,6 +138,11 @@ define([
                     'zIndex': 0,
                     'tileUrlPattern': tileService.TILE_MAP_OVERLAY_URL_PATTERN
                 });
+                self._grayTileOverlay = new TileOverlay({
+                    'zIndex': 1,
+                    'tileUrlPattern': tileService.TILE_MAP_OVERLAY_URL_PATTERN,
+                    'enableGrayscaleFilter': true
+                });
                 self._map.addTileOverlay(self._tileOverlay);
 
                 // Load the markers
@@ -188,6 +199,19 @@ define([
                     self._map.closeInfoWindow();
                 });
             });
+        },
+
+        /**
+         * Show or hide the gray tile overlay.
+         *
+         * @param {boolean} visible
+         */
+        'setGrayTileOverlayVisible': function(visible) {
+            if (visible) {
+                this._map.addTileOverlay(this._grayTileOverlay);
+            } else {
+                this._map.removeTileOverlay(this._grayTileOverlay);
+            }
         },
 
         /**
