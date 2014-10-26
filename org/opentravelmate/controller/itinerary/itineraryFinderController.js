@@ -20,9 +20,11 @@ define([
     '../../entity/itinerary/Itinerary',
     '../../service/itineraryProviderDirectoryService',
     './itineraryDetailsController',
+    '../map/mapItineraryController',
     'jqueryGoogleFastButton'
 ], function($, _, moment, webview, menuController, DialogOptions, notificationController, Place, placeProviderDirectoryService,
-            PositionOptions, PositionError, geolocationService, Itinerary, itineraryProviderDirectoryService, itineraryDetailsController) {
+            PositionOptions, PositionError, geolocationService, Itinerary, itineraryProviderDirectoryService,
+            itineraryDetailsController, mapItineraryController) {
     'use strict';
 
     var PANEL_ID = 'itinerary-finder-panel';
@@ -223,6 +225,7 @@ define([
 
                         // Show the details
                         itineraryDetailsController.showItineraryDetails(itinerary);
+                        mapItineraryController.showItinerary(itinerary);
 
                         // Minimize the panel on small screen
                         if (!mainController.isWideScreen()) {

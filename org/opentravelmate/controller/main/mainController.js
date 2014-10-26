@@ -8,12 +8,14 @@ define([
     'jquery',
     '../widget/webview/webview',
     './menuController',
-    './mapButtonsController',
+    './../map/mapButtonsController',
+    './../map/mapItineraryController',
     '../place/placeFinderController',
     '../itinerary/itineraryFinderController',
     '../../service/extensionService',
     'jqueryGoogleFastButton'
-], function($, webview, menuController, mapButtonsController, placeFinderController, itineraryFinderController, extensionService) {
+], function($, webview, menuController, mapButtonsController, mapItineraryController, placeFinderController,
+            itineraryFinderController, extensionService) {
     'use strict';
 
     /**
@@ -54,6 +56,7 @@ define([
             // Layout the default widgets
             menuController.init(this);
             mapButtonsController.init();
+            mapItineraryController.init();
             placeFinderController.init(this);
             itineraryFinderController.init(this);
             webview.layout();
