@@ -169,9 +169,21 @@ body {
 .side-panel-minimized #side-panel-content,
 .side-panel-minimized #side-panel-close-button,
 .side-panel-minimized #side-panel-fullscreen-button,
-.side-panel-minimized #side-panel-restore-size-button,
-.side-panel-minimized #side-panel-title-label {
+.side-panel-minimized #side-panel-restore-size-button {
     display: none !important;
+}
+.side-panel-minimized #side-panel-title-label {
+    height: 50px;
+    left: auto;
+    right: auto;
+            transform: rotate(90deg) translate(50px,-43px);
+            transform-origin: 0 0;
+        -ms-transform: rotate(90deg) translate(50px,-43px);
+        -ms-transform-origin: 0 0;
+       -moz-transform: rotate(90deg) translate(50px,-43px);
+       -moz-transform-origin: 0 0;
+    -webkit-transform: rotate(90deg) translate(50px,-43px);
+    -webkit-transform-origin: 0 0;
 }
 .side-panel-minimized #side-panel-maximize-button {
     right: 5px !important;
