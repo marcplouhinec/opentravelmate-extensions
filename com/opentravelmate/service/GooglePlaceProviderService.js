@@ -8,7 +8,8 @@ define([
     '../../../org/opentravelmate/controller/widget/Widget',
     '../../../org/opentravelmate/controller/widget/map/Map',
     '../../../org/opentravelmate/entity/Place',
-    '../../../org/opentravelmate/service/PlaceProviderService'
+    '../../../org/opentravelmate/service/PlaceProviderService',
+    'async!http://maps.googleapis.com/maps/api/js?libraries=places&sensor=true!callback'
 ], function(Widget, Map, Place, PlaceProviderService) {
 
     var google = window.google;
