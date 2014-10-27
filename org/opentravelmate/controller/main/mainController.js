@@ -93,7 +93,7 @@ define([
             // Handle side panel maximizing / minimizing
             var $sidePanelMaximizeButton = $('#side-panel-maximize-button');
             var $sidePanelMinimizeButton = $('#side-panel-minimize-button');
-            $sidePanelMaximizeButton.fastClick(function handleMaximizeSidePanelEvent() {
+            $sidePanelMaximizeButton.click(function handleMaximizeSidePanelEvent() {
                 self.setSidePanelMaximized(true);
             });
             $sidePanelMinimizeButton.fastClick(function handleMinimizeSidePanelEvent() {
