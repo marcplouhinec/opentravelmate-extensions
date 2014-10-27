@@ -6,13 +6,13 @@
     left: 0;
     top: 0;
     bottom: 0;
-    width: 200px;
+    width: 172px;
 }
 
 .otm-menu-logo-img {
-    margin-top: 2%;
+    margin-top: 5%;
     margin-left: 5px;
-    height: 80%;
+    height: 70%;
 }
 
 /**
@@ -20,7 +20,7 @@
  */
 #otm-menu-button-panel {
     position: absolute;
-    left: 210px;
+    left: 182px;
     right: 5px;
     top: 5px;
     bottom: 5px;

@@ -4,8 +4,10 @@
  * @author Marc Plouhinec
  */
 
-define(['jquery', 'lodash'], function($, _) {
+define(['jquery', 'lodash', 'jqueryGoogleFastButton'], function($, _) {
     'use strict';
+
+    var BUTTON_TOTAL_WIDTH = 55;
 
     /**
      * Internal representation of a menu item.
@@ -85,17 +87,22 @@ define(['jquery', 'lodash'], function($, _) {
                 size: $buttonPanel.height()
             });
 
-            // Make sure the first button (the 'More' one) must always be on the right
+            // Do not display the new button if there is no space left
             var $existingButtons = $buttonPanel.children('button');
-            if ($existingButtons.length <= 1) {
-                $buttonPanel.append(menuItemContent);
-            } else {
-                var $firstExistingButton = $existingButtons.first();
-                $(menuItemContent).insertAfter($firstExistingButton);
+            var spaceLeft = $buttonPanel.width() - $existingButtons.length * BUTTON_TOTAL_WIDTH;
+            if (spaceLeft >= BUTTON_TOTAL_WIDTH) {
+                // Make sure the first button (the 'More' one) must always be on the right
+                if ($existingButtons.length <= 1) {
+                    $buttonPanel.append(menuItemContent);
+                } else {
+                    var $firstExistingButton = $existingButtons.first();
+                    $(menuItemContent).insertAfter($firstExistingButton);
+                }
             }
+            console.log(spaceLeft);
 
             // Register the listener
-            $('#' + buttonId).bind('touchstart click', clickListener);
+            $('#' + buttonId).fastClick(clickListener);
         },
 
         /**
