@@ -141,6 +141,9 @@ define([
                 if (originPlace) { $iframeDocument.find('#origin-place').val(originPlace.name); }
                 if (destinationPlace) { $iframeDocument.find('#destination-place').val(destinationPlace.name); }
 
+                // Maximize the panel if necessary
+                self._mainController.setSidePanelMaximized(true);
+
                 // Do not re-initialize the panel
                 return;
             }
