@@ -34,9 +34,14 @@
             <tr>
                 <td></td>
                 <% _.each(itinerary.legs, function (leg) { %>
-                <td colspan="2">
-                    <%=leg.routeShortName ? 'Line ' + leg.routeShortName : '&nbsp;' %>
-                    <span style="font-size: 12px;"><%=leg.headsign ? ' - ' + leg.headsign : '' %></span>
+                <td colspan="2" class="itinerary-leg-type-name-duration">
+                    <% var legType = leg.routeType === 0 ? 'walk' : 'bus'; %>
+                    <img class="itinerary-leg-img" alt="${legType}" src="image/${legType}-dark.min.png"/>
+                    <%=leg.routeShortName ? leg.routeShortName : '&nbsp;' %>
+                    <span class="itinerary-leg-headsign-duration">
+                        <%=leg.headsign ? ' - ' + leg.headsign + ' - ' : '' %>
+                        <%=Math.round(leg.durationSecond / 60) + 'min' %>
+                    </span>
                 </td>
                 <% }); %>
                 <td></td>

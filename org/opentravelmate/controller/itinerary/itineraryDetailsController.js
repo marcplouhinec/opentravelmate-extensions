@@ -40,7 +40,7 @@ define(['jquery', '../../entity/itinerary/Itinerary', '../widget/webview/webview
                 // Compute the table natural size
                 $itineraryDetails.css('width', '10000px');
                 var $itineraryStepsTable = $iframeDocument.find('#itinerary-steps');
-                var naturalTableWidth = $itineraryStepsTable.width();
+                var naturalTableWidth = $itineraryStepsTable.width() + 20;
                 $itineraryStepsTable.css('width', naturalTableWidth + 'px');
                 $itineraryDetails.css('width', 'auto');
             });
