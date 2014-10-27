@@ -17,7 +17,9 @@ define(['../../widget/webview/webview', '../popupMenuEvent'], function(webview, 
         var menuItems = /** @type {Array} */JSON.parse(jsonMenuItems);
 
         // Display the header
-        document.getElementById('title-icon').setAttribute('src', webview.baseUrl + iconUrl);
+        var titleIconElement = document.getElementById('title-icon');
+        titleIconElement.setAttribute('src', webview.baseUrl + iconUrl);
+        titleIconElement.style.display = 'block';
         document.getElementById('title-label').textContent = title;
 
         // Display the menu items

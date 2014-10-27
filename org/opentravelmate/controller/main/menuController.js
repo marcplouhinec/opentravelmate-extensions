@@ -99,7 +99,6 @@ define(['jquery', 'lodash', 'jqueryGoogleFastButton'], function($, _) {
                     $(menuItemContent).insertAfter($firstExistingButton);
                 }
             }
-            console.log(spaceLeft);
 
             // Register the listener
             $('#' + buttonId).fastClick(clickListener);

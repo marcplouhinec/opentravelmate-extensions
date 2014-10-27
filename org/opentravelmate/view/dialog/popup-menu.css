@@ -17,6 +17,7 @@
 }
 #title-icon {
     height: 100%;
+    display: none;
 }
 
 #title-label {
