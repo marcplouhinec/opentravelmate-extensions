@@ -220,7 +220,7 @@ define([
                 });
 
                 // Handle the user click on the date time selection panel
-                $iframeDocument.find('#datetime-select').fastClick(function handleDateTimeSelection(event) {
+                $iframeDocument.find('#datetime-select').click(function handleDateTimeSelection(event) {
                     // Find the date time element type and the value
                     var $activeButton = $iframeDocument.find('#itinerary-datetime-wrapper > button.active');
                     var dateTimeElementId = $activeButton.attr('id');
@@ -475,7 +475,6 @@ define([
          * @param {function(place: Place)} callback
          */
         '_findCurrentPlace': function(callback) {
-            var self = this;
             var options = new PositionOptions({
                 enableHighAccuracy: true,
                 timeout: CURRENT_POSITION_MAX_WATCH_TIME,
