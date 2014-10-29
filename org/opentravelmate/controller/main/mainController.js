@@ -126,7 +126,7 @@ define([
             this.setSidePanelMaximized(true);
             $('#side-panel-title-label').text(title);
             $('#side-panel').show();
-            $('#central-panel').addClass('central-panel-hidden-by-side-panel');
+            $('#map').addClass('map-hidden-by-side-panel');
             webview.layout();
         },
 
@@ -145,7 +145,7 @@ define([
             this._setSidePanelFullscreen(false);
             this.setSidePanelMaximized(true);
             $('#side-panel').hide();
-            $('#central-panel').removeClass('central-panel-hidden-by-side-panel');
+            $('#map').removeClass('map-hidden-by-side-panel');
             webview.layout();
             $('#' + this.SIDE_PANEL_CONTENT_ELEMENT_ID).html('');
         },
@@ -157,22 +157,25 @@ define([
          */
         '_setSidePanelFullscreen': function(fullscreen) {
             var $sidePanel = $('#side-panel');
-            var $centralPanel = $('#central-panel');
+            var $map = $('#map');
             var $sidePanelFullscreenButton = $('#side-panel-fullscreen-button');
             var $sidePanelRestoreSizeButton = $('#side-panel-restore-size-button');
+            var $sidePanelMinimizeButton = $('#side-panel-minimize-button');
 
             if (fullscreen) {
                 if ($sidePanel.hasClass('side-panel-fullscreen')) { return; }
                 $sidePanel.addClass('side-panel-fullscreen');
-                $centralPanel.hide();
+                $map.hide();
                 $sidePanelFullscreenButton.hide();
                 $sidePanelRestoreSizeButton.show();
+                $sidePanelMinimizeButton.hide();
             } else {
                 if (!$sidePanel.hasClass('side-panel-fullscreen')) { return; }
                 $sidePanel.removeClass('side-panel-fullscreen');
-                $centralPanel.show();
+                $map.show();
                 $sidePanelRestoreSizeButton.hide();
                 $sidePanelFullscreenButton.show();
+                $sidePanelMinimizeButton.show();
             }
             webview.layout();
         },
@@ -184,22 +187,26 @@ define([
          */
         'setSidePanelMaximized': function(maximized) {
             var $sidePanel = $('#side-panel');
-            var $centralPanel = $('#central-panel');
+            var $map = $('#map');
             var $sidePanelMaximizeButton = $('#side-panel-maximize-button');
             var $sidePanelMinimizeButton = $('#side-panel-minimize-button');
 
             if (maximized) {
                 if (!$sidePanel.hasClass('side-panel-minimized')) { return; }
                 $sidePanel.removeClass('side-panel-minimized');
-                $centralPanel.removeClass('central-panel-hidden-by-minimized-side-panel');
-                $centralPanel.addClass('central-panel-hidden-by-side-panel');
+
+                $map.removeClass('map-hidden-by-minimized-side-panel');
+                $map.addClass('map-hidden-by-side-panel');
+
                 $sidePanelMaximizeButton.hide();
                 $sidePanelMinimizeButton.show();
             } else {
                 if ($sidePanel.hasClass('side-panel-minimized')) { return; }
                 $sidePanel.addClass('side-panel-minimized');
-                $centralPanel.addClass('central-panel-hidden-by-minimized-side-panel');
-                $centralPanel.removeClass('central-panel-hidden-by-side-panel');
+
+                $map.addClass('map-hidden-by-minimized-side-panel');
+                $map.removeClass('map-hidden-by-side-panel');
+
                 $sidePanelMinimizeButton.hide();
                 $sidePanelMaximizeButton.show();
             }
@@ -213,7 +220,7 @@ define([
          */
         'openFooterPanel': function (title) {
             $('#footer-panel-title-label').text(title);
-            $('#map').addClass('map-hidden-by-footer-panel');
+            $('#central-panel').addClass('central-panel-hidden-by-footer-panel');
             $('#footer-panel').show();
             webview.layout();
         },
@@ -224,7 +231,7 @@ define([
         'closeFooterPanel': function () {
             this._setFooterPanelMaximized(true);
             $('#footer-panel').hide();
-            $('#map').removeClass('map-hidden-by-footer-panel');
+            $('#central-panel').removeClass('central-panel-hidden-by-footer-panel');
             webview.layout();
             $('#' + this.FOOTER_PANEL_CONTENT_ELEMENT_ID).html('');
         },
@@ -236,7 +243,7 @@ define([
          */
         '_setFooterPanelMaximized': function(maximized) {
             var $footerPanel = $('#footer-panel');
-            var $map = $('#map');
+            var $centralPanel = $('#central-panel');
             var $footerPanelMaximizeButton = $('#footer-panel-maximize-button');
             var $footerPanelMinimizeButton = $('#footer-panel-minimize-button');
 
@@ -244,8 +251,8 @@ define([
                 if (!$footerPanel.hasClass('footer-panel-minimized')) { return; }
                 $footerPanel.removeClass('footer-panel-minimized');
 
-                $map.removeClass('map-hidden-by-minimized-footer-panel');
-                $map.addClass('map-hidden-by-footer-panel');
+                $centralPanel.removeClass('central-panel-hidden-by-minimized-footer-panel');
+                $centralPanel.addClass('central-panel-hidden-by-footer-panel');
 
                 $footerPanelMaximizeButton.hide();
                 $footerPanelMinimizeButton.show();
@@ -253,8 +260,8 @@ define([
                 if ($footerPanel.hasClass('footer-panel-minimized')) { return; }
                 $footerPanel.addClass('footer-panel-minimized');
 
-                $map.addClass('map-hidden-by-minimized-footer-panel');
-                $map.removeClass('map-hidden-by-footer-panel');
+                $centralPanel.addClass('central-panel-hidden-by-minimized-footer-panel');
+                $centralPanel.removeClass('central-panel-hidden-by-footer-panel');
 
                 $footerPanelMinimizeButton.hide();
                 $footerPanelMaximizeButton.show();
