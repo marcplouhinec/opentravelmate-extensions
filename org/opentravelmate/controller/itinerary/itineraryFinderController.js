@@ -321,7 +321,7 @@ define([
             $placeInputElement.keyup(function handlePlaceInputKeyUpEvent() {
                 var query = $(this).val();
                 if (!query || !query.length) { return; }
-                if (query.length > 3) { self._suggestPlaces(elementId, query); }
+                if (query.length > 2) { self._suggestPlaces(elementId, query); }
             });
 
             // Handle suggestion click selection

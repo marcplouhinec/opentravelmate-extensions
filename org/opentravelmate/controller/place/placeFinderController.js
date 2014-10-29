@@ -115,7 +115,7 @@ define([
                         var query = $(this).val();
                         if (!query || !query.length) { return; }
                         if (event.keyCode === ENTER_KEYCODE) { self._findPlaces(query); }
-                        else if (query.length > 3) { self._suggestPlaces(query); }
+                        else if (query.length > 2) { self._suggestPlaces(query); }
                     });
 
                     // Show several places on a map if the user click on search or push ENTER
