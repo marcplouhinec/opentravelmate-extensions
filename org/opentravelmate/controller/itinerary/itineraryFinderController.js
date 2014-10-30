@@ -269,9 +269,7 @@ define([
 
                     // Show the details
                     itineraryDetailsController.showItineraryDetails(itinerary);
-                    setTimeout(function showItineraryDetailsWhenMapIsVisible() {
-                        mapItineraryController.showItinerary(itinerary);
-                    }, 300);
+                    mapItineraryController.showItinerary(itinerary);
 
                     // Minimize the panel on small screen
                     if (!self._mainController.isWideScreen()) {
