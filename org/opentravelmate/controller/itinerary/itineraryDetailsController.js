@@ -4,7 +4,12 @@
  * @author Marc Plouhinec
  */
 
-define(['jquery', '../../entity/itinerary/Itinerary', '../widget/webview/webview'], function($, Itinerary, webview) {
+define([
+    'jquery',
+    'moment',
+    '../../entity/itinerary/Itinerary',
+    '../widget/webview/webview'
+], function($, moment, Itinerary, webview) {
 
     /**
      * Show the details of an itinerary.
@@ -31,6 +36,14 @@ define(['jquery', '../../entity/itinerary/Itinerary', '../widget/webview/webview
 
             $(iframe).load(function () {
                 var $iframeDocument = $(iframe.contentDocument);
+
+                // Format the start and end time and save them in the legs
+                for (var i = 0; i < itinerary.legs.length; i++) {
+                    var leg = itinerary.legs[i];
+                    leg.formattedStartTime = moment(leg.startDateTime).format('HH:mm');
+                    leg.formattedEndTime = moment(leg.endDateTime).format('HH:mm');
+                }
+
 
                 var itineraryStepsTemplate = _.template($iframeDocument.find('#tpl-itinerary-steps').text());
                 var renderedItineraryDetails = /** @type {string} */ itineraryStepsTemplate({ itinerary: itinerary });

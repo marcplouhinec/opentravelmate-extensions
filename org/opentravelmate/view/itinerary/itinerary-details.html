@@ -40,7 +40,8 @@
                     <%=leg.routeShortName ? leg.routeShortName : '&nbsp;' %>
                     <span class="itinerary-leg-headsign-duration">
                         <%=leg.headsign ? ' - ' + leg.headsign + ' - ' : '' %>
-                        <%=Math.round(leg.durationSecond / 60) + 'min' %>
+                        <%=leg.formattedStartTime %> → <%=leg.formattedEndTime %>
+                        (<%=Math.round(leg.durationSecond / 60) + 'min' %>)
                     </span>
                 </td>
                 <% }); %>
