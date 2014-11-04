@@ -4,7 +4,12 @@
  * @author Marc Plouhinec
  */
 
-define(['jquery', 'lodash', 'jqueryGoogleFastButton'], function($, _) {
+define([
+    'jquery',
+    'lodash',
+    '../widget/webview/webview',
+    'jqueryGoogleFastButton'
+], function($, _, webview) {
     'use strict';
 
     var BUTTON_TOTAL_WIDTH = 55;
@@ -110,8 +115,40 @@ define(['jquery', 'lodash', 'jqueryGoogleFastButton'], function($, _) {
          * @private
          */
         '_openMenu': function () {
-            // TODO: $('#' + this._mainController.SIDE_PANEL_CONTENT_ELEMENT_ID).html();
-            this._mainController.openSidePanel('Menu')
+            this._mainController.openSidePanel('Menu');
+
+            var iframe = /** @type {HTMLIFrameElement} */document.createElement('iframe');
+            iframe.style.position = 'absolute';
+            iframe.style.width = '100%';
+            iframe.style.height = '100%';
+            iframe.style.border = 'none';
+            iframe.src = webview.baseUrl + 'extensions/org/opentravelmate/view/main/menu-panel.html';
+            document.getElementById(this._mainController.SIDE_PANEL_CONTENT_ELEMENT_ID).appendChild(iframe);
+
+            $(iframe).load(function () {
+                var $iframeDocument = $(iframe.contentDocument);
+                var menuItemTemplate = _.template($iframeDocument.find('#tpl-menu-item').text());
+
+                var menuItemsHtml = '';
+                for (var i = 1; i < registeredMenuItems.length; i++) {
+                    var menuItem = registeredMenuItems[i];
+                    menuItemsHtml += menuItemTemplate({
+                        menuItem: menuItem,
+                        menuItemIndex: i
+                    });
+                }
+                var $menuItems = $iframeDocument.find('#menu-items');
+                $menuItems.html(menuItemsHtml);
+
+                // Call the menu item click listener when the user click on it
+                $menuItems.find('li').fastClick(function handleMenuItemClick() {
+                    var menuItemIndex = $(this).attr('data-menu-item-index');
+                    if (!menuItemIndex) { return; }
+                    var menuItem = registeredMenuItems[Number(menuItemIndex)];
+                    if (!menuItem) { return; }
+                    menuItem.clickListener();
+                });
+            });
         }
     };
 

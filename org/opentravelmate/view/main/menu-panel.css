@@ -1,0 +1,38 @@
+body {
+    padding: 0;
+    margin: 0;
+}
+
+ul#menu-items {
+    padding: 0;
+    margin: 0;
+}
+
+ul#menu-items li {
+    position: relative;
+    border-bottom: 1px solid #aaa;
+    cursor: pointer;
+    height: 50px;
+}
+
+ul#menu-items li:hover {
+    background-color: #363735;
+}
+
+ul#menu-items li img {
+    display: block;
+    position: absolute;
+    top: 5px;
+    left: 10px;
+    width: 40px;
+    height: 40px;
+}
+
+ul#menu-items li .menu-item-title {
+    position: absolute;
+    top: 5px;
+    left: 60px;
+    right: 10px;
+    height: 40px;
+    line-height: 40px;
+}

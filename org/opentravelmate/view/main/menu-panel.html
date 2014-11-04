@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>Open Travel Mate</title>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no"/>
+    <link rel="stylesheet" href="../common/common.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="menu-panel.css" type="text/css" media="screen"/>
+</head>
+<body class="otm-panel">
+    <ul id="menu-items">
+        <li title="Find a place">
+            <img src="../common/image/ic_btn_find.png" alt="Find place"/>
+            <div class="menu-item-title">Find place</div>
+        </li>
+    </ul>
+    <script id="tpl-menu-item" type="text/template">
+        <li title="${menuItem.tooltip}" data-menu-item-index="${menuItemIndex}">
+            <img src="${menuItem.iconUrl}"/>
+            <div class="menu-item-title">${menuItem.title}</div>
+        </li>
+    </script>
+</body>
+</html>
