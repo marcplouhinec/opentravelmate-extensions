@@ -94,9 +94,9 @@ body {
 #side-panel-title-label {
     position: absolute;
     left: 5px;
-    top: 13px;
     right: 140px;
-    bottom: 10px;
+    height: 58px;
+    line-height: 58px;
     font-size: 24px;
     color: #00bfff;
     text-overflow: ellipsis;
@@ -173,15 +173,16 @@ body {
 }
 .side-panel-minimized #side-panel-title-label {
     height: 50px;
+    line-height: 50px;
     left: auto;
     right: auto;
-            transform: rotate(90deg) translate(90px,-43px);
-            transform-origin: 0 0;
-        -ms-transform: rotate(90deg) translate(90px,-43px);
-        -ms-transform-origin: 0 0;
-       -moz-transform: rotate(90deg) translate(90px,-43px);
-       -moz-transform-origin: 0 0;
-    -webkit-transform: rotate(90deg) translate(90px,-43px);
+    transform: rotate(90deg) translate(105px,-50px);
+    transform-origin: 0 0;
+    -ms-transform: rotate(90deg) translate(105px,-50px);
+    -ms-transform-origin: 0 0;
+    -moz-transform: rotate(90deg) translate(105px,-50px);
+    -moz-transform-origin: 0 0;
+    -webkit-transform: rotate(90deg) translate(105px,-50px);
     -webkit-transform-origin: 0 0;
 }
 .side-panel-minimized #side-panel-maximize-button {
@@ -219,10 +220,11 @@ body {
 
 #footer-panel-title-label {
     position: absolute;
-    top: 8px;
     left: 5px;
-    font-size: 24px;
     right: 103px;
+    height: 50px;
+    line-height: 50px;
+    font-size: 24px;
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
