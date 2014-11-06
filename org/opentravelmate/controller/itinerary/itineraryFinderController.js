@@ -453,9 +453,18 @@ define([
             this._foundItineraries = [];
             var itineraryProviderServices = itineraryProviderDirectoryService.getAllItineraryProviderServices();
             var nbItineraryProviderServicesToWait = itineraryProviderServices.length;
-            function handleFoundItineraries(itineraries) {
+            function handleFoundItineraries(/** @type {Itinerary} */ itineraries) {
                 nbItineraryProviderServicesToWait--;
                 self._foundItineraries = self._foundItineraries.concat(itineraries);
+
+                // Override the origin and destination place names in order to make them match with the criterion
+                for (var i = 0; i < itineraries.length; i++) {
+                    var itinerary = itineraries[i];
+                    var firstLeg = itinerary.legs[0];
+                    var lastLeg = itinerary.legs[itinerary.legs.length - 1];
+                    firstLeg.startPlaceName = self._originPlace.name;
+                    lastLeg.endPlaceName = self._destinationPlace.name;
+                }
 
                 if (nbItineraryProviderServicesToWait === 0) {
                     $iframeDocument.find('#searching-panel-mask').hide();
