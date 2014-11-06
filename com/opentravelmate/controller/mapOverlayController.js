@@ -104,6 +104,12 @@ define([
         '_markersByTileId': {},
 
         /**
+         * @type {number}
+         * @private
+         */
+        '_nbStopFindingRequests': 0,
+
+        /**
          * Initialize the controller.
          *
          * @param {TransportPlaceProviderService} transportPlaceProviderService
@@ -223,13 +229,17 @@ define([
             if (!tileCoordinates || !tileCoordinates.length) { return; }
 
             this._setDownloadingIconVisible(true);
+            this._nbStopFindingRequests++;
             var self = this;
             var zoom = tileCoordinates[0].zoom;
             var tileIds = _.map(tileCoordinates, function(tileCoordinate) {
                 return tileCoordinate.zoom + '_' + tileCoordinate.x + '_' + tileCoordinate.y;
             });
             tileService.findStopsByTileIds(tileIds, function(error, stops) {
-                self._setDownloadingIconVisible(false);
+                self._nbStopFindingRequests--;
+                if (self._nbStopFindingRequests === 0) {
+                    self._setDownloadingIconVisible(false);
+                }
 
                 // Create one transparent marker
                 var markers = /** @type {Array.<Marker>} */ _.map(stops, function(stop) {
