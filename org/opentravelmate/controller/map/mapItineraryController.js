@@ -8,6 +8,7 @@ define([
     'lodash',
     '../widget/Widget',
     '../widget/webview/webview',
+    '../widget/map/projectionUtils',
     '../widget/map/Point',
     '../widget/map/Dimension',
     '../widget/map/LatLng',
@@ -16,7 +17,7 @@ define([
     '../widget/map/Marker',
     '../widget/map/Map',
     '../../entity/itinerary/Itinerary'
-], function(_, Widget, webview, Point, Dimension, LatLng, Polyline, UrlMarkerIcon, Marker, Map, Itinerary) {
+], function(_, Widget, webview, projectionUtils, Point, Dimension, LatLng, Polyline, UrlMarkerIcon, Marker, Map, Itinerary) {
     'use strict';
 
     var ITINERARY_POLYLINE_WEIGHT = 8;
@@ -117,6 +118,26 @@ define([
                 .flatten(true)
                 .value();
             this._map.addMarkers(this._itineraryWaypointMarkers);
+
+            // Check the whole itinerary is visible for the current zoom level and center position
+            var itineraryPoints = _.chain(itinerary.legs).map(function (leg) { return leg.points; }).flatten().value();
+            var itinerarySouthWestBound = new LatLng(
+                _.min(itineraryPoints, 'latitude').latitude,
+                _.min(itineraryPoints, 'longitude').longitude);
+            var itineraryNorthEastBound = new LatLng(
+                _.max(itineraryPoints, 'latitude').latitude,
+                _.max(itineraryPoints, 'longitude').longitude);
+            var mapBounds = this._map.getBounds();
+            if (mapBounds.sw.lat > itinerarySouthWestBound.lat || mapBounds.sw.lng > itinerarySouthWestBound.lng ||
+                mapBounds.ne.lat < itineraryNorthEastBound.lat || mapBounds.ne.lng < itineraryNorthEastBound.lng) {
+                // The map with the current zoom level and center position cannot show the itinerary completely
+
+                // Adjust the map bounds
+                this._map.panToBounds({
+                    sw: itinerarySouthWestBound,
+                    ne: itineraryNorthEastBound
+                });
+            }
 
             // Call the itinerary provider listener
             if (itinerary.provider) {

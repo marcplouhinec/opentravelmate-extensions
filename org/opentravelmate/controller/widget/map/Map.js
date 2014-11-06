@@ -94,16 +94,34 @@ define([
     };
 
     /**
+     * Get the map zoom level.
+     *
+     * @return {number} Zoom level
+     */
+    Map.prototype.getZoom = function() {
+        return nativeMap.getZoom(this.id);
+    };
+
+    /**
      * Get the map bounds (South-West and North-East points).
      *
-     * @return {{sw: LatLng, ne: LatLng}} center
+     * @return {{sw: LatLng, ne: LatLng}} bounds
      */
-    Map.prototype.getBounds = function(center) {
+    Map.prototype.getBounds = function() {
         var bounds = JSON.parse(nativeMap.getBounds(this.id));
         return {
             sw: new LatLng(bounds.sw.lat, bounds.sw.lng),
             ne: new LatLng(bounds.ne.lat, bounds.ne.lng)
         };
+    };
+
+    /**
+     * Move the map to match the given bounds.
+     *
+     * @param {{sw: LatLng, ne: LatLng}} bounds
+     */
+    Map.prototype.panToBounds = function(bounds) {
+        nativeMap.panToBounds(this.id, JSON.stringify(bounds));
     };
 
     /**
