@@ -81,7 +81,9 @@ define([
                 if (document.getElementById(PANEL_ID)) { return; }
 
                 // Show a form for the user to find a place
-                mainController.openSidePanel(MENU_ITEM_TOOLTIP);
+                mainController.openSidePanel(MENU_ITEM_TOOLTIP, function handleSidePanelClosedEvent() {
+                    self._clearFoundPlaces();
+                });
 
                 var iframe = /** @type {HTMLIFrameElement} */document.createElement('iframe');
                 iframe.setAttribute('id', PANEL_ID);
@@ -275,6 +277,7 @@ define([
             map.removeMarkers(this._placeMarkers);
             this._placeMarkers = [];
             this._placeByMarkerId = {};
+            this._foundPlaces = [];
         }
     };
 
