@@ -139,6 +139,10 @@ define([
                     url: webview.baseUrl + BLUE_MARKER_ICON
                 });
 
+                // When the application is started, the nativeMap may wait several seconds before starting
+                // downloading tiles. The downloading map button is thus displayed as soon as the application starts.
+                self._setDownloadingIconVisible(true);
+
                 // Add the public transport overlay
                 self._tileOverlay = new TileOverlay({
                     'zIndex': 0,
