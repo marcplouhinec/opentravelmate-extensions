@@ -542,6 +542,7 @@ define([
 
             for (var i = 0; i < this._foundItineraries.length; i++) {
                 var foundItinerary = this._foundItineraries[i];
+                var duration = moment.duration(foundItinerary.durationSecond, 'seconds');
                 foundItinerariesHtml += templateItineraryInfo({
                     itineraryIndex: i,
                     departureTime: moment(foundItinerary.startDateTime).format('HH:mm'),
@@ -549,7 +550,7 @@ define([
                     legs: _.map(foundItinerary.legs, function(leg) {
                         return { type: leg.routeType === 0 ? 'walk' : 'bus', title: leg.routeShortName };
                     }),
-                    duration: moment.duration(foundItinerary.durationSecond, 'seconds').minutes() + 'min'
+                    duration: (duration.hours() > 0 ? duration.hours() + 'h ' : '') + duration.minutes() + 'min'
                 });
             }
 
