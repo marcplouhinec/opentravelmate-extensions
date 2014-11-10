@@ -413,7 +413,13 @@ define([
             var $datetimeSelectWrapper = $iframeDocument.find('#datetime-select-wrapper');
             $datetimeSelect.html(selectContentHtml);
             $datetimeSelectWrapper.show();
-            $datetimeSelectWrapper.animate({ scrollTop: 45 * (indexCurrentValue - 1) }, 150);
+
+            // Scroll the list in order to show the selected on
+            var $activeItem = $datetimeSelect.find('.active');
+            if ($activeItem && $activeItem.length) {
+                var relativeActiveItemOffset = $activeItem.offset().top - $datetimeSelect.offset().top;
+                $datetimeSelectWrapper.animate({ scrollTop: relativeActiveItemOffset - ($datetimeSelectWrapper.height() - $activeItem.height()) / 2 }, 150);
+            }
         },
 
         /**
